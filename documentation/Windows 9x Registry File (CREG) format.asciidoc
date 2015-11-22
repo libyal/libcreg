@@ -251,7 +251,7 @@ The data value entry is variable of size and consists of:
 | | |
 | 0x00000003 | RegBin | Binary Data
 | 0x00000004 | RegDWord | 32-bit integer (double word)
-|====
+|===
 
 :numbered!:
 [appendix]
