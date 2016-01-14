@@ -30,7 +30,7 @@ Special thanks to unknown author B.D. for his work on the format.
 [preface]
 == License
 ....
-Copyright (C) 2009-2015, Joachim Metz <joachim.metz@gmail.com>.
+Copyright (C) 2009-2016, Joachim Metz <joachim.metz@gmail.com>.
 Permission is granted to copy, distribute and/or modify this document under the 
 terms of the GNU Free Documentation License, Version 1.3 or any later version 
 published by the Free Software Foundation; with no Invariant Sections, no 
@@ -48,6 +48,7 @@ in the section entitled "GNU Free Documentation License".
 | 0.0.2 | J.B. Metz | February 2013 | Updated license version and email address.
 | 0.0.3 | J.B. Metz | June 2013 | Minor changes.
 | 0.0.4 | J.B. Metz | November 2015 | Switched to asccidoc format.
+| 0.0.6 | J.B. Metz | January 2016 | Additional changes.
 |===
 
 :numbered:
@@ -59,8 +60,8 @@ hives.
 A CREG consist of the following distinguishable elements:
 
 * file header
-* Registry key navigation record
-** Registry key record hierarchy entries
+* Registry Key Navigation record
+** Registry key hierarchy entries
 * Registry data blocks
 ** Registry key value entries
 
@@ -88,6 +89,9 @@ Some of the more common Registry files are:
 [cols="1,1,5",options="header"]
 |===
 | Windows version | Filename | Description
+| 95, 98 | POLICY.POL | System policies specific part of the Registry +
+Location: %SystemRoot%\ +
+This file is optional
 | 95, 98 | SYSTEM.DAT | System specific part of the Registry +
 Location: %SystemRoot%\ +
 Registry key: HKEY_LOCAL_MACHINE
@@ -114,8 +118,14 @@ The offset is relative to the start of the file
 | 24 | 8 | | [yellow-background]*Unknown (empty values)*
 |===
 
-== Registry Key Navigation record
-The Registry Key Navigation record is variable of size and consists of:
+== Registry Key Navigation
+The Registry Key Navigation consists of:
+
+* Registry Key Navigation record
+* Array of key hierarchy entries
+
+=== Registry Key Navigation record
+The Registry Key Navigation record is 32 bytes of size and consists of:
 
 [cols="1,1,1,5",options="header"]
 |===
@@ -123,18 +133,17 @@ The Registry Key Navigation record is variable of size and consists of:
 | 0 | 4 | "RGKN" | The signature
 | 4 | 4 | | Size +
 The Registry Key Navigation record including the 4 bytes of the signature and 4 bytes of the size itself
-| 8 | 4 | | [yellow-background]*Unknown* +
-[yellow-background]*Offset of the first/root key hierarchy entry (or size of the header)?*
-| 12 | 4 | | [yellow-background]*Unknown* +
-Size of the (used) key hierarchy entries
+| 8 | 4 | | Key hierarchy entries data offset +
+The offset is relative from the start of the Registry Key Navigation record
+| 12 | 4 | | Key hierarchy entries data size +
+The size does not contain the size of the root (first) key hierarcy entry
 | 16 | 4 | | [yellow-background]*Unknown*
 | 20 | 4 | | [yellow-background]*Unknown (Checksum?)*
 | 24 | 8 | | [yellow-background]*Unknown (empty values)*
-| 32 | ... | | Key hierarchy entries
 |===
 
 === Key hierarchy entry
-The key hierarchy entries contain the structural information of a Registry key.
+A key hierarchy entry contain the structural information of a Registry key.
 
 The key record entry is 28 bytes of size and consists of:
 
@@ -147,16 +156,16 @@ The key record entry is 28 bytes of size and consists of:
 | 8 | 4 | | [yellow-background]*Unknown reference* +
 [yellow-background]*or -1 (0xffffffff) if the value is not set (end of list)*
 | 12 | 4 | | Parent key offset +
-The offset is relative from the start of the key navigation record or -1 (0xffffffff) if the value is not set.
+The offset is relative from the start of the Registry Key Navigation record or -1 (0xffffffff) if the value is not set
 | 16 | 4 | | First sub key offset +
-The offset is relative from the start of the key navigation record or -1 (0xffffffff) if the value is not set.
+The offset is relative from the start of the Registry Key Navigation record or -1 (0xffffffff) if the value is not set
 | 20 | 4 | | Next key offset +
-The offset is relative from the start of the key navigation record or -1 (0xffffffff) if the value is not set.
+The offset is relative from the start of the Registry Key Navigation record or -1 (0xffffffff) if the value is not set
 | 24 | 2 | | Key name entry number +
-The number of the key name entry, starting with 0, within a data block the corresponding key name entry is stored +
+The number of the key name entry, starting with 0, within a data block the corresponding key name entry is stored or -1 (0xffff) if the value is not set +
 [yellow-background]*Does this value contain flags 0x1000?*
 | 26 | 2 | | Data block number +
-The number of the data block, starting with 0, the corresponding key name entry is stored
+The number of the data block, starting with 0, the corresponding key name entry is stored or -1 (0xffff) if the value is not set
 |===
 
 [yellow-background]*The first key record entry refers to its own key record.*
