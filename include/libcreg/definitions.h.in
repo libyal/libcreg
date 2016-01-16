@@ -1,0 +1,76 @@
+/*
+ * Definitions for libcreg
+ *
+ * Copyright (C) 2013-2016, Joachim Metz <joachim.metz@gmail.com>
+ *
+ * Refer to AUTHORS for acknowledgements.
+ *
+ * This software is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this software.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#if !defined( _LIBCREG_DEFINITIONS_H )
+#define _LIBCREG_DEFINITIONS_H
+
+#include <libcreg/types.h>
+
+#define LIBCREG_VERSION					@VERSION@
+
+/* The libcreg version string
+ */
+#define LIBCREG_VERSION_STRING				"@VERSION@"
+
+/* The libcreg file access
+ * bit 1        set to 1 for read access
+ * bit 2        set to 1 for write access
+ * bit 3-8      not used
+ */
+enum LIBCREG_ACCESS_FLAGS
+{
+	LIBCREG_ACCESS_FLAG_READ			= 0x01,
+/* Reserved: not supported yet */
+	LIBCREG_ACCESS_FLAG_WRITE			= 0x02
+};
+
+/* The libcreg file access macros
+ */
+#define LIBCREG_OPEN_READ				( LIBCREG_ACCESS_FLAG_READ )
+/* Reserved: not supported yet */
+#define LIBCREG_OPEN_WRITE				( LIBCREG_ACCESS_FLAG_WRITE )
+/* Reserved: not supported yet */
+#define LIBCREG_OPEN_READ_WRITE				( LIBCREG_ACCESS_FLAG_READ | LIBCREG_ACCESS_FLAG_WRITE )
+
+/* The key and value name separator
+ */
+#define LIBCREG_SEPARATOR				'\\'
+
+/* The value types
+ */
+enum LIBCREG_VALUE_TYPES
+{
+	LIBCREG_VALUE_TYPE_UNDEFINED			= 0,
+	LIBCREG_VALUE_TYPE_STRING			= 1,
+	LIBCREG_VALUE_TYPE_EXPANDABLE_STRING		= 2,
+	LIBCREG_VALUE_TYPE_BINARY_DATA			= 3,
+	LIBCREG_VALUE_TYPE_INTEGER_32BIT_LITTLE_ENDIAN	= 4,
+	LIBCREG_VALUE_TYPE_INTEGER_32BIT_BIG_ENDIAN	= 5,
+	LIBCREG_VALUE_TYPE_SYMBOLIC_LINK		= 6,
+	LIBCREG_VALUE_TYPE_MULTI_VALUE_STRING		= 7,
+	LIBCREG_VALUE_TYPE_RESOURCE_LIST		= 8,
+	LIBCREG_VALUE_TYPE_FULL_RESOURCE_DESCRIPTOR	= 9,
+	LIBCREG_VALUE_TYPE_RESOURCE_REQUIREMENTS_LIST	= 10,
+	LIBCREG_VALUE_TYPE_INTEGER_64BIT_LITTLE_ENDIAN	= 11
+};
+
+#endif
+

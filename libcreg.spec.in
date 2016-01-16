@@ -1,0 +1,109 @@
+Name: libcreg
+Version: @VERSION@
+Release: 1
+Summary: Library to access the Windows 9x/Me Registry File (CREG) format
+Group: System Environment/Libraries
+License: LGPL
+Source: %{name}-%{version}.tar.gz
+URL: http://code.google.com/p/libcreg/
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+@libcreg_spec_requires@ @ax_libbfio_spec_requires@ @ax_libcdata_spec_requires@ @ax_libcerror_spec_requires@ @ax_libcfile_spec_requires@ @ax_libclocale_spec_requires@ @ax_libcnotify_spec_requires@ @ax_libcpath_spec_requires@ @ax_libcsplit_spec_requires@ @ax_libcstring_spec_requires@ @ax_libcthreads_spec_requires@ @ax_libfcache_spec_requires@ @ax_libfdata_spec_requires@ @ax_libfdatetime_spec_requires@ @ax_libfguid_spec_requires@ @ax_libfwnt_spec_requires@ @ax_libuna_spec_requires@
+@libcreg_spec_build_requires@ @ax_libbfio_spec_build_requires@ @ax_libcdata_spec_build_requires@ @ax_libcerror_spec_build_requires@ @ax_libcfile_spec_build_requires@ @ax_libclocale_spec_build_requires@ @ax_libcnotify_spec_build_requires@ @ax_libcpath_spec_build_requires@ @ax_libcsplit_spec_build_requires@ @ax_libcstring_spec_build_requires@ @ax_libcthreads_spec_build_requires@ @ax_libfcache_spec_build_requires@ @ax_libfdata_spec_build_requires@ @ax_libfdatetime_spec_build_requires@ @ax_libfguid_spec_build_requires@ @ax_libfwnt_spec_build_requires@ @ax_libuna_spec_build_requires@
+
+%description
+libcreg is a library to access the Windows 9x/Me Registry File (CREG) format
+
+%package devel
+Summary: Header files and libraries for developing applications for libcreg
+Group: Development/Libraries
+Requires: libcreg = %{version}-%{release}
+
+%description devel
+Header files and libraries for developing applications for libcreg.
+
+%package tools
+Summary: Several tools for reading Windows 9x/Me Registry Files (CREG)
+Group: Applications/System
+Requires: libcreg = %{version}-%{release} @ax_libcsystem_spec_requires@ @ax_libfuse_spec_requires@ @ax_libfwsi_spec_requires@
+@libcreg_spec_tools_build_requires@ @ax_libcsystem_spec_build_requires@ @ax_libfuse_spec_build_requires@ @ax_libfwsi_spec_build_requires@
+
+%description tools
+Several tools for reading Windows 9x/Me Registry Files (CREG)
+
+%package python
+Summary: Python 2 bindings for libcreg
+Group: System Environment/Libraries
+Requires: libcreg = %{version}-%{release} python
+BuildRequires: python-devel
+
+%description python
+Python 2 bindings for libcreg
+
+%package python3
+Summary: Python 3 bindings for libcreg
+Group: System Environment/Libraries
+Requires: libcreg = %{version}-%{release} python3
+BuildRequires: python3-devel
+
+%description python3
+Python 3 bindings for libcreg
+
+%prep
+%setup -q
+
+%build
+%configure --prefix=/usr --libdir=%{_libdir} --mandir=%{_mandir} --enable-python2 --enable-python3
+make %{?_smp_mflags}
+
+%install
+rm -rf %{buildroot}
+%make_install
+
+%clean
+rm -rf %{buildroot}
+
+%post -p /sbin/ldconfig
+
+%postun -p /sbin/ldconfig
+
+%files
+%defattr(644,root,root,755)
+%doc AUTHORS COPYING NEWS README
+%attr(755,root,root) %{_libdir}/*.so.*
+
+%files devel
+%defattr(644,root,root,755)
+%doc AUTHORS COPYING NEWS README ChangeLog
+%{_libdir}/*.a
+%{_libdir}/*.la
+%{_libdir}/*.so
+%{_libdir}/pkgconfig/libcreg.pc
+%{_includedir}/*
+%{_mandir}/man3/*
+
+%files tools
+%defattr(644,root,root,755)
+%doc AUTHORS COPYING NEWS README
+%attr(755,root,root) %{_bindir}/creginfo
+%attr(755,root,root) %{_bindir}/cregexport
+%attr(755,root,root) %{_bindir}/cregmount
+%{_mandir}/man1/*
+
+%files python
+%defattr(644,root,root,755)
+%doc AUTHORS COPYING NEWS README
+%{_libdir}/python2*/site-packages/*.a
+%{_libdir}/python2*/site-packages/*.la
+%{_libdir}/python2*/site-packages/*.so
+
+%files python3
+%defattr(644,root,root,755)
+%doc AUTHORS COPYING NEWS README
+%{_libdir}/python3*/site-packages/*.a
+%{_libdir}/python3*/site-packages/*.la
+%{_libdir}/python3*/site-packages/*.so
+
+%changelog
+* @SPEC_DATE@ Joachim Metz <joachim.metz@gmail.com> @VERSION@-1
+- Auto-generated
+

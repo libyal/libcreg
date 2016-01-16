@@ -107,11 +107,11 @@ The file header is 32 bytes of size and consists of:
 | 0 | 4 | "CREG" | The signature
 | 4 | 2 | 0 | Minor format version
 | 6 | 2 | 1 | Major format version
-| 8 | 4 | | [yellow-background]*Unknown (Root key (data block) offset)* +
+| 8 | 4 | | Data blocks list offset* +
 The offset is relative to the start of the file
 | 12 | 4 | | [yellow-background]*Unknown (checksum? Fat date time?)*
-| 16 | 2 | | Number of Registry data blocks
-| 18 | 2 | | [yellow-background]*Unknown*
+| 16 | 2 | | [yellow-background]*Unknown*
+| 18 | 2 | | Number of Registry data blocks
 | 20 | 2 | | [yellow-background]*Unknown (Copy of minor version?)*
 | 22 | 2 | | [yellow-background]*Unknown (Copy of major version?)*
 | 24 | 8 | | [yellow-background]*Unknown (empty values)*
@@ -121,7 +121,10 @@ The offset is relative to the start of the file
 The Registry Key Navigation consists of:
 
 * Registry Key Navigation record
-* Array of key hierarchy entries
+* Key hierarchy entries area
+
+[NOTE]
+The key hierarchy entries are stored unaligned within the area.
 
 === Registry Key Navigation record
 The Registry Key Navigation record is 32 bytes of size and consists of:
@@ -210,12 +213,15 @@ The registry data block (RGDB) is 32 bytes of size and consists of:
 | 0 | 4 | "RGDB" | The signature
 | 4 | 4 | | Size +
 The size of the Registry data block including the 8 bytes of the the signature and size
-| 8 | 4 | | [yellow-background]*Unknown*
-| 12 | 4 | | [yellow-background]*Unknown*
-| 16 | 4 | | Used size
-| 20 | 2 | | Number of key name entries
-| 22 | 2 | | [yellow-background]*Unknown*
-| 24 | 8 | | [yellow-background]*Unknown*
+| 8 | 4 | | Unused size
+| 12 | 2 | | [yellow-background]*Unknown (flags?)* +
+[yellow-background]*Seen 0x0008*
+| 14 | 2 | | Index
+| 16 | 4 | | Used size +
+[yellow-background]*Does -1 (0xffffffff) represent the data block is allowed to grow?*
+| 20 | 2 | | [yellow-background]*Unknown (related to number of entries?)*
+| 22 | 2 | | [yellow-background]*Unknown (related to number of entries?)*
+| 24 | 8 | | [yellow-background]*Unknown (remnant data?)*
 |===
 
 === Key name entry
@@ -228,7 +234,9 @@ The key name entry is variable of size and consists of:
 | Offset | Size | Value | Description
 | 0 | 4 | | Size +
 The size of the key name entry including the 4 bytes of the size
-| 4 | 4 | | Index
+| 4 | 2 | | Index
+| 6 | 2 | | [yellow-background]*Unknown* +
+[yellow-background]*Seen: 0x0000, 0x00.. and 0xffff*
 | 8 | 4 | | Used size
 | 12 | 2 | | Name size
 | 14 | 2 | | Number of values
@@ -268,6 +276,24 @@ Contains an ASCII string which is not terminated by an end-of-string character
 | 0x00000003 | RegBin | Binary Data
 | 0x00000004 | RegDWord | 32-bit integer (double word)
 |===
+
+== Notes
+....
+libcreg_key_name_entry_read: data:
+00000000: 2f 00 00 00 ff ff ff ff  5f 7b 00 00 0f 00 01 00   /....... _{......
+00000010: 00 00 00 00 43 6f 6e 74  72 6f 6c 73 20 46 6f 6c   ....Cont rols Fol
+00000020: 64 65 72 01 00 00 00 ff  ff ff ff 00 00 00 00      der..... .......
+
+libcreg_key_name_entry_read: size                                       : 47
+libcreg_key_name_entry_read: index                                      : 65535
+libcreg_key_name_entry_read: unknown1                                   : 0xffff
+libcreg_key_name_entry_read: used size                                  : 31583
+libcreg_key_name_entry_read: name size                                  : 15
+libcreg_key_name_entry_read: number of values                           : 1
+libcreg_key_name_entry_read: unknown2                                   : 0x00000000
+
+Are unknown1 (0xffff) and strange used size related some how?
+....
 
 :numbered!:
 [appendix]
