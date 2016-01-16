@@ -511,7 +511,7 @@ int libcreg_key_navigation_read_data_blocks(
      libcreg_key_navigation_t *key_navigation,
      libbfio_handle_t *file_io_handle,
      off64_t file_offset,
-     size_t file_size,
+     size64_t file_size,
      libcerror_error_t **error )
 {
 	libcreg_data_block_t *data_block = NULL;
