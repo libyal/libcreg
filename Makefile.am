@@ -20,6 +20,8 @@ SUBDIRS = \
 	libfguid \
 	libfwnt \
 	libcreg \
+	libfole \
+	libfwps \
 	libfwsi \
 	libcsystem \
 	cregtools \

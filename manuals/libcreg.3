@@ -91,6 +91,8 @@ Key functions
 .Ft int
 .Fn libcreg_key_free "libcreg_key_t **key, libcreg_error_t **error"
 .Ft int
+.Fn libcreg_key_is_corrupted "libcreg_key_t *key, libcreg_error_t **error"
+.Ft int
 .Fn libcreg_key_get_offset "libcreg_key_t *key, off64_t *offset, libcreg_error_t **error"
 .Ft int
 .Fn libcreg_key_get_name_size "libcreg_key_t *key, size_t *name_size, libcreg_error_t **error"
@@ -129,6 +131,8 @@ Value functions
 .Ft int
 .Fn libcreg_value_free "libcreg_value_t **value, libcreg_error_t **error"
 .Ft int
+.Fn libcreg_value_is_corrupted "libcreg_value_t *value, libcreg_error_t **error"
+.Ft int
 .Fn libcreg_value_get_offset "libcreg_value_t *value, off64_t *offset, libcreg_error_t **error"
 .Ft int
 .Fn libcreg_value_get_name_size "libcreg_value_t *value, size_t *name_size, libcreg_error_t **error"
@@ -143,7 +147,7 @@ Value functions
 .Ft int
 .Fn libcreg_value_get_utf16_name "libcreg_value_t *value, uint16_t *utf16_name, size_t utf16_name_size, libcreg_error_t **error"
 .Ft int
-.Fn libcreg_value_get_value_type "libcreg_value_t *value, uint16_t *value_type, libcreg_error_t **error"
+.Fn libcreg_value_get_value_type "libcreg_value_t *value, uint32_t *value_type, libcreg_error_t **error"
 .Ft int
 .Fn libcreg_value_get_value_data_size "libcreg_value_t *value, size_t *value_data_size, libcreg_error_t **error"
 .Ft int

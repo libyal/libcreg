@@ -348,6 +348,14 @@ int libcreg_key_free(
      libcreg_key_t **key,
      libcreg_error_t **error );
 
+/* Determine if the key corrupted
+ * Returns 1 if corrupted, 0 if not or -1 on error
+ */
+LIBCREG_EXTERN \
+int libcreg_key_is_corrupted(
+     libcreg_key_t *key,
+     libcreg_error_t **error );
+
 /* Retrieves the offset of the key
  * Returns 1 if successful or -1 on error
  */
@@ -543,6 +551,14 @@ int libcreg_value_free(
      libcreg_value_t **value,
      libcreg_error_t **error );
 
+/* Determine if the value corrupted
+ * Returns 1 if corrupted, 0 if not or -1 on error
+ */
+LIBCREG_EXTERN \
+int libcreg_value_is_corrupted(
+     libcreg_value_t *value,
+     libcreg_error_t **error );
+
 /* Retrieves the offset of the value
  * Returns 1 if successful or -1 on error
  */
@@ -621,7 +637,7 @@ int libcreg_value_get_utf16_name(
 LIBCREG_EXTERN \
 int libcreg_value_get_value_type(
      libcreg_value_t *value,
-     uint16_t *value_type,
+     uint32_t *value_type,
      libcreg_error_t **error );
 
 /* Retrieves the value data size

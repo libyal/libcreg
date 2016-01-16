@@ -575,7 +575,7 @@ int export_handle_export_key(
 	ssize_t print_count                         = 0;
 	uint64_t value_64bit                        = 0;
 	uint32_t value_32bit                        = 0;
-	uint16_t value_type                         = 0;
+	uint32_t value_type                         = 0;
 	int number_of_sub_keys                      = 0;
 	int number_of_values                        = 0;
 	int result                                  = 0;

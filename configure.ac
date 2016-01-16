@@ -102,6 +102,12 @@ AX_LIBFWNT_CHECK_ENABLE
 dnl Check for library function support
 AX_LIBCREG_CHECK_LOCAL
 
+dnl Check for enabling libfole for Windows Shell identifier support
+AX_LIBFOLE_CHECK_ENABLE
+
+dnl Check for enabling libfwps for Windows Shell identifier support
+AX_LIBFWPS_CHECK_ENABLE
+
 dnl Check for enabling libfwsi for Windows Shell identifier support
 AX_LIBFWSI_CHECK_ENABLE
 
@@ -180,7 +186,7 @@ AS_IF(
  ])
 
 AS_IF(
- [test "x$ac_cv_libfwsi" = xyes || test "x$ac_cv_libcsystem" = xyes || test "x$ac_cv_libfuse" != xno],
+ [test "x$ac_cv_libfole" = xyes ||  test "x$ac_cv_libfwps" = xyes || test "x$ac_cv_libfwsi" = xyes || test "x$ac_cv_libcsystem" = xyes || test "x$ac_cv_libfuse" != xno],
  [AC_SUBST(
   [libcreg_spec_tools_build_requires],
   [BuildRequires:])
@@ -222,6 +228,8 @@ AC_CONFIG_FILES([libfdatetime/Makefile])
 AC_CONFIG_FILES([libfguid/Makefile])
 AC_CONFIG_FILES([libfwnt/Makefile])
 AC_CONFIG_FILES([libcreg/Makefile])
+AC_CONFIG_FILES([libfole/Makefile])
+AC_CONFIG_FILES([libfwps/Makefile])
 AC_CONFIG_FILES([libfwsi/Makefile])
 AC_CONFIG_FILES([libcsystem/Makefile])
 AC_CONFIG_FILES([cregtools/Makefile])
@@ -270,6 +278,8 @@ Building:
    libfdatetime support:                      $ac_cv_libfdatetime
    libfguid support:                          $ac_cv_libfguid
    libfwnt support:                           $ac_cv_libfwnt
+   libfole support:                           $ac_cv_libfole
+   libfwps support:                           $ac_cv_libfwps
    libfwsi support:                           $ac_cv_libfwsi
    libcsystem support:                        $ac_cv_libcsystem
    FUSE support:                              $ac_cv_libfuse
