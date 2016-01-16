@@ -23,11 +23,9 @@ am_pycreg_la_rpath = -rpath $(pyexecdir2)
 BUILT_SOURCES = \
 	pycreg.c pycreg.h \
 	pycreg_codepage.c pycreg_codepage.h \
-	pycreg_datetime.c pycreg_datetime.h \
 	pycreg_error.c pycreg_error.h \
 	pycreg_file.c pycreg_file.h \
 	pycreg_file_object_io_handle.c pycreg_file_object_io_handle.h \
-	pycreg_file_types.c pycreg_file_types.h \
 	pycreg_integer.c pycreg_integer.h \
 	pycreg_key.c pycreg_key.h \
 	pycreg_keys.c pycreg_keys.h \

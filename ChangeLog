@@ -12,6 +12,8 @@ Deployment:
 
 20160116
 * worked on format support
+* updated tests
+* changes for deployment
 
 20160115
 * source refresh based on libregf

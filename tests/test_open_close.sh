@@ -125,7 +125,7 @@ else
 				then
 					TESTFILES=`cat input/.libcreg/${DIRNAME}/files | sed "s?^?${TESTDIR}/?"`;
 				else
-					TESTFILES=`ls ${TESTDIR}/*`;
+					TESTFILES=`ls -1 ${TESTDIR}/* 2> /dev/null`;
 				fi
 				for TESTFILE in ${TESTFILES};
 				do

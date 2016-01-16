@@ -42,11 +42,13 @@
 #include "pycreg_values.h"
 
 #if !defined( LIBCREG_HAVE_BFIO )
+
 LIBCREG_EXTERN \
 int libcreg_check_file_signature_file_io_handle(
      libbfio_handle_t *file_io_handle,
      libcreg_error_t **error );
-#endif
+
+#endif /* !defined( LIBCREG_HAVE_BFIO ) */
 
 /* The pycreg module methods
  */
@@ -63,14 +65,14 @@ PyMethodDef pycreg_module_methods[] = {
 	  METH_VARARGS | METH_KEYWORDS,
 	  "check_file_signature(filename) -> Boolean\n"
 	  "\n"
-	  "Checks if a file has a Windows NT Registry File (CREG) signature." },
+	  "Checks if a file has a Windows 9x/Me Registry File (CREG) signature." },
 
 	{ "check_file_signature_file_object",
 	  (PyCFunction) pycreg_check_file_signature_file_object,
 	  METH_VARARGS | METH_KEYWORDS,
 	  "check_file_signature_file_object(file_object) -> Boolean\n"
 	  "\n"
-	  "Checks if a file has a Windows NT Registry File (CREG) signature using a file-like object." },
+	  "Checks if a file has a Windows 9x/Me Registry File (CREG) signature using a file-like object." },
 
 	{ "open",
 	  (PyCFunction) pycreg_file_new_open,
@@ -126,7 +128,7 @@ PyObject *pycreg_get_version(
 	         errors ) );
 }
 
-/* Checks if the file has a Windows NT Registry File (CREG) signature
+/* Checks if the file has a Windows 9x/Me Registry File (CREG) signature
  * Returns a Python object if successful or NULL on error
  */
 PyObject *pycreg_check_file_signature(
@@ -320,7 +322,7 @@ PyObject *pycreg_check_file_signature(
 	return( NULL );
 }
 
-/* Checks if the file has a Windows NT Registry File (CREG) signature using a file-like object
+/* Checks if the file has a Windows 9x/Me Registry File (CREG) signature using a file-like object
  * Returns a Python object if successful or NULL on error
  */
 PyObject *pycreg_check_file_signature_file_object(

@@ -20,149 +20,215 @@
 # along with this software.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import argparse
 import sys
 
 import pycreg
 
-def pycreg_test_single_open_close_file( filename, mode ):
-	creg_file = pycreg.file()
-	creg_file.open( filename, mode )
-	creg_file.close()
 
-def pycreg_test_multi_open_close_file( filename, mode ):
-	creg_file = pycreg.file()
-	creg_file.open( filename, mode )
-	creg_file.close()
-	creg_file.open( filename, mode )
-	creg_file.close()
+def get_mode_string(mode):
+  """Retrieves a human readable string representation of the access mode."""
+  if mode == "r":
+    mode_string = "read"
+  elif mode == "w":
+    mode_string = "write"
+  else:
+    mode_string = "unknown ({0:s})".format(mode)
+  return mode_string
 
-def pycreg_test_single_open_close_file_object( filename, mode ):
-	file_object = open( filename, mode )
-	creg_file = pycreg.file()
-	creg_file.open_file_object( file_object, mode )
-	creg_file.close()
 
-def pycreg_test_single_open_close_file_object_with_dereference( filename, mode ):
-	file_object = open( filename, mode )
-	creg_file = pycreg.file()
-	creg_file.open_file_object( file_object, mode )
-	del file_object
-	creg_file.close()
+def pycreg_test_single_open_close_file(filename, mode):
+  if not filename:
+    filename_string = "None"
+  else:
+    filename_string = filename
 
-def pycreg_test_multi_open_close_file_object( filename, mode ):
-	file_object = open( filename, mode )
-	creg_file = pycreg.file()
-	creg_file.open_file_object( file_object, mode )
-	creg_file.close()
-	creg_file.open_file_object( file_object, mode )
-	creg_file.close()
+  print("Testing single open close of: {0:s} with access: {1:s}\t".format(
+      filename_string, get_mode_string(mode)))
 
-def main( argc, argv ):
-	result = 0
+  result = True
+  try:
+    creg_file = pycreg.file()
 
-	if argc < 2:
-		print "Usage: pycreg_test_open_close.py filename\n"
-		return 1
+    creg_file.open(filename, mode)
+    creg_file.close()
 
-	print "Testing single open close of: %s with access: read\t" %( sys.argv[ 1 ] ),
+  except TypeError as exception:
+    expected_message = (
+        "{0:s}: unsupported string object type.").format(
+            "pycreg_file_open")
 
-	try:
-		pycreg_test_single_open_close_file( argv[ 1 ], "r" )
-		result = 0
-	except:
-		result = 1
+    if not filename and str(exception) == expected_message:
+      pass
 
-	if result != 0:
-		print "(FAIL)"
-		return 1
-	print "(PASS)"
+    else:
+      print(str(exception))
+      result = False
 
-	print "Testing single open close of: None with access: read\t"
+  except ValueError as exception:
+    expected_message = (
+        "{0:s}: unsupported mode: w.").format(
+            "pycreg_file_open")
 
-	result = 1
-	try:
-		pycreg_test_single_open_close_file( None, "r" )
-	except TypeError, exception:
-		if exception.message == "argument 1 must be string, not None":
-			result = 0
-	except:
-		pass
+    if mode != "w" or str(exception) != expected_message:
+      print(str(exception))
+      result = False
 
-	if result != 0:
-		print "(FAIL)"
-		return 1
-	print "(PASS)"
+  except Exception as exception:
+    print(str(exception))
+    result = False
 
-	print "Testing single open close of: %s with access: write\t" %( sys.argv[ 1 ] ),
+  if not result:
+    print("(FAIL)")
+  else:
+    print("(PASS)")
+  return result
 
-	result = 1
-	try:
-		pycreg_test_single_open_close_file( argv[ 1 ], "w" )
-	except ValueError, exception:
-		if exception.message == "pycreg_file_open: unsupported mode: w.":
-			result = 0
-	except:
-		pass
 
-	if result != 0:
-		print "(FAIL)"
-		return 1
-	print "(PASS)"
+def pycreg_test_multi_open_close_file(filename, mode):
+  print("Testing multi open close of: {0:s} with access: {1:s}\t".format(
+      filename, get_mode_string(mode)))
 
-	print "Testing multi open close of: %s with access: read\t" %( sys.argv[ 1 ] ),
+  result = True
+  try:
+    creg_file = pycreg.file()
 
-	try:
-		pycreg_test_multi_open_close_file( argv[ 1 ], "r" )
-		result = 0
-	except:
-		result = 1
+    creg_file.open(filename, mode)
+    creg_file.close()
+    creg_file.open(filename, mode)
+    creg_file.close()
 
-	if result != 0:
-		print "(FAIL)"
-		return 1
-	print "(PASS)"
+  except Exception as exception:
+    print(str(exception))
+    result = False
 
-	print "Testing single open close of file-like object of: %s with access: read\t" %( sys.argv[ 1 ] ),
+  if not result:
+    print("(FAIL)")
+  else:
+    print("(PASS)")
+  return result
 
-	try:
-		pycreg_test_single_open_close_file_object( argv[ 1 ], "r" )
-		result = 0
-	except:
-		result = 1
 
-	if result != 0:
-		print "(FAIL)"
-		return 1
-	print "(PASS)"
+def pycreg_test_single_open_close_file_object(filename, mode):
+  print(("Testing single open close of file-like object of: {0:s} "
+         "with access: {1:s}\t").format(filename, get_mode_string(mode)))
 
-	print "Testing single open close of file-like object with dereference of: %s with access: read\t" %( sys.argv[ 1 ] ),
+  result = True
+  try:
+    file_object = open(filename, "rb")
+    creg_file = pycreg.file()
 
-	try:
-		pycreg_test_single_open_close_file_object_with_dereference( argv[ 1 ], "r" )
-		result = 0
-	except:
-		result = 1
+    creg_file.open_file_object(file_object, mode)
+    creg_file.close()
 
-	if result != 0:
-		print "(FAIL)"
-		return 1
-	print "(PASS)"
+  except Exception as exception:
+    print(str(exception))
+    result = False
 
-	print "Testing multi open close of file-like object of: %s with access: read\t" %( sys.argv[ 1 ] ),
+  if not result:
+    print("(FAIL)")
+  else:
+    print("(PASS)")
+  return result
 
-	try:
-		pycreg_test_multi_open_close_file_object( argv[ 1 ], "r" )
-		result = 0
-	except:
-		result = 1
 
-	if result != 0:
-		print "(FAIL)"
-		return 1
-	print "(PASS)"
+def pycreg_test_single_open_close_file_object_with_dereference(
+    filename, mode):
+  print(("Testing single open close of file-like object with dereference "
+         "of: {0:s} with access: {1:s}\t").format(
+      filename, get_mode_string(mode)))
 
-	return 0
+  result = True
+  try:
+    file_object = open(filename, "rb")
+    creg_file = pycreg.file()
+
+    creg_file.open_file_object(file_object, mode)
+    del file_object
+    creg_file.close()
+
+  except Exception as exception:
+    print(str(exception))
+    result = False
+
+  if not result:
+    print("(FAIL)")
+  else:
+    print("(PASS)")
+  return result
+
+
+def pycreg_test_multi_open_close_file_object(filename, mode):
+  print(("Testing multi open close of file-like object of: {0:s} "
+         "with access: {1:s}\t").format(filename, get_mode_string(mode)))
+
+  result = True
+  try:
+    file_object = open(filename, "rb")
+    creg_file = pycreg.file()
+
+    creg_file.open_file_object(file_object, mode)
+    creg_file.close()
+    creg_file.open_file_object(file_object, mode)
+    creg_file.close()
+
+  except Exception as exception:
+    print(str(exception))
+    result = False
+
+  if not result:
+    print("(FAIL)")
+  else:
+    print("(PASS)")
+  return result
+
+
+def main():
+  args_parser = argparse.ArgumentParser(description=(
+      "Tests open and close."))
+
+  args_parser.add_argument(
+      "source", nargs="?", action="store", metavar="FILENAME",
+      default=None, help="The source filename.")
+
+  options = args_parser.parse_args()
+
+  if not options.source:
+    print("Source value is missing.")
+    print("")
+    args_parser.print_help()
+    print("")
+    return False
+
+  if not pycreg_test_single_open_close_file(options.source, "r"):
+    return False
+
+  if not pycreg_test_single_open_close_file(None, "r"):
+    return False
+
+  if not pycreg_test_single_open_close_file(options.source, "w"):
+    return False
+
+  if not pycreg_test_multi_open_close_file(options.source, "r"):
+    return False
+
+  if not pycreg_test_single_open_close_file_object(options.source, "r"):
+    return False
+
+  if not pycreg_test_single_open_close_file_object_with_dereference(
+      options.source, "r"):
+    return False
+
+  if not pycreg_test_multi_open_close_file_object(
+      options.source, "r"):
+    return False
+
+  return True
+
 
 if __name__ == "__main__":
-	sys.exit( main( len( sys.argv ), sys.argv ) )
+  if not main():
+    sys.exit(1)
+  else:
+    sys.exit(0)
 
