@@ -1,14 +1,16 @@
 TODO
 * fix issues with win98 test files
 * add support for name hashing (remove wctoupper?)
-* pass IO handle to key name entry and value entry
-  for the ASCII codepage for debugging
 
 Format support:
 * validate parent key offset
 
 Deployment:
 * update man pages
+
+20160120
+* worked on passing ASCII codepage for debugging
+* code clean up
 
 20160116
 * worked on format support

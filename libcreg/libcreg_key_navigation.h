@@ -102,15 +102,8 @@ int libcreg_key_navigation_get_data_block_at_index(
      libcreg_data_block_t **data_block,
      libcerror_error_t **error );
 
-/* TODO remove */
-int libcreg_key_navigation_get_data_block_index_at_offset(
-     libcreg_key_navigation_t *key_navigation,
-     off64_t offset,
-     int *data_block_index,
-     libcerror_error_t **error );
-
 int libcreg_key_navigation_read_data_block_element_data(
-     intptr_t *data_handle,
+     libcreg_io_handle_t *io_handle,
      libbfio_handle_t *file_io_handle,
      libfdata_list_element_t *list_element,
      libfcache_cache_t *cache,

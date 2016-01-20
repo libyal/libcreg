@@ -88,6 +88,7 @@ int libcreg_data_block_read_entries(
             size_t data_size,
             size_t *entry_size,
             libcerror_error_t **error ),
+     int ascii_codepage,
      uint8_t have_debug_output,
      libcerror_error_t **error );
 
@@ -100,12 +101,7 @@ int libcreg_data_block_get_entry_by_index(
      libcreg_data_block_t *data_block,
      int entry_index,
      libcreg_key_name_entry_t **key_name_entry,
-     libcerror_error_t **error );
-
-int libcreg_data_block_get_entry_at_offset(
-     libcreg_data_block_t *data_block,
-     uint32_t entry_offset,
-     libcreg_key_name_entry_t **key_name_entry,
+     int ascii_codepage,
      libcerror_error_t **error );
 
 #if defined( __cplusplus )

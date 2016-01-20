@@ -364,6 +364,7 @@ int libcreg_data_block_read_entries(
             size_t data_size,
             size_t *entry_size,
             libcerror_error_t **error ),
+     int ascii_codepage,
      uint8_t have_debug_output LIBCREG_ATTRIBUTE_UNUSED,
      libcerror_error_t **error )
 {
@@ -542,6 +543,7 @@ int libcreg_data_block_read_entries(
 			     key_name_entry,
 			     &( ( data_block->data )[ data_block_entry->offset ] ),
 			     data_block_entry->size,
+			     ascii_codepage,
 			     error ) != 1 )
 			{
 				libcerror_error_set(
@@ -693,6 +695,7 @@ int libcreg_data_block_get_entry_by_index(
      libcreg_data_block_t *data_block,
      int entry_index,
      libcreg_key_name_entry_t **key_name_entry,
+     int ascii_codepage,
      libcerror_error_t **error )
 {
 	libcreg_data_block_entry_t *data_block_entry = NULL;
@@ -792,6 +795,7 @@ int libcreg_data_block_get_entry_by_index(
 	     *key_name_entry,
 	     &( ( data_block->data )[ data_block_entry->offset ] ),
 	     data_block_entry->size,
+	     ascii_codepage,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -805,140 +809,6 @@ int libcreg_data_block_get_entry_by_index(
 		goto on_error;
 	}
 	return( 1 );
-
-on_error:
-	if( *key_name_entry != NULL )
-	{
-		libcreg_key_name_entry_free(
-		 key_name_entry,
-		 NULL );
-	}
-	return( -1 );
-}
-
-/* Retrieves the key name entry at the offset
- * Returns 1 if successful, 0 if not available or -1 on error
- */
-int libcreg_data_block_get_entry_at_offset(
-     libcreg_data_block_t *data_block,
-     uint32_t entry_offset,
-     libcreg_key_name_entry_t **key_name_entry,
-     libcerror_error_t **error )
-{
-	libcreg_data_block_entry_t *data_block_entry = NULL;
-	static char *function                        = "libcreg_data_block_get_entry_at_offset";
-	int data_block_entry_index                   = 0;
-	int number_of_entries                        = 0;
-	int result                                   = 0;
-
-	if( data_block == NULL )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
-		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid data block.",
-		 function );
-
-		return( -1 );
-	}
-	if( key_name_entry == NULL )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
-		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid key name entry.",
-		 function );
-
-		return( -1 );
-	}
-	if( libcdata_array_get_number_of_entries(
-	     data_block->entries_array,
-	     &number_of_entries,
-	     error ) != 1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to retrieve the number of entries.",
-		 function );
-
-		goto on_error;
-	}
-	for( data_block_entry_index = 0;
-	     data_block_entry_index < number_of_entries;
-	     data_block_entry_index++ )
-	{
-		if( libcdata_array_get_entry_by_index(
-		     data_block->entries_array,
-		     data_block_entry_index,
-		     (intptr_t **) &data_block_entry,
-		     error ) != 1 )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-			 "%s: unable to retrieve data block entry: %d.",
-			 function,
-			 data_block_entry_index );
-
-			goto on_error;
-		}
-		if( data_block_entry == NULL )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_VALUE_MISSING,
-			 "%s: invalid data block - missing data block entry: %d.",
-			 function,
-			 data_block_entry_index );
-
-			goto on_error;
-		}
-		if( data_block_entry->offset == entry_offset )
-		{
-			result = 1;
-
-			break;
-		}
-	}
-	if( result != 0 )
-	{
-		if( libcreg_key_name_entry_initialize(
-		     key_name_entry,
-		     error ) != 1 )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
-			 "%s: unable to create key name entry.",
-			 function );
-
-			goto on_error;
-		}
-		if( libcreg_key_name_entry_read(
-		     *key_name_entry,
-		     &( ( data_block->data )[ data_block_entry->offset ] ),
-		     data_block_entry->size,
-		     error ) != 1 )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_IO,
-			 LIBCERROR_IO_ERROR_READ_FAILED,
-			 "%s: unable to read key name entry: %d.",
-			 function,
-			 data_block_entry_index );
-
-			goto on_error;
-		}
-	}
-	return( result );
 
 on_error:
 	if( *key_name_entry != NULL )

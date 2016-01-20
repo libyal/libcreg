@@ -71,6 +71,28 @@ int libcreg_key_item_read_node_data(
 	LIBCREG_UNREFERENCED_PARAMETER( node_data_flags )
 	LIBCREG_UNREFERENCED_PARAMETER( read_flags )
 
+	if( key_navigation == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid key navigation.",
+		 function );
+
+		return( -1 );
+	}
+	if( key_navigation->io_handle == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_VALUE_MISSING,
+		 "%s: invalid key navigation - missing IO handle.",
+		 function );
+
+		return( -1 );
+	}
 	if( libcreg_key_navigation_get_key_hierarchy_entry_at_offset(
 	     key_navigation,
 	     file_io_handle,
@@ -123,6 +145,7 @@ int libcreg_key_item_read_node_data(
 		     data_block,
 		     (int) key_hierarchy_entry->key_name_entry_number,
 		     &key_name_entry,
+		     key_navigation->io_handle,
 		     error ) != 1 )
 		{
 			libcerror_error_set(

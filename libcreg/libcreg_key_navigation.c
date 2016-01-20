@@ -552,6 +552,17 @@ int libcreg_key_navigation_read_data_blocks(
 
 		return( -1 );
 	}
+	if( key_navigation->io_handle == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_VALUE_MISSING,
+		 "%s: invalid key navigation - missing IO handle.",
+		 function );
+
+		return( -1 );
+	}
 	if( file_offset < 0 )
 	{
 		libcerror_error_set(
@@ -565,7 +576,7 @@ int libcreg_key_navigation_read_data_blocks(
 	}
 	if( libfdata_list_initialize(
 	     &( key_navigation->data_blocks_list ),
-	     NULL,
+	     (intptr_t *) key_navigation->io_handle,
 	     NULL,
 	     NULL,
 	     (int (*)(intptr_t *, intptr_t *, libfdata_list_element_t *, libfcache_cache_t *, int, off64_t, size64_t, uint32_t, uint8_t, libcerror_error_t **)) &libcreg_key_navigation_read_data_block_element_data,
@@ -665,6 +676,7 @@ int libcreg_key_navigation_read_data_blocks(
 			     file_io_handle,
 			     (int (*)(const uint8_t *, size_t, size_t *, libcerror_error_t **)) &libcreg_key_name_entry_read_entry_size,
 			     1,
+			     key_navigation->io_handle->ascii_codepage,
 			     error ) != 1 )
 			{
 				libcerror_error_set(
@@ -881,58 +893,12 @@ int libcreg_key_navigation_get_data_block_at_index(
 	return( 1 );
 }
 
-/* Retrieves the data block index for a specific offset
- * Returns 1 if successful, 0 if not or -1 on error
- */
-int libcreg_key_navigation_get_data_block_index_at_offset(
-     libcreg_key_navigation_t *key_navigation,
-     off64_t offset,
-     int *data_block_index,
-     libcerror_error_t **error )
-{
-	static char *function       = "libcreg_key_navigation_get_data_block_index_at_offset";
-	off64_t element_data_offset = 0;
-	int result                  = 0;
-
-	if( key_navigation == NULL )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
-		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid key navigation.",
-		 function );
-
-		return( -1 );
-	}
-	result = libfdata_list_get_element_index_at_offset(
-	          key_navigation->data_blocks_list,
-	          offset,
-	          data_block_index,
-	          &element_data_offset,
-	          error );
-
-	if( result == -1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to retrieve data blocks list element index at offset: %" PRIi64 ".",
-		 function,
-		 offset );
-
-		return( -1 );
-	}
-	return( result );
-}
-
 /* Reads a data block
  * Callback function for the data blocks list
  * Returns 1 if successful or -1 on error
  */
 int libcreg_key_navigation_read_data_block_element_data(
-     intptr_t *data_handle LIBCREG_ATTRIBUTE_UNUSED,
+     libcreg_io_handle_t *io_handle,
      libbfio_handle_t *file_io_handle,
      libfdata_list_element_t *list_element,
      libfcache_cache_t *cache,
@@ -946,11 +912,21 @@ int libcreg_key_navigation_read_data_block_element_data(
 	libcreg_data_block_t *data_block = NULL;
 	static char *function            = "libcreg_key_navigation_read_data_block_element_data";
 
-	LIBCREG_UNREFERENCED_PARAMETER( data_handle )
 	LIBCREG_UNREFERENCED_PARAMETER( data_range_file_index )
 	LIBCREG_UNREFERENCED_PARAMETER( data_range_flags )
 	LIBCREG_UNREFERENCED_PARAMETER( read_flags )
 
+	if( io_handle == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid IO handle.",
+		 function );
+
+		return( -1 );
+	}
 	if( libcreg_data_block_initialize(
 	     &data_block,
 	     error ) != 1 )
@@ -1022,6 +998,7 @@ int libcreg_key_navigation_read_data_block_element_data(
 	     file_io_handle,
 	     (int (*)(const uint8_t *, size_t, size_t *, libcerror_error_t **)) &libcreg_key_name_entry_read_entry_size,
 	     0,
+	     io_handle->ascii_codepage,
 	     error ) != 1 )
 	{
 		libcerror_error_set(

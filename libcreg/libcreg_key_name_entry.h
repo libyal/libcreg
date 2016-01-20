@@ -84,6 +84,7 @@ int libcreg_key_name_entry_read(
      libcreg_key_name_entry_t *key_name_entry,
      const uint8_t *data,
      size_t data_size,
+     int ascii_codepage,
      libcerror_error_t **error );
 
 int libcreg_key_name_entry_read_values(
@@ -91,6 +92,7 @@ int libcreg_key_name_entry_read_values(
      int number_of_values,
      const uint8_t *value_entries_data,
      size_t value_entries_data_size,
+     int ascii_codepage,
      libcerror_error_t **error );
 
 int libcreg_key_name_entry_get_number_of_entries(

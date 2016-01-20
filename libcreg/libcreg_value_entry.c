@@ -32,6 +32,7 @@
 #include "libcreg_libcerror.h"
 #include "libcreg_libcnotify.h"
 #include "libcreg_libuna.h"
+#include "libcreg_unused.h"
 #include "libcreg_value_entry.h"
 
 #include "creg_data_block.h"
@@ -156,6 +157,7 @@ int libcreg_value_entry_read(
      libcreg_value_entry_t *value_entry,
      const uint8_t *data,
      size_t data_size,
+     int ascii_codepage LIBCREG_ATTRIBUTE_UNUSED,
      libcerror_error_t **error )
 {
 	static char *function                       = "libcreg_value_entry_read";
@@ -165,10 +167,10 @@ int libcreg_value_entry_read(
 	libcstring_system_character_t *value_string = NULL;
 	size_t value_string_size                    = 0;
 	uint32_t value_32bit                        = 0; 
-/* TODO set codepage */
-	int ascii_codepage                          = 1252;
 	int result                                  = 0;
 #endif
+
+	LIBCREG_UNREFERENCED_PARAMETER( ascii_codepage )
 
 	if( value_entry == NULL )
 	{

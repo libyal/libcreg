@@ -33,6 +33,7 @@
 #include "libcreg_libcerror.h"
 #include "libcreg_libcnotify.h"
 #include "libcreg_libuna.h"
+#include "libcreg_unused.h"
 #include "libcreg_value_entry.h"
 
 #include "creg_data_block.h"
@@ -269,10 +270,11 @@ int libcreg_key_name_entry_read(
      libcreg_key_name_entry_t *key_name_entry,
      const uint8_t *data,
      size_t data_size,
+     int ascii_codepage LIBCREG_ATTRIBUTE_UNUSED,
      libcerror_error_t **error )
 {
 	static char *function                       = "libcreg_key_name_entry_read";
-	size_t values_data_offset                   = 0;
+	size_t data_offset                          = 0;
 	uint32_t used_size                          = 0;
 	uint16_t number_of_values                   = 0;
 
@@ -282,10 +284,10 @@ int libcreg_key_name_entry_read(
 	size_t value_string_size                    = 0;
 	uint32_t value_32bit                        = 0;
 	uint16_t value_16bit                        = 0;
-/* TODO set codepage */
-	int ascii_codepage                          = 1252;
 	int result                                  = 0;
 #endif
+
+	LIBCREG_UNREFERENCED_PARAMETER( ascii_codepage )
 
 	if( key_name_entry == NULL )
 	{
@@ -311,7 +313,6 @@ int libcreg_key_name_entry_read(
 	}
 	if( data_size < sizeof( creg_key_name_entry_t ) )
 	{
-fprintf( stderr, "X: %zd\n", data_size );
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
@@ -355,7 +356,6 @@ fprintf( stderr, "X: %zd\n", data_size );
 	}
 	if( data_size < key_name_entry->size )
 	{
-fprintf( stderr, "Y: %zd\n", data_size );
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
@@ -465,11 +465,11 @@ fprintf( stderr, "Y: %zd\n", data_size );
 
 		goto on_error;
 	}
-	values_data_offset = sizeof( creg_key_name_entry_t );
+	data_offset = sizeof( creg_key_name_entry_t );
 
 	if( key_name_entry->name_size > 0 )
 	{
-		if( key_name_entry->name_size > ( key_name_entry->size - values_data_offset ) )
+		if( key_name_entry->name_size > ( key_name_entry->size - data_offset ) )
 		{
 			libcerror_error_set(
 			 error,
@@ -496,7 +496,7 @@ fprintf( stderr, "Y: %zd\n", data_size );
 		}
 		if( memory_copy(
 		     key_name_entry->name,
-		     &( data[ values_data_offset ] ),
+		     &( data[ data_offset ] ),
 		     (size_t) key_name_entry->name_size ) == NULL )
 		{
 			libcerror_error_set(
@@ -515,14 +515,14 @@ fprintf( stderr, "Y: %zd\n", data_size );
 		{
 #if defined( LIBCSTRING_HAVE_WIDE_SYSTEM_CHARACTER )
 			result = libuna_utf16_string_size_from_byte_stream(
-				  &( data[ values_data_offset ] ),
+				  &( data[ data_offset ] ),
 				  (size_t) key_name_entry->name_size,
 				  ascii_codepage,
 				  &value_string_size,
 				  error );
 #else
 			result = libuna_utf8_string_size_from_byte_stream(
-				  &( data[ values_data_offset ] ),
+				  &( data[ data_offset ] ),
 				  (size_t) key_name_entry->name_size,
 				  ascii_codepage,
 				  &value_string_size,
@@ -557,7 +557,7 @@ fprintf( stderr, "Y: %zd\n", data_size );
 			result = libuna_utf16_string_copy_from_byte_stream(
 				  (libuna_utf16_character_t *) value_string,
 				  value_string_size,
-				  &( data[ values_data_offset ] ),
+				  &( data[ data_offset ] ),
 				  (size_t) key_name_entry->name_size,
 				  ascii_codepage,
 				  error );
@@ -565,7 +565,7 @@ fprintf( stderr, "Y: %zd\n", data_size );
 			result = libuna_utf8_string_copy_from_byte_stream(
 				  (libuna_utf8_character_t *) value_string,
 				  value_string_size,
-				  &( data[ values_data_offset ] ),
+				  &( data[ data_offset ] ),
 				  (size_t) key_name_entry->name_size,
 				  ascii_codepage,
 				  error );
@@ -592,26 +592,27 @@ fprintf( stderr, "Y: %zd\n", data_size );
 			value_string = NULL;
 		}
 #endif
-		values_data_offset += key_name_entry->name_size;
+		data_offset += key_name_entry->name_size;
 	}
 #if defined( HAVE_DEBUG_OUTPUT )
 	if( libcnotify_verbose != 0 )
 	{
-		value_entries_data_size = (size_t) used_size - values_data_offset;
+		value_entries_data_size = (size_t) used_size - data_offset;
 
 		libcnotify_printf(
 		 "%s: values data:\n",
 		 function );
 		libcnotify_print_data(
-		 &( data[ values_data_offset ] ),
+		 &( data[ data_offset ] ),
 		 value_entries_data_size,
 		 0 );
 
 		if( libcreg_key_name_entry_read_values(
 		     key_name_entry,
 		     number_of_values,
-		     &( data[ values_data_offset ] ),
+		     &( data[ data_offset ] ),
 		     value_entries_data_size,
+		     ascii_codepage,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
@@ -670,6 +671,7 @@ int libcreg_key_name_entry_read_values(
      int number_of_values,
      const uint8_t *value_entries_data,
      size_t value_entries_data_size,
+     int ascii_codepage,
      libcerror_error_t **error )
 {
 	libcreg_value_entry_t *value_entry = NULL;
@@ -758,6 +760,7 @@ int libcreg_key_name_entry_read_values(
 		     value_entry,
 		     &( value_entries_data[ value_entries_offset ] ),
 		     (size_t) value_entries_data_size - value_entries_offset,
+		     ascii_codepage,
 		     error ) != 1 )
 		{
 			libcerror_error_set(

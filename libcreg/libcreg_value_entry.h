@@ -84,6 +84,7 @@ int libcreg_value_entry_read(
      libcreg_value_entry_t *value_entry,
      const uint8_t *data,
      size_t data_size,
+     int ascii_codepage,
      libcerror_error_t **error );
 
 int libcreg_value_entry_get_data_size(

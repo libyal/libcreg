@@ -80,6 +80,7 @@ document:
 * Windows 95
 * Windows 98
 * [yellow-background]*TODO: Windows Me*
+* [yellow-background]*TODO: Windows NT 3.5*
 
 === Registy files
 Some of the more common Registry files are:
@@ -87,15 +88,18 @@ Some of the more common Registry files are:
 [cols="1,1,5",options="header"]
 |===
 | Windows version | Filename | Description
+| Me | CLASSES.DAT |
 | 95, 98 | POLICY.POL | System policies specific part of the Registry +
 Location: %SystemRoot%\ +
 This file is optional
 | 95, 98 | SYSTEM.DAT | System specific part of the Registry +
 Location: %SystemRoot%\ +
 Registry key: HKEY_LOCAL_MACHINE
+| 95 | SYSTEM.DAO | Backup of SYSTEM.DAT
 | 95, 98 | USER.DAT | User specific part of the Registry +
 Location: %SystemRoot%\ +
 Registry key: HKEY_USERS
+| 95 | USER.DAO | Backup of USER.DAT
 |===
 
 == File header
