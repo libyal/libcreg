@@ -8,6 +8,10 @@ Format support:
 Deployment:
 * update man pages
 
+20160126
+* worked on tests
+* applied updates
+
 20160120
 * worked on passing ASCII codepage for debugging
 * code clean up
