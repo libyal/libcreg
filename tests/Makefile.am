@@ -13,7 +13,7 @@ AM_CPPFLAGS = \
 	@LIBBFIO_CPPFLAGS@ \
 	@LIBCREG_DLL_IMPORT@
 
-if HAVE_PYTHON
+if HAVE_PYTHON_TESTS
 TESTS_PYCREG  = \
 	test_pycreg_set_ascii_codepage.sh \
 	test_pycreg_open_close.sh

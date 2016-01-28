@@ -145,7 +145,7 @@ int libcreg_key_item_read_node_data(
 		     data_block,
 		     (int) key_hierarchy_entry->key_name_entry_number,
 		     &key_name_entry,
-		     key_navigation->io_handle,
+		     key_navigation->io_handle->ascii_codepage,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
