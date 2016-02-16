@@ -80,11 +80,11 @@ enum LIBCREG_CODEPAGES
 	LIBCREG_CODEPAGE_WINDOWS_1258			= 1258
 };
 
-#endif
+#endif /* !defined( HAVE_LOCAL_LIBCREG ) */
 
 #if defined( __cplusplus )
 }
 #endif
 
-#endif
+#endif /* !defined( _LIBCREG_INTERNAL_CODEPAGE_H ) */
 

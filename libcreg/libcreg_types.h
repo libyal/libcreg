@@ -34,18 +34,18 @@
 /* The following type definitions hide internal data structures
  */
 #if defined( HAVE_DEBUG_OUTPUT ) && !defined( WINAPI )
-typedef struct libcreg_file {}		libcreg_file_t;
-typedef struct libcreg_key {}		libcreg_key_t;
-typedef struct libcreg_value {}		libcreg_value_t;
+typedef struct libcreg_file {}	libcreg_file_t;
+typedef struct libcreg_key {}	libcreg_key_t;
+typedef struct libcreg_value {}	libcreg_value_t;
 
 #else
 typedef intptr_t libcreg_file_t;
 typedef intptr_t libcreg_key_t;
 typedef intptr_t libcreg_value_t;
 
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) && !defined( WINAPI ) */
 
-#endif
+#endif /* defined( HAVE_LOCAL_LIBCREG ) */
 
-#endif
+#endif /* !defined( _LIBCREG_INTERNAL_TYPES_H ) */
 

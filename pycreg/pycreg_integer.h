@@ -52,5 +52,5 @@ int pycreg_integer_unsigned_copy_to_64bit(
 }
 #endif
 
-#endif
+#endif /* !defined( _PYCREG_INTEGER_H ) */
 

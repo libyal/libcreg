@@ -28,7 +28,7 @@
 #include "pycreg_libcerror.h"
 #include "pycreg_python.h"
 
-#define PYCREG_ERROR_STRING_SIZE		2048
+#define PYCREG_ERROR_STRING_SIZE	2048
 
 #if defined( __cplusplus )
 extern "C" {
@@ -56,5 +56,5 @@ void pycreg_error_raise(
 }
 #endif
 
-#endif
+#endif /* !defined( _PYCREG_ERROR_H ) */
 

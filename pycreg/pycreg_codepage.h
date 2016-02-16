@@ -38,5 +38,5 @@ const char *pycreg_codepage_to_string(
 }
 #endif
 
-#endif
+#endif /* !defined( _PYCREG_CODEPAGE_H */
 

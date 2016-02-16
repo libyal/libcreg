@@ -23,9 +23,8 @@
 #define _LIBCREG_NOTIFY_H
 
 #include <common.h>
+#include <file_stream.h>
 #include <types.h>
-
-#include <stdio.h>
 
 #include "libcreg_extern.h"
 #include "libcreg_libcerror.h"
@@ -54,11 +53,11 @@ LIBCREG_EXTERN \
 int libcreg_notify_stream_close(
      libcerror_error_t **error );
 
-#endif
+#endif /* !defined( HAVE_LOCAL_LIBCREG ) */
 
 #if defined( __cplusplus )
 }
 #endif
 
-#endif
+#endif /* !defined( _LIBCREG_NOTIFY_H ) */
 

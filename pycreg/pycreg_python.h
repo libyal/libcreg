@@ -72,5 +72,5 @@
 
 #endif /* !defined( Py_TYPE ) */
 
-#endif
+#endif /* !defined( _PYCREG_PYTHON_H ) */
 
