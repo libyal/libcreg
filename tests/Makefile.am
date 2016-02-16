@@ -14,7 +14,7 @@ AM_CPPFLAGS = \
 	@LIBCREG_DLL_IMPORT@
 
 if HAVE_PYTHON_TESTS
-TESTS_PYCREG  = \
+TESTS_PYCREG = \
 	test_pycreg_set_ascii_codepage.sh \
 	test_pycreg_open_close.sh
 endif
@@ -40,7 +40,7 @@ check_SCRIPTS = \
 EXTRA_DIST = \
 	$(check_SCRIPTS)
 
-check_PROGRAMS =  \
+check_PROGRAMS = \
 	creg_test_open_close \
 	creg_test_set_ascii_codepage
 
