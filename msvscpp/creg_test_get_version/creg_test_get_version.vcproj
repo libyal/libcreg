@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="creg_test_open_close"
-	ProjectGUID="{0669721C-F16B-46E4-94E2-B12888AED650}"
-	RootNamespace="creg_test_open_close"
+	Name="creg_test_get_version"
+	ProjectGUID="{91E48394-9888-44F4-9A34-25156928665C}"
+	RootNamespace="creg_test_get_version"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="131072"
 	>
@@ -176,7 +176,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\tests\creg_test_open_close.c"
+				RelativePath="..\..\tests\creg_test_get_version.c"
 				>
 			</File>
 		</Filter>
@@ -186,10 +186,6 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\..\tests\creg_test_libcerror.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\tests\creg_test_libcreg.h"
 				>
 			</File>
@@ -198,7 +194,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\tests\creg_test_libcsystem.h"
+				RelativePath="..\..\tests\creg_test_unused.h"
 				>
 			</File>
 		</Filter>

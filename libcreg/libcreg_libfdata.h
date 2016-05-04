@@ -51,7 +51,7 @@
 
 #include <libfdata.h>
 
-#endif
+#endif /* defined( HAVE_LOCAL_LIBFDATA ) */
 
-#endif
+#endif /* !defined( _LIBCREG_LIBFDATA_H ) */
 

@@ -11,6 +11,7 @@ AM_CPPFLAGS = \
 	@LIBCFILE_CPPFLAGS@ \
 	@LIBCPATH_CPPFLAGS@ \
 	@LIBBFIO_CPPFLAGS@ \
+	@LIBCSYSTEM_CPPFLAGS@ \
 	@LIBCREG_DLL_IMPORT@
 
 if HAVE_PYTHON_TESTS
@@ -20,8 +21,8 @@ TESTS_PYCREG = \
 endif
 
 TESTS = \
+	test_api_functions.sh \
 	test_set_ascii_codepage.sh \
-	test_open_close.sh \
 	test_creginfo.sh \
 	test_cregexport.sh \
 	$(TESTS_PYCREG)
@@ -29,11 +30,11 @@ TESTS = \
 check_SCRIPTS = \
 	pycreg_test_open_close.py \
 	pycreg_test_set_ascii_codepage.py \
-	test_open_close.sh \
-	test_pycreg_open_close.sh \
-	test_pycreg_set_ascii_codepage.sh \
+	test_api_functions.sh \
 	test_cregexport.sh \
 	test_creginfo.sh \
+	test_pycreg_open_close.sh \
+	test_pycreg_set_ascii_codepage.sh \
 	test_runner.sh \
 	test_set_ascii_codepage.sh
 
@@ -41,13 +42,25 @@ EXTRA_DIST = \
 	$(check_SCRIPTS)
 
 check_PROGRAMS = \
+	creg_test_get_version \
 	creg_test_open_close \
 	creg_test_set_ascii_codepage
+
+creg_test_get_version_SOURCES = \
+	creg_test_get_version.c \
+	creg_test_libcreg.h \
+	creg_test_libcstring.h \
+	creg_test_unused.h
+
+creg_test_get_version_LDADD = \
+	../libcreg/libcreg.la \
+	@LIBCSTRING_LIBADD@
 
 creg_test_open_close_SOURCES = \
 	creg_test_libcerror.h \
 	creg_test_libcreg.h \
 	creg_test_libcstring.h \
+	creg_test_libcsystem.h \
 	creg_test_open_close.c
 
 creg_test_open_close_LDADD = \

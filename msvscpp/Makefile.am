@@ -1,4 +1,5 @@
 MSVSCPP_FILES = \
+	creg_test_get_version/creg_test_get_version.vcproj \
 	creg_test_open_close/creg_test_open_close.vcproj \
 	creg_test_set_ascii_codepage/creg_test_set_ascii_codepage.vcproj \
 	cregexport/cregexport.vcproj \
