@@ -16,25 +16,26 @@ AM_CPPFLAGS = \
 
 if HAVE_PYTHON_TESTS
 TESTS_PYCREG = \
-	test_pycreg_set_ascii_codepage.sh \
-	test_pycreg_open_close.sh
+	test_python_functions.sh \
+	test_pycreg_set_ascii_codepage.sh
 endif
 
 TESTS = \
 	test_api_functions.sh \
-	test_set_ascii_codepage.sh \
 	test_creginfo.sh \
 	test_cregexport.sh \
+	test_set_ascii_codepage.sh \
 	$(TESTS_PYCREG)
 
 check_SCRIPTS = \
+	pycreg_test_get_version.py \
 	pycreg_test_open_close.py \
 	pycreg_test_set_ascii_codepage.py \
 	test_api_functions.sh \
 	test_cregexport.sh \
 	test_creginfo.sh \
-	test_pycreg_open_close.sh \
 	test_pycreg_set_ascii_codepage.sh \
+	test_python_functions.sh \
 	test_runner.sh \
 	test_set_ascii_codepage.sh
 
@@ -64,15 +65,8 @@ creg_test_open_close_SOURCES = \
 	creg_test_open_close.c
 
 creg_test_open_close_LDADD = \
+	@LIBCSYSTEM_LIBADD@ \
 	../libcreg/libcreg.la \
-	@LIBBFIO_LIBADD@ \
-	@LIBCPATH_LIBADD@ \
-	@LIBCFILE_LIBADD@ \
-	@LIBUNA_LIBADD@ \
-	@LIBCSPLIT_LIBADD@ \
-	@LIBCNOTIFY_LIBADD@ \
-	@LIBCLOCALE_LIBADD@ \
-	@LIBCDATA_LIBADD@ \
 	@LIBCERROR_LIBADD@ \
 	@LIBCSTRING_LIBADD@
 
