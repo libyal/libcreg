@@ -43,14 +43,27 @@ EXTRA_DIST = \
 	$(check_SCRIPTS)
 
 check_PROGRAMS = \
+	creg_test_error \
 	creg_test_get_version \
 	creg_test_open_close \
 	creg_test_set_ascii_codepage
+
+creg_test_error_SOURCES = \
+	creg_test_error.c \
+	creg_test_libcreg.h \
+	creg_test_libcstring.h \
+	creg_test_macros.h \
+	creg_test_unused.h
+
+creg_test_error_LDADD = \
+	../libcreg/libcreg.la \
+	@LIBCSTRING_LIBADD@
 
 creg_test_get_version_SOURCES = \
 	creg_test_get_version.c \
 	creg_test_libcreg.h \
 	creg_test_libcstring.h \
+	creg_test_macros.h \
 	creg_test_unused.h
 
 creg_test_get_version_LDADD = \

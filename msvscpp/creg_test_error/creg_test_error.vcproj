@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="creg_test_get_version"
-	ProjectGUID="{91E48394-9888-44F4-9A34-25156928665C}"
-	RootNamespace="creg_test_get_version"
+	Name="creg_test_error"
+	ProjectGUID="{872E0242-1746-446F-A8C3-317DA270846F}"
+	RootNamespace="creg_test_error"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="131072"
 	>
@@ -176,7 +176,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\tests\creg_test_get_version.c"
+				RelativePath="..\..\tests\creg_test_error.c"
 				>
 			</File>
 		</Filter>
