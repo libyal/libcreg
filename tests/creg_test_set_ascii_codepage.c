@@ -28,8 +28,8 @@
 
 #include "creg_test_libcerror.h"
 #include "creg_test_libclocale.h"
-#include "creg_test_libcstring.h"
 #include "creg_test_libcreg.h"
+#include "creg_test_libcstring.h"
 
 /* The main program
  */

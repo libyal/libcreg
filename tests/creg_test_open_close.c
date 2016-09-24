@@ -27,9 +27,9 @@
 #endif
 
 #include "creg_test_libcerror.h"
+#include "creg_test_libcreg.h"
 #include "creg_test_libcstring.h"
 #include "creg_test_libcsystem.h"
-#include "creg_test_libcreg.h"
 
 /* Tests single open and close of a file
  * Returns 1 if successful, 0 if not or -1 on error
