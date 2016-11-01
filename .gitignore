@@ -124,9 +124,9 @@ stamp-h[1-9]
 /cregtools/creginfo
 /cregtools/cregmount
 /tests/creg_test_error
-/tests/creg_test_get_version
 /tests/creg_test_open_close
 /tests/creg_test_set_ascii_codepage
+/tests/creg_test_support
 /tests/input
 /tests/tmp*
 
