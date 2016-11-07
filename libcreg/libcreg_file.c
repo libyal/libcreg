@@ -21,7 +21,9 @@
 
 #include <common.h>
 #include <memory.h>
+#include <narrow_string.h>
 #include <types.h>
+#include <wide_string.h>
 
 #if defined( HAVE_WCTYPE_H )
 #include <wctype.h>
@@ -40,7 +42,6 @@
 #include "libcreg_libbfio.h"
 #include "libcreg_libcerror.h"
 #include "libcreg_libcnotify.h"
-#include "libcreg_libcstring.h"
 #include "libcreg_libfcache.h"
 #include "libcreg_libfdata.h"
 #include "libcreg_libuna.h"
@@ -235,6 +236,7 @@ int libcreg_file_open(
 	libbfio_handle_t *file_io_handle       = NULL;
 	libcreg_internal_file_t *internal_file = NULL;
 	static char *function                  = "libcreg_file_open";
+	size_t filename_length                 = 0;
 
 	if( file == NULL )
 	{
@@ -312,11 +314,13 @@ int libcreg_file_open(
 		goto on_error;
 	}
 #endif
+	filename_length = narrow_string_length(
+	                   filename );
+
 	if( libbfio_file_set_name(
 	     file_io_handle,
 	     filename,
-	     libcstring_narrow_string_length(
-	      filename ) + 1,
+	     filename_length + 1,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -372,6 +376,7 @@ int libcreg_file_open_wide(
 	libbfio_handle_t *file_io_handle       = NULL;
 	libcreg_internal_file_t *internal_file = NULL;
 	static char *function                  = "libcreg_file_open_wide";
+	size_t filename_length                 = 0;
 
 	if( file == NULL )
 	{
@@ -449,11 +454,13 @@ int libcreg_file_open_wide(
 		goto on_error;
 	}
 #endif
+	filename_length = wide_string_length(
+	                   filename );
+
 	if( libbfio_file_set_name_wide(
 	     file_io_handle,
 	     filename,
-	     libcstring_wide_string_length(
-	      filename ) + 1,
+	     filename_length + 1,
 	     error ) != 1 )
 	{
 		libcerror_error_set(

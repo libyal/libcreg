@@ -39,7 +39,7 @@ enum LIBCREG_ERROR_DOMAINS
 	LIBCREG_ERROR_DOMAIN_INPUT			= (int) 'i',
 	LIBCREG_ERROR_DOMAIN_MEMORY			= (int) 'm',
 	LIBCREG_ERROR_DOMAIN_OUTPUT			= (int) 'o',
-	LIBCREG_ERROR_DOMAIN_RUNTIME			= (int) 'r',
+	LIBCREG_ERROR_DOMAIN_RUNTIME			= (int) 'r'
 };
 
 /* The argument error codes
@@ -208,6 +208,17 @@ enum LIBCREG_MEMORY_ERROR
 	LIBCREG_MEMORY_ERROR_SET_FAILED			= 3
 };
 
+/* The output error codes
+ */
+enum LIBCREG_OUTPUT_ERROR
+{
+	LIBCREG_OUTPUT_ERROR_GENERIC			= 0,
+
+	/* There is insuficient space to write the output
+	 */
+	LIBCREG_OUTPUT_ERROR_INSUFFICIENT_SPACE		= 1
+};
+
 /* The runtime error codes
  * to signify errors regarding runtime processing
  */
@@ -276,16 +287,5 @@ enum LIBCREG_RUNTIME_ERROR
 	LIBCREG_RUNTIME_ERROR_ABORT_REQUESTED		= 15
 };
 
-/* The output error codes
- */
-enum LIBCREG_OUTPUT_ERROR
-{
-	LIBCREG_OUTPUT_ERROR_GENERIC			= 0,
-
-	/* There is insuficient space to write the output
-	 */
-	LIBCREG_OUTPUT_ERROR_INSUFFICIENT_SPACE		= 1
-};
-
-#endif
+#endif /* !defined( _LIBCREG_ERROR_H ) */
 

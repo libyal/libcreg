@@ -20,6 +20,8 @@
  */
 
 #include <common.h>
+#include <file_stream.h>
+#include <types.h>
 
 #if defined( HAVE_STDLIB_H ) || defined( WINAPI )
 #include <stdlib.h>
@@ -108,7 +110,7 @@ int creg_test_error_backtrace_sprint(
 
 /* The main program
  */
-#if defined( LIBCSTRING_HAVE_WIDE_SYSTEM_CHARACTER )
+#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
 int wmain(
      int argc CREG_TEST_ATTRIBUTE_UNUSED,
      wchar_t * const argv[] CREG_TEST_ATTRIBUTE_UNUSED )
@@ -123,23 +125,23 @@ int main(
 
 	CREG_TEST_RUN(
 	 "libcreg_error_free",
-	 creg_test_error_free() )
+	 creg_test_error_free );
 
 	CREG_TEST_RUN(
 	 "libcreg_error_fprint",
-	 creg_test_error_fprint() )
+	 creg_test_error_fprint );
 
 	CREG_TEST_RUN(
 	 "libcreg_error_sprint",
-	 creg_test_error_sprint() )
+	 creg_test_error_sprint );
 
 	CREG_TEST_RUN(
 	 "libcreg_error_backtrace_fprint",
-	 creg_test_error_backtrace_fprint() )
+	 creg_test_error_backtrace_fprint );
 
 	CREG_TEST_RUN(
 	 "libcreg_error_backtrace_sprint",
-	 creg_test_error_backtrace_sprint() )
+	 creg_test_error_backtrace_sprint );
 
 	return( EXIT_SUCCESS );
 

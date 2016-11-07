@@ -30,7 +30,6 @@
 #include "cregtools_libclocale.h"
 #include "cregtools_libcnotify.h"
 #include "cregtools_libcreg.h"
-#include "cregtools_libcstring.h"
 #include "cregtools_libcsystem.h"
 #include "cregtools_libfcache.h"
 #include "cregtools_libfdata.h"

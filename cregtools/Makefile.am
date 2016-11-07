@@ -1,7 +1,6 @@
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/include \
 	-I$(top_srcdir)/common \
-	@LIBCSTRING_CPPFLAGS@ \
 	@LIBCERROR_CPPFLAGS@ \
 	@LIBCDATA_CPPFLAGS@ \
 	@LIBCLOCALE_CPPFLAGS@ \
@@ -37,7 +36,6 @@ cregexport_SOURCES = \
 	cregtools_libclocale.h \
 	cregtools_libcnotify.h \
 	cregtools_libcreg.h \
-	cregtools_libcstring.h \
 	cregtools_libcsystem.h \
 	cregtools_libfcache.h \
 	cregtools_libfdata.h \
@@ -53,7 +51,6 @@ cregexport_LDADD = \
 	@LIBCNOTIFY_LIBADD@ \
 	@LIBCLOCALE_LIBADD@ \
 	@LIBCERROR_LIBADD@ \
-	@LIBCSTRING_LIBADD@ \
 	@LIBINTL@
 
 creginfo_SOURCES = \
@@ -65,7 +62,6 @@ creginfo_SOURCES = \
 	cregtools_libclocale.h \
 	cregtools_libcnotify.h \
 	cregtools_libcreg.h \
-	cregtools_libcstring.h \
 	cregtools_libcsystem.h \
 	cregtools_libfcache.h \
 	cregtools_libfdata.h \
@@ -81,7 +77,6 @@ creginfo_LDADD = \
 	@LIBCNOTIFY_LIBADD@ \
 	@LIBCLOCALE_LIBADD@ \
 	@LIBCERROR_LIBADD@ \
-	@LIBCSTRING_LIBADD@ \
 	@LIBINTL@
 
 cregmount_SOURCES = \
@@ -93,7 +88,6 @@ cregmount_SOURCES = \
 	cregtools_libclocale.h \
 	cregtools_libcnotify.h \
 	cregtools_libcreg.h \
-	cregtools_libcstring.h \
 	cregtools_libcsystem.h \
 	cregtools_libfcache.h \
 	cregtools_libfdata.h \
@@ -110,7 +104,6 @@ cregmount_LDADD = \
 	@LIBCNOTIFY_LIBADD@ \
 	@LIBCLOCALE_LIBADD@ \
 	@LIBCERROR_LIBADD@ \
-	@LIBCSTRING_LIBADD@ \
 	@LIBINTL@
 
 MAINTAINERCLEANFILES = \

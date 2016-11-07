@@ -118,5 +118,5 @@ enum LIBCREG_CODEPAGES
 }
 #endif
 
-#endif
+#endif /* !defined( _LIBCREG_CODEPAGE_H ) */
 

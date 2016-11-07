@@ -28,7 +28,6 @@
 #include "pycreg_integer.h"
 #include "pycreg_libbfio.h"
 #include "pycreg_libcerror.h"
-#include "pycreg_libcstring.h"
 #include "pycreg_python.h"
 
 /* Creates a file object IO handle

@@ -22,7 +22,10 @@
 #include <common.h>
 #include <byte_stream.h>
 #include <memory.h>
+#include <narrow_string.h>
+#include <system_string.h>
 #include <types.h>
+#include <wide_string.h>
 
 #if defined( HAVE_WCTYPE_H )
 #include <wctype.h>
@@ -160,14 +163,14 @@ int libcreg_value_entry_read(
      int ascii_codepage LIBCREG_ATTRIBUTE_UNUSED,
      libcerror_error_t **error )
 {
-	static char *function                       = "libcreg_value_entry_read";
-	size_t value_data_offset                    = 0; 
+	static char *function            = "libcreg_value_entry_read";
+	size_t value_data_offset         = 0; 
 
 #if defined( HAVE_DEBUG_OUTPUT )
-	libcstring_system_character_t *value_string = NULL;
-	size_t value_string_size                    = 0;
-	uint32_t value_32bit                        = 0; 
-	int result                                  = 0;
+	system_character_t *value_string = NULL;
+	size_t value_string_size         = 0;
+	uint32_t value_32bit             = 0; 
+	int result                       = 0;
 #endif
 
 	LIBCREG_UNREFERENCED_PARAMETER( ascii_codepage )
@@ -347,7 +350,7 @@ int libcreg_value_entry_read(
 #if defined( HAVE_DEBUG_OUTPUT )
 		if( libcnotify_verbose != 0 )
 		{
-#if defined( LIBCSTRING_HAVE_WIDE_SYSTEM_CHARACTER )
+#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
 			result = libuna_utf16_string_size_from_byte_stream(
 				  &( data[ value_data_offset ] ),
 				  (size_t) value_entry->name_size,
@@ -373,7 +376,7 @@ int libcreg_value_entry_read(
 
 				goto on_error;
 			}
-			value_string = libcstring_system_string_allocate(
+			value_string = system_string_allocate(
 			                value_string_size );
 
 			if( value_string == NULL )
@@ -387,7 +390,7 @@ int libcreg_value_entry_read(
 
 				goto on_error;
 			}
-#if defined( LIBCSTRING_HAVE_WIDE_SYSTEM_CHARACTER )
+#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
 			result = libuna_utf16_string_copy_from_byte_stream(
 				  (libuna_utf16_character_t *) value_string,
 				  value_string_size,
@@ -416,7 +419,7 @@ int libcreg_value_entry_read(
 				goto on_error;
 			}
 			libcnotify_printf(
-			 "%s: name\t\t\t\t\t\t: %" PRIs_LIBCSTRING_SYSTEM "\n",
+			 "%s: name\t\t\t\t\t\t: %" PRIs_SYSTEM "\n",
 			 function,
 			 value_string );
 

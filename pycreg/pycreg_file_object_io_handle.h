@@ -27,7 +27,6 @@
 
 #include "pycreg_libbfio.h"
 #include "pycreg_libcerror.h"
-#include "pycreg_libcstring.h"
 #include "pycreg_python.h"
 
 #if defined( __cplusplus )

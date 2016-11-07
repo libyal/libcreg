@@ -1,7 +1,6 @@
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/include \
 	-I$(top_srcdir)/common \
-	@LIBCSTRING_CPPFLAGS@ \
 	@LIBCERROR_CPPFLAGS@ \
 	@LIBCDATA_CPPFLAGS@ \
 	@LIBCLOCALE_CPPFLAGS@ \
@@ -45,7 +44,6 @@ libcreg_la_SOURCES = \
 	libcreg_libcerror.h \
 	libcreg_libclocale.h \
 	libcreg_libcnotify.h \
-	libcreg_libcstring.h \
 	libcreg_libfcache.h \
 	libcreg_libfdata.h \
 	libcreg_libfdatetime.h \
@@ -59,7 +57,6 @@ libcreg_la_SOURCES = \
 	libcreg_value_type.c libcreg_value_type.h
 
 libcreg_la_LIBADD = \
-	@LIBCSTRING_LIBADD@ \
 	@LIBCERROR_LIBADD@ \
 	@LIBCDATA_LIBADD@ \
 	@LIBCLOCALE_LIBADD@ \

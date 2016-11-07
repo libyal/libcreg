@@ -1,7 +1,6 @@
 MSVSCPP_FILES = \
 	creg_test_error/creg_test_error.vcproj \
 	creg_test_open_close/creg_test_open_close.vcproj \
-	creg_test_set_ascii_codepage/creg_test_set_ascii_codepage.vcproj \
 	creg_test_support/creg_test_support.vcproj \
 	cregexport/cregexport.vcproj \
 	creginfo/creginfo.vcproj \
@@ -16,7 +15,6 @@ MSVSCPP_FILES = \
 	libcpath/libcpath.vcproj \
 	libcreg/libcreg.vcproj \
 	libcsplit/libcsplit.vcproj \
-	libcstring/libcstring.vcproj \
 	libcsystem/libcsystem.vcproj \
 	libcthreads/libcthreads.vcproj \
 	libfcache/libfcache.vcproj \

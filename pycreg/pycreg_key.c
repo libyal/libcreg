@@ -20,6 +20,7 @@
  */
 
 #include <common.h>
+#include <narrow_string.h>
 #include <types.h>
 
 #if defined( HAVE_STDLIB_H ) || defined( HAVE_WINAPI )
@@ -32,7 +33,6 @@
 #include "pycreg_key.h"
 #include "pycreg_keys.h"
 #include "pycreg_libcerror.h"
-#include "pycreg_libcstring.h"
 #include "pycreg_libcreg.h"
 #include "pycreg_python.h"
 #include "pycreg_unused.h"
@@ -892,7 +892,7 @@ PyObject *pycreg_key_get_sub_key_by_name(
 	{
 		goto on_error;
 	}
-	sub_key_name_length = libcstring_narrow_string_length(
+	sub_key_name_length = narrow_string_length(
 	                       sub_key_name );
 
 	Py_BEGIN_ALLOW_THREADS
@@ -988,7 +988,7 @@ PyObject *pycreg_key_get_sub_key_by_path(
 	{
 		goto on_error;
 	}
-	sub_key_path_length = libcstring_narrow_string_length(
+	sub_key_path_length = narrow_string_length(
 	                       sub_key_path );
 
 	Py_BEGIN_ALLOW_THREADS
@@ -1302,7 +1302,7 @@ PyObject *pycreg_key_get_value_by_name(
 	{
 		goto on_error;
 	}
-	value_name_length = libcstring_narrow_string_length(
+	value_name_length = narrow_string_length(
 	                     value_name );
 
 	if( value_name_length == 0 )

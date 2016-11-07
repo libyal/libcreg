@@ -1,7 +1,6 @@
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/include \
 	-I$(top_srcdir)/common \
-	@LIBCSTRING_CPPFLAGS@ \
 	@LIBCERROR_CPPFLAGS@ \
 	@LIBCDATA_CPPFLAGS@ \
 	@LIBCLOCALE_CPPFLAGS@ \
@@ -24,7 +23,6 @@ TESTS = \
 	test_api_functions.sh \
 	test_creginfo.sh \
 	test_cregexport.sh \
-	test_set_ascii_codepage.sh \
 	$(TESTS_PYCREG)
 
 check_SCRIPTS = \
@@ -36,8 +34,7 @@ check_SCRIPTS = \
 	test_creginfo.sh \
 	test_pycreg_set_ascii_codepage.sh \
 	test_python_functions.sh \
-	test_runner.sh \
-	test_set_ascii_codepage.sh
+	test_runner.sh
 
 EXTRA_DIST = \
 	$(check_SCRIPTS)
@@ -45,56 +42,46 @@ EXTRA_DIST = \
 check_PROGRAMS = \
 	creg_test_error \
 	creg_test_open_close \
-	creg_test_set_ascii_codepage \
 	creg_test_support
 
 creg_test_error_SOURCES = \
 	creg_test_error.c \
 	creg_test_libcreg.h \
-	creg_test_libcstring.h \
 	creg_test_macros.h \
 	creg_test_unused.h
 
 creg_test_error_LDADD = \
-	../libcreg/libcreg.la \
-	@LIBCSTRING_LIBADD@
+	../libcreg/libcreg.la
 
 creg_test_open_close_SOURCES = \
 	creg_test_libcerror.h \
 	creg_test_libcreg.h \
-	creg_test_libcstring.h \
 	creg_test_libcsystem.h \
 	creg_test_open_close.c
 
 creg_test_open_close_LDADD = \
 	@LIBCSYSTEM_LIBADD@ \
 	../libcreg/libcreg.la \
-	@LIBCERROR_LIBADD@ \
-	@LIBCSTRING_LIBADD@
+	@LIBCERROR_LIBADD@
 
-creg_test_set_ascii_codepage_SOURCES = \
+creg_test_support_SOURCES = \
 	creg_test_libcerror.h \
 	creg_test_libclocale.h \
 	creg_test_libcreg.h \
-	creg_test_libcstring.h \
-	creg_test_set_ascii_codepage.c
-
-creg_test_set_ascii_codepage_LDADD = \
-	../libcreg/libcreg.la \
-	@LIBCLOCALE_LIBADD@ \
-	@LIBCERROR_LIBADD@ \
-	@LIBCSTRING_LIBADD@
-
-creg_test_support_SOURCES = \
-	creg_test_libcreg.h \
-	creg_test_libcstring.h \
+	creg_test_libcsystem.h \
+	creg_test_libuna.h \
 	creg_test_macros.h \
 	creg_test_support.c \
 	creg_test_unused.h
 
 creg_test_support_LDADD = \
+	@LIBCSYSTEM_LIBADD@ \
+	@LIBUNA_LIBADD@ \
+	@LIBCNOTIFY_LIBADD@ \
+	@LIBCLOCALE_LIBADD@ \
+	@LIBCDATA_LIBADD@ \
 	../libcreg/libcreg.la \
-	@LIBCSTRING_LIBADD@
+	@LIBCERROR_LIBADD@
 
 MAINTAINERCLEANFILES = \
 	Makefile.in

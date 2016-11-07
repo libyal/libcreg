@@ -20,6 +20,7 @@
  */
 
 #include <common.h>
+#include <narrow_string.h>
 #include <types.h>
 
 #if defined( HAVE_STDLIB_H ) || defined( HAVE_WINAPI )
@@ -33,7 +34,6 @@
 #include "pycreg_key.h"
 #include "pycreg_keys.h"
 #include "pycreg_libcerror.h"
-#include "pycreg_libcstring.h"
 #include "pycreg_libcreg.h"
 #include "pycreg_python.h"
 #include "pycreg_unused.h"
@@ -115,7 +115,7 @@ PyObject *pycreg_get_version(
 
 	Py_END_ALLOW_THREADS
 
-	version_string_length = libcstring_narrow_string_length(
+	version_string_length = narrow_string_length(
 	                         version_string );
 
 	/* Pass the string length to PyUnicode_DecodeUTF8
@@ -143,7 +143,7 @@ PyObject *pycreg_check_file_signature(
 	const char *filename_narrow  = NULL;
 	int result                   = 0;
 
-#if defined( LIBCSTRING_HAVE_WIDE_SYSTEM_CHARACTER )
+#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
 	const wchar_t *filename_wide = NULL;
 #else
 	PyObject *utf8_string_object = NULL;
@@ -184,7 +184,7 @@ PyObject *pycreg_check_file_signature(
 	{
 		PyErr_Clear();
 
-#if defined( LIBCSTRING_HAVE_WIDE_SYSTEM_CHARACTER )
+#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
 		filename_wide = (wchar_t *) PyUnicode_AsUnicode(
 		                             string_object );
 		Py_BEGIN_ALLOW_THREADS

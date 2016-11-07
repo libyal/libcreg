@@ -38,10 +38,9 @@
 #include <libcreg/extern.h>
 
 #else
-
-#define LIBCREG_EXTERN  extern
-
-#endif
+#define LIBCREG_EXTERN	extern
 
 #endif
+
+#endif /* !defined( _LIBCREG_INTERNAL_EXTERN_H ) */
 

@@ -30,7 +30,6 @@
 #include "pycreg_file.h"
 #include "pycreg_integer.h"
 #include "pycreg_libcerror.h"
-#include "pycreg_libcstring.h"
 #include "pycreg_libcreg.h"
 #include "pycreg_python.h"
 #include "pycreg_unused.h"
