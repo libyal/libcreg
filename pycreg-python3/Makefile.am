@@ -43,14 +43,14 @@ pyexec_LTLIBRARIES = pycreg.la
 nodist_pycreg_la_SOURCES = $(BUILT_SOURCES)
 
 pycreg_la_LIBADD = \
+	@LIBCERROR_LIBADD@ \
 	../libcreg/libcreg.la
 	@LIBBFIO_LIBADD@ \
 	@LIBCPATH_LIBADD@ \
 	@LIBCFILE_LIBADD@ \
 	@LIBCSPLIT_LIBADD@ \
 	@LIBCLOCALE_LIBADD@ \
-	@LIBCDATA_LIBADD@ \
-	@LIBCERROR_LIBADD@
+	@LIBCDATA_LIBADD@
 
 pycreg_la_CPPFLAGS = $(PYTHON3_CPPFLAGS)
 pycreg_la_LDFLAGS  = -module -avoid-version $(PYTHON3_LDFLAGS)

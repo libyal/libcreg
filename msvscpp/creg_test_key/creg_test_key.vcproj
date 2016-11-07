@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="creg_test_support"
-	ProjectGUID="{5329A291-F948-4726-BB70-FF1DDB4EFCA1}"
-	RootNamespace="creg_test_support"
+	Name="creg_test_key"
+	ProjectGUID="{D5F74FAC-BE52-44AA-8A9C-A942504A204E}"
+	RootNamespace="creg_test_key"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="131072"
 	>
@@ -176,7 +176,11 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\tests\creg_test_support.c"
+				RelativePath="..\..\tests\creg_test_key.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tests\creg_test_memory.c"
 				>
 			</File>
 		</Filter>
@@ -190,23 +194,19 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\tests\creg_test_libclocale.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\tests\creg_test_libcreg.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\tests\creg_test_libcsystem.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tests\creg_test_libuna.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\tests\creg_test_macros.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tests\creg_test_memory.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tests\creg_test_unused.h"
 				>
 			</File>
 		</Filter>

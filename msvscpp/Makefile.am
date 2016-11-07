@@ -1,7 +1,11 @@
 MSVSCPP_FILES = \
 	creg_test_error/creg_test_error.vcproj \
+	creg_test_file/creg_test_file.vcproj \
+	creg_test_key/creg_test_key.vcproj \
+	creg_test_notify/creg_test_notify.vcproj \
 	creg_test_open_close/creg_test_open_close.vcproj \
 	creg_test_support/creg_test_support.vcproj \
+	creg_test_value/creg_test_value.vcproj \
 	cregexport/cregexport.vcproj \
 	creginfo/creginfo.vcproj \
 	cregmount/cregmount.vcproj \

@@ -127,6 +127,7 @@ stamp-h[1-9]
 /tests/creg_test_error
 /tests/creg_test_file
 /tests/creg_test_key
+/tests/creg_test_notify
 /tests/creg_test_open_close
 /tests/creg_test_support
 /tests/creg_test_value

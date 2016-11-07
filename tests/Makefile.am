@@ -21,6 +21,7 @@ endif
 
 TESTS = \
 	test_api_functions.sh \
+	test_api_types.sh \
 	test_creginfo.sh \
 	test_cregexport.sh \
 	$(TESTS_PYCREG)
@@ -30,6 +31,7 @@ check_SCRIPTS = \
 	pycreg_test_open_close.py \
 	pycreg_test_set_ascii_codepage.py \
 	test_api_functions.sh \
+	test_api_types.sh \
 	test_cregexport.sh \
 	test_creginfo.sh \
 	test_pycreg_set_ascii_codepage.sh \
@@ -41,8 +43,12 @@ EXTRA_DIST = \
 
 check_PROGRAMS = \
 	creg_test_error \
+	creg_test_file \
+	creg_test_key \
+	creg_test_notify \
 	creg_test_open_close \
-	creg_test_support
+	creg_test_support \
+	creg_test_value
 
 creg_test_error_SOURCES = \
 	creg_test_error.c \
@@ -53,11 +59,51 @@ creg_test_error_SOURCES = \
 creg_test_error_LDADD = \
 	../libcreg/libcreg.la
 
+creg_test_file_SOURCES = \
+	creg_test_file.c \
+	creg_test_libcerror.h \
+	creg_test_libclocale.h \
+	creg_test_libcreg.h \
+	creg_test_libcsystem.h \
+	creg_test_libuna.h \
+	creg_test_macros.h \
+	creg_test_memory.c creg_test_memory.h
+
+creg_test_file_LDADD = \
+	@LIBCSYSTEM_LIBADD@ \
+	@LIBUNA_LIBADD@ \
+	@LIBCNOTIFY_LIBADD@ \
+	@LIBCLOCALE_LIBADD@ \
+	@LIBCDATA_LIBADD@ \
+	../libcreg/libcreg.la \
+	@LIBCERROR_LIBADD@
+
+creg_test_key_SOURCES = \
+	creg_test_key.c \
+	creg_test_libcerror.h \
+	creg_test_libcreg.h \
+	creg_test_macros.h \
+	creg_test_memory.c creg_test_memory.h \
+	creg_test_unused.h
+
+creg_test_key_LDADD = \
+	../libcreg/libcreg.la \
+	@LIBCERROR_LIBADD@
+
 creg_test_open_close_SOURCES = \
 	creg_test_libcerror.h \
 	creg_test_libcreg.h \
 	creg_test_libcsystem.h \
 	creg_test_open_close.c
+
+creg_test_notify_SOURCES = \
+	creg_test_libcreg.h \
+	creg_test_macros.h \
+	creg_test_notify.c \
+	creg_test_unused.h
+
+creg_test_notify_LDADD = \
+	../libcreg/libcreg.la
 
 creg_test_open_close_LDADD = \
 	@LIBCSYSTEM_LIBADD@ \
@@ -71,8 +117,7 @@ creg_test_support_SOURCES = \
 	creg_test_libcsystem.h \
 	creg_test_libuna.h \
 	creg_test_macros.h \
-	creg_test_support.c \
-	creg_test_unused.h
+	creg_test_support.c
 
 creg_test_support_LDADD = \
 	@LIBCSYSTEM_LIBADD@ \
@@ -80,6 +125,18 @@ creg_test_support_LDADD = \
 	@LIBCNOTIFY_LIBADD@ \
 	@LIBCLOCALE_LIBADD@ \
 	@LIBCDATA_LIBADD@ \
+	../libcreg/libcreg.la \
+	@LIBCERROR_LIBADD@
+
+creg_test_value_SOURCES = \
+	creg_test_libcerror.h \
+	creg_test_libcreg.h \
+	creg_test_macros.h \
+	creg_test_memory.c creg_test_memory.h \
+	creg_test_unused.h \
+	creg_test_value.c
+
+creg_test_value_LDADD = \
 	../libcreg/libcreg.la \
 	@LIBCERROR_LIBADD@
 

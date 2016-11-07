@@ -41,7 +41,7 @@ int creg_test_single_open_close_file(
      int expected_result )
 {
 	libcerror_error_t *error = NULL;
-	libcreg_file_t *file     = NULL;
+	libcreg_file_t *file      = NULL;
 	static char *function    = "creg_test_single_open_close_file";
 	char *access_string      = NULL;
 	int result               = 0;
@@ -190,7 +190,7 @@ int creg_test_multi_open_close_file(
      int expected_result )
 {
 	libcerror_error_t *error = NULL;
-	libcreg_file_t *file     = NULL;
+	libcreg_file_t *file      = NULL;
 	static char *function    = "creg_test_multi_open_close_file";
 	char *access_string      = NULL;
 	int result               = 0;
