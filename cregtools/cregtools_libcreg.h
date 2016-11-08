@@ -35,5 +35,5 @@
 
 #include <libcreg.h>
 
-#endif
+#endif /* !defined( _CREGTOOLS_LIBCREG_H ) */
 

@@ -23,12 +23,6 @@ MSVSCPP_FILES = \
 	libcthreads/libcthreads.vcproj \
 	libfcache/libfcache.vcproj \
 	libfdata/libfdata.vcproj \
-	libfdatetime/libfdatetime.vcproj \
-	libfguid/libfguid.vcproj \
-	libfole/libfole.vcproj \
-	libfwnt/libfwnt.vcproj \
-	libfwps/libfwps.vcproj \
-	libfwsi/libfwsi.vcproj \
 	libuna/libuna.vcproj \
 	pycreg/pycreg.vcproj \
 	libcreg.sln

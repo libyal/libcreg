@@ -33,10 +33,6 @@
 #include "cregtools_libcsystem.h"
 #include "cregtools_libfcache.h"
 #include "cregtools_libfdata.h"
-#include "cregtools_libfdatetime.h"
-#include "cregtools_libfguid.h"
-#include "cregtools_libfwnt.h"
-#include "cregtools_libfwsi.h"
 #include "cregtools_libuna.h"
 
 /* Prints the copyright information
@@ -132,26 +128,6 @@ void cregoutput_version_detailed_fprint(
 	 stream,
 	 ", libfdata %s",
 	 LIBFDATA_VERSION_STRING );
-
-	fprintf(
-	 stream,
-	 ", libfdatetime %s",
-	 LIBFDATETIME_VERSION_STRING );
-
-	fprintf(
-	 stream,
-	 ", libfguid %s",
-	 LIBFGUID_VERSION_STRING );
-
-	fprintf(
-	 stream,
-	 ", libfwnt %s",
-	 LIBFWNT_VERSION_STRING );
-
-	fprintf(
-	 stream,
-	 ", libfwsi %s",
-	 LIBFWSI_VERSION_STRING );
 
         fprintf(
 	 stream,

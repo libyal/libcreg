@@ -8,32 +8,8 @@ Format support:
 Deployment:
 * update man pages
 
-20160901
-* worked on tests
-
-20160126
-* worked on tests
-* applied updates
-
-20160120
-* worked on passing ASCII codepage for debugging
-* code clean up
-
-20160116
-* worked on format support
-* updated tests
-* changes for deployment
-
-20160115
-* source refresh based on libregf
-* worked on format support
-
-20160114
-* source refresh based on libregf
-* worked on format support
-
-20160107
-* 2016 update
+20151122
+* see `git log' for more recent change log
 
 20150707
 * worked on check signature

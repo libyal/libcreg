@@ -11,9 +11,7 @@ AM_CPPFLAGS = \
 	@LIBCPATH_CPPFLAGS@ \
 	@LIBBFIO_CPPFLAGS@ \
 	@LIBFCACHE_CPPFLAGS@ \
-	@LIBFDATA_CPPFLAGS@ \
-	@LIBFDATETIME_CPPFLAGS@ \
-	@LIBFGUID_CPPFLAGS@
+	@LIBFDATA_CPPFLAGS@
 
 lib_LTLIBRARIES = libcreg.la
 
@@ -46,7 +44,6 @@ libcreg_la_SOURCES = \
 	libcreg_libcnotify.h \
 	libcreg_libfcache.h \
 	libcreg_libfdata.h \
-	libcreg_libfdatetime.h \
 	libcreg_libuna.h \
 	libcreg_notify.c libcreg_notify.h \
 	libcreg_support.c libcreg_support.h \
@@ -67,9 +64,7 @@ libcreg_la_LIBADD = \
 	@LIBCPATH_LIBADD@ \
 	@LIBBFIO_LIBADD@ \
 	@LIBFCACHE_LIBADD@ \
-	@LIBFDATA_LIBADD@ \
-	@LIBFDATETIME_LIBADD@ \
-	@LIBFGUID_LIBADD@
+	@LIBFDATA_LIBADD@
 
 libcreg_la_LDFLAGS = -no-undefined -version-info 1:0:0
 

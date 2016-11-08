@@ -11,10 +11,6 @@ AM_CPPFLAGS = \
 	@LIBBFIO_CPPFLAGS@ \
 	@LIBFCACHE_CPPFLAGS@ \
 	@LIBFDATA_CPPFLAGS@ \
-	@LIBFDATETIME_CPPFLAGS@ \
-	@LIBFGUID_CPPFLAGS@ \
-	@LIBFWNT_CPPFLAGS@ \
-	@LIBFWSI_CPPFLAGS@ \
 	@LIBCSYSTEM_CPPFLAGS@ \
 	@LIBFUSE_CPPFLAGS@ \
 	@LIBCREG_DLL_IMPORT@
@@ -39,10 +35,6 @@ cregexport_SOURCES = \
 	cregtools_libcsystem.h \
 	cregtools_libfcache.h \
 	cregtools_libfdata.h \
-	cregtools_libfdatetime.h \
-	cregtools_libfguid.h \
-	cregtools_libfwnt.h \
-	cregtools_libfwsi.h \
 	cregtools_libuna.h
 
 cregexport_LDADD = \
@@ -65,10 +57,6 @@ creginfo_SOURCES = \
 	cregtools_libcsystem.h \
 	cregtools_libfcache.h \
 	cregtools_libfdata.h \
-	cregtools_libfdatetime.h \
-	cregtools_libfguid.h \
-	cregtools_libfwnt.h \
-	cregtools_libfwsi.h \
 	cregtools_libuna.h
 
 creginfo_LDADD = \
@@ -91,10 +79,6 @@ cregmount_SOURCES = \
 	cregtools_libcsystem.h \
 	cregtools_libfcache.h \
 	cregtools_libfdata.h \
-	cregtools_libfdatetime.h \
-	cregtools_libfguid.h \
-	cregtools_libfwnt.h \
-	cregtools_libfwsi.h \
 	cregtools_libuna.h
 
 cregmount_LDADD = \

@@ -45,5 +45,5 @@ void cregoutput_version_detailed_fprint(
 }
 #endif
 
-#endif
+#endif /* !defined( _CREGOUTPUT_H ) */
 

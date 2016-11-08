@@ -15,13 +15,7 @@ SUBDIRS = \
 	libbfio \
 	libfcache \
 	libfdata \
-	libfdatetime \
-	libfguid \
-	libfwnt \
 	libcreg \
-	libfole \
-	libfwps \
-	libfwsi \
 	libcsystem \
 	cregtools \
 	pycreg \
@@ -95,9 +89,6 @@ library:
 	(cd $(srcdir)/libbfio && $(MAKE) $(AM_MAKEFLAGS))
 	(cd $(srcdir)/libfcache && $(MAKE) $(AM_MAKEFLAGS))
 	(cd $(srcdir)/libfdata && $(MAKE) $(AM_MAKEFLAGS))
-	(cd $(srcdir)/libfdatetime && $(MAKE) $(AM_MAKEFLAGS))
-	(cd $(srcdir)/libfguid && $(MAKE) $(AM_MAKEFLAGS))
-	(cd $(srcdir)/libfwnt && $(MAKE) $(AM_MAKEFLAGS))
 	(cd $(srcdir)/libcreg && $(MAKE) $(AM_MAKEFLAGS))
 	(cd $(srcdir)/po && $(MAKE) $(AM_MAKEFLAGS))
 
@@ -126,11 +117,7 @@ splint:
 	(cd $(srcdir)/libbfio && $(MAKE) splint $(AM_MAKEFLAGS))
 	(cd $(srcdir)/libfcache && $(MAKE) splint $(AM_MAKEFLAGS))
 	(cd $(srcdir)/libfdata && $(MAKE) splint $(AM_MAKEFLAGS))
-	(cd $(srcdir)/libfdatetime && $(MAKE) splint $(AM_MAKEFLAGS))
-	(cd $(srcdir)/libfguid && $(MAKE) splint $(AM_MAKEFLAGS))
-	(cd $(srcdir)/libfwnt && $(MAKE) splint $(AM_MAKEFLAGS))
 	(cd $(srcdir)/libcreg && $(MAKE) splint $(AM_MAKEFLAGS))
-	(cd $(srcdir)/libfwsi && $(MAKE) splint $(AM_MAKEFLAGS))
 	(cd $(srcdir)/libcsystem && $(MAKE) splint $(AM_MAKEFLAGS))
 	(cd $(srcdir)/cregtools && $(MAKE) splint $(AM_MAKEFLAGS))
 	(cd $(srcdir)/pycreg && $(MAKE) splint $(AM_MAKEFLAGS))
