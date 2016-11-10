@@ -27,7 +27,6 @@
 #include <stdlib.h>
 #endif
 
-#include "creg_test_libcerror.h"
 #include "creg_test_libcreg.h"
 #include "creg_test_macros.h"
 #include "creg_test_unused.h"

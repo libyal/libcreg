@@ -42,5 +42,5 @@ int libcreg_checksum_calculate_little_endian_xor32(
 }
 #endif
 
-#endif
+#endif /* !defined( _LIBCREG_CRC_H ) */
 

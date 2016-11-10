@@ -199,5 +199,5 @@ int libcreg_key_get_sub_key_by_utf16_path(
 }
 #endif
 
-#endif
+#endif /* !defined( _LIBCREG_INTERNAL_KEY_H ) */
 

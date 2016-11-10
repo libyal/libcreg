@@ -183,5 +183,5 @@ int libcreg_value_get_value_binary_data(
 }
 #endif
 
-#endif
+#endif /* !defined( _LIBCREG_INTERNAL_VALUE_H ) */
 

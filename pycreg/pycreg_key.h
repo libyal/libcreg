@@ -128,5 +128,5 @@ PyObject *pycreg_key_get_value_by_name(
 }
 #endif
 
-#endif
+#endif /* !defined( _PYCREG_KEY_H ) */
 

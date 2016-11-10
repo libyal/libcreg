@@ -34,15 +34,23 @@ extern "C" {
 
 #if defined( HAVE_DEBUG_OUTPUT )
 
+int libcreg_debug_print_string_value(
+     const char *function_name,
+     const char *value_name,
+     const uint8_t *byte_stream,
+     size_t byte_stream_size,
+     int ascii_codepage,
+     libcerror_error_t **error );
+
 int libcreg_debug_print_read_offsets(
      libbfio_handle_t *file_io_handle,
      libcerror_error_t **error );
 
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
 
 #if defined( __cplusplus )
 }
 #endif
 
-#endif
+#endif /* !defined( _LIBCREG_DEBUG_H ) */
 

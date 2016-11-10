@@ -1,11 +1,18 @@
 MSVSCPP_FILES = \
+	creg_test_data_block/creg_test_data_block.vcproj \
+	creg_test_data_block_entry/creg_test_data_block_entry.vcproj \
+	creg_test_data_type/creg_test_data_type.vcproj \
 	creg_test_error/creg_test_error.vcproj \
 	creg_test_file/creg_test_file.vcproj \
+	creg_test_io_handle/creg_test_io_handle.vcproj \
 	creg_test_key/creg_test_key.vcproj \
+	creg_test_key_hierarchy_entry/creg_test_key_hierarchy_entry.vcproj \
+	creg_test_key_name_entry/creg_test_key_name_entry.vcproj \
+	creg_test_key_navigation/creg_test_key_navigation.vcproj \
 	creg_test_notify/creg_test_notify.vcproj \
-	creg_test_open_close/creg_test_open_close.vcproj \
 	creg_test_support/creg_test_support.vcproj \
 	creg_test_value/creg_test_value.vcproj \
+	creg_test_value_entry/creg_test_value_entry.vcproj \
 	cregexport/cregexport.vcproj \
 	creginfo/creginfo.vcproj \
 	cregmount/cregmount.vcproj \

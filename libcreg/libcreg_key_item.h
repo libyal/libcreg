@@ -63,5 +63,5 @@ int libcreg_key_item_read_sub_nodes(
 }
 #endif
 
-#endif
+#endif /* !defined( _LIBCREG_KEY_ITEM_H ) */
 

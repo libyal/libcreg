@@ -118,5 +118,5 @@ int libcreg_key_navigation_read_data_block_element_data(
 }
 #endif
 
-#endif
+#endif /* !defined( _LIBCREG_KEY_NAVIGATION_H ) */
 

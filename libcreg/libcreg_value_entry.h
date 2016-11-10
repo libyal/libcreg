@@ -118,5 +118,5 @@ int libcreg_value_entry_compare_name_with_utf16_string(
 }
 #endif
 
-#endif
+#endif /* !defined( _LIBCREG_VALUE_ENTRY_H ) */
 

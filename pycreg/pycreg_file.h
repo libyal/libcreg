@@ -133,5 +133,5 @@ PyObject *pycreg_file_get_key_by_path(
 }
 #endif
 
-#endif
+#endif /* !defined( _PYCREG_FILE_H ) */
 

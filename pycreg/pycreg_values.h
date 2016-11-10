@@ -92,5 +92,5 @@ PyObject *pycreg_values_iternext(
 }
 #endif
 
-#endif
+#endif /* !defined( _PYCREG_VALUES_H ) */
 

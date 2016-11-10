@@ -808,7 +808,7 @@ int main(
 
 #if defined( LIBCREG_HAVE_BFIO )
 
-		/* TODO add test for libcreg_file_open_file_io_handle */
+		/* TODO add test for libcreg_check_file_file_io_handle */
 
 #endif /* defined( LIBCREG_HAVE_BFIO ) */
 	}

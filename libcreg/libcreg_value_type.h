@@ -88,5 +88,5 @@ int libcreg_value_type_copy_to_binary_data(
 }
 #endif
 
-#endif
+#endif /* !defined( _LIBCREG_VALUE_TYPE_H ) */
 

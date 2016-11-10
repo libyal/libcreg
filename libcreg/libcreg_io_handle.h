@@ -100,5 +100,5 @@ int libcreg_io_handle_read_key_hierarchy_entry(
 }
 #endif
 
-#endif
+#endif /* !defined( _LIBCREG_IO_HANDLE_H ) */
 

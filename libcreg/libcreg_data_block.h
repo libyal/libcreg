@@ -108,5 +108,5 @@ int libcreg_data_block_get_entry_by_index(
 }
 #endif
 
-#endif
+#endif /* !defined( _LIBCREG_DATA_BLOCK_H ) */
 

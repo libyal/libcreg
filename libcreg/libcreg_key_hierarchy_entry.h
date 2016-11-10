@@ -79,5 +79,5 @@ int libcreg_key_hierarchy_entry_read(
 }
 #endif
 
-#endif
+#endif /* !defined( _LIBCREG_KEY_HIERARCHY_ENTRY_H ) */
 

@@ -120,5 +120,5 @@ struct creg_key_hierarchy_entry
 }
 #endif
 
-#endif
+#endif /* !defined( _CREG_KEY_NAVIGATION_H ) */
 

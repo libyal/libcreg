@@ -99,5 +99,5 @@ PyObject *pycreg_value_get_data_as_string(
 }
 #endif
 
-#endif
+#endif /* !defined( _PYCREG_VALUE_H ) */
 

@@ -84,5 +84,5 @@ struct creg_file_header
 }
 #endif
 
-#endif
+#endif /* !defined( _CREG_FILE_HEADER_H ) */
 

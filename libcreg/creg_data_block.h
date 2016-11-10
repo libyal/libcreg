@@ -154,5 +154,5 @@ struct creg_value_entry
 }
 #endif
 
-#endif
+#endif /* !defined( _CREG_DATA_BLOCK_H ) */
 

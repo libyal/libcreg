@@ -59,5 +59,5 @@ void pycreg_value_types_free(
 }
 #endif
 
-#endif
+#endif /* !defined( _PYCREG_VALUE_TYPES_H ) */
 

@@ -57,5 +57,5 @@ PyMODINIT_FUNC initpycreg(
 }
 #endif
 
-#endif
+#endif /* !defined( _PYCREG_H ) */
 

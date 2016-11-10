@@ -60,5 +60,5 @@ const char *libcreg_data_type_get_description(
 }
 #endif
 
-#endif
+#endif /* !defined( _LIBCREG_DATA_TYPE_H ) */
 

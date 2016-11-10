@@ -181,5 +181,5 @@ int libcreg_file_get_key_by_utf16_path(
 }
 #endif
 
-#endif
+#endif /* !defined( _LIBCREG_INTERNAL_FILE_H ) */
 

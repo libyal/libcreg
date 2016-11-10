@@ -60,5 +60,5 @@ int libcreg_data_block_entry_free(
 }
 #endif
 
-#endif
+#endif /* !defined( _LIBCREG_DATA_BLOCK_ENTRY_H ) */
 
