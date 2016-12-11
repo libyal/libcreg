@@ -47,7 +47,13 @@ int creg_test_data_block_initialize(
 	libcreg_data_block_t *data_block = NULL;
 	int result                       = 0;
 
-	/* Test data_block initialization
+#if defined( HAVE_CREG_TEST_MEMORY )
+	int number_of_malloc_fail_tests  = 1;
+	int number_of_memset_fail_tests  = 1;
+	int test_number                  = 0;
+#endif
+
+	/* Test regular cases
 	 */
 	result = libcreg_data_block_initialize(
 	          &data_block,
@@ -123,79 +129,89 @@ int creg_test_data_block_initialize(
 
 #if defined( HAVE_CREG_TEST_MEMORY )
 
-	/* Test libcreg_data_block_initialize with malloc failing
-	 */
-	creg_test_malloc_attempts_before_fail = 0;
-
-	result = libcreg_data_block_initialize(
-	          &data_block,
-	          &error );
-
-	if( creg_test_malloc_attempts_before_fail != -1 )
+	for( test_number = 0;
+	     test_number < number_of_malloc_fail_tests;
+	     test_number++ )
 	{
-		creg_test_malloc_attempts_before_fail = -1;
+		/* Test libcreg_data_block_initialize with malloc failing
+		 */
+		creg_test_malloc_attempts_before_fail = test_number;
 
-		if( data_block != NULL )
+		result = libcreg_data_block_initialize(
+		          &data_block,
+		          &error );
+
+		if( creg_test_malloc_attempts_before_fail != -1 )
 		{
-			libcreg_data_block_free(
-			 &data_block,
-			 NULL );
+			creg_test_malloc_attempts_before_fail = -1;
+
+			if( data_block != NULL )
+			{
+				libcreg_data_block_free(
+				 &data_block,
+				 NULL );
+			}
+		}
+		else
+		{
+			CREG_TEST_ASSERT_EQUAL_INT(
+			 "result",
+			 result,
+			 -1 );
+
+			CREG_TEST_ASSERT_IS_NULL(
+			 "data_block",
+			 data_block );
+
+			CREG_TEST_ASSERT_IS_NOT_NULL(
+			 "error",
+			 error );
+
+			libcerror_error_free(
+			 &error );
 		}
 	}
-	else
+	for( test_number = 0;
+	     test_number < number_of_memset_fail_tests;
+	     test_number++ )
 	{
-		CREG_TEST_ASSERT_EQUAL_INT(
-		 "result",
-		 result,
-		 -1 );
+		/* Test libcreg_data_block_initialize with memset failing
+		 */
+		creg_test_memset_attempts_before_fail = test_number;
 
-		CREG_TEST_ASSERT_IS_NULL(
-		 "data_block",
-		 data_block );
+		result = libcreg_data_block_initialize(
+		          &data_block,
+		          &error );
 
-		CREG_TEST_ASSERT_IS_NOT_NULL(
-		 "error",
-		 error );
-
-		libcerror_error_free(
-		 &error );
-	}
-	/* Test libcreg_data_block_initialize with memset failing
-	 */
-	creg_test_memset_attempts_before_fail = 0;
-
-	result = libcreg_data_block_initialize(
-	          &data_block,
-	          &error );
-
-	if( creg_test_memset_attempts_before_fail != -1 )
-	{
-		creg_test_memset_attempts_before_fail = -1;
-
-		if( data_block != NULL )
+		if( creg_test_memset_attempts_before_fail != -1 )
 		{
-			libcreg_data_block_free(
-			 &data_block,
-			 NULL );
+			creg_test_memset_attempts_before_fail = -1;
+
+			if( data_block != NULL )
+			{
+				libcreg_data_block_free(
+				 &data_block,
+				 NULL );
+			}
 		}
-	}
-	else
-	{
-		CREG_TEST_ASSERT_EQUAL_INT(
-		 "result",
-		 result,
-		 -1 );
+		else
+		{
+			CREG_TEST_ASSERT_EQUAL_INT(
+			 "result",
+			 result,
+			 -1 );
 
-		CREG_TEST_ASSERT_IS_NULL(
-		 "data_block",
-		 data_block );
+			CREG_TEST_ASSERT_IS_NULL(
+			 "data_block",
+			 data_block );
 
-		CREG_TEST_ASSERT_IS_NOT_NULL(
-		 "error",
-		 error );
+			CREG_TEST_ASSERT_IS_NOT_NULL(
+			 "error",
+			 error );
 
-		libcerror_error_free(
-		 &error );
+			libcerror_error_free(
+			 &error );
+		}
 	}
 #endif /* defined( HAVE_CREG_TEST_MEMORY ) */
 
@@ -254,6 +270,129 @@ on_error:
 	return( 0 );
 }
 
+/* Tests the libcreg_data_block_get_number_of_entries function
+ * Returns 1 if successful or 0 if not
+ */
+int creg_test_data_block_get_number_of_entries(
+     void )
+{
+	libcerror_error_t *error         = NULL;
+	libcreg_data_block_t *data_block = NULL;
+	int number_of_entries            = 0;
+	int number_of_entries_is_set     = 0;
+	int result                       = 0;
+
+	/* Initialize test
+	 */
+	result = libcreg_data_block_initialize(
+	          &data_block,
+	          &error );
+
+	CREG_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	CREG_TEST_ASSERT_IS_NOT_NULL(
+	 "data_block",
+	 data_block );
+
+	CREG_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test regular cases
+	 */
+	result = libcreg_data_block_get_number_of_entries(
+	          data_block,
+	          &number_of_entries,
+	          &error );
+
+	CREG_TEST_ASSERT_NOT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	CREG_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	number_of_entries_is_set = result;
+
+	/* Test error cases
+	 */
+	result = libcreg_data_block_get_number_of_entries(
+	          NULL,
+	          &number_of_entries,
+	          &error );
+
+	CREG_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	CREG_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	if( number_of_entries_is_set != 0 )
+	{
+		result = libcreg_data_block_get_number_of_entries(
+		          data_block,
+		          NULL,
+		          &error );
+
+		CREG_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 -1 );
+
+		CREG_TEST_ASSERT_IS_NOT_NULL(
+		 "error",
+		 error );
+
+		libcerror_error_free(
+		 &error );
+	}
+	/* Clean up
+	 */
+	result = libcreg_data_block_free(
+	          &data_block,
+	          &error );
+
+	CREG_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	CREG_TEST_ASSERT_IS_NULL(
+	 "data_block",
+	 data_block );
+
+	CREG_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	if( data_block != NULL )
+	{
+		libcreg_data_block_free(
+		 &data_block,
+		 NULL );
+	}
+	return( 0 );
+}
+
 #endif /* defined( __GNUC__ ) */
 
 /* The main program
@@ -280,6 +419,16 @@ int main(
 	CREG_TEST_RUN(
 	 "libcreg_data_block_free",
 	 creg_test_data_block_free );
+
+	/* TODO: add tests for libcreg_data_block_read_header */
+
+	/* TODO: add tests for libcreg_data_block_read_entries */
+
+	CREG_TEST_RUN(
+	 "libcreg_data_block_get_number_of_entries",
+	 creg_test_data_block_get_number_of_entries );
+
+	/* TODO: add tests for libcreg_data_block_get_entry_by_index */
 
 #endif /* defined( __GNUC__ ) */
 

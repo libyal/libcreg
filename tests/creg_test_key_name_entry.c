@@ -47,7 +47,13 @@ int creg_test_key_name_entry_initialize(
 	libcreg_key_name_entry_t *key_name_entry = NULL;
 	int result                               = 0;
 
-	/* Test key_name_entry initialization
+#if defined( HAVE_CREG_TEST_MEMORY )
+	int number_of_malloc_fail_tests          = 1;
+	int number_of_memset_fail_tests          = 1;
+	int test_number                          = 0;
+#endif
+
+	/* Test regular cases
 	 */
 	result = libcreg_key_name_entry_initialize(
 	          &key_name_entry,
@@ -123,79 +129,89 @@ int creg_test_key_name_entry_initialize(
 
 #if defined( HAVE_CREG_TEST_MEMORY )
 
-	/* Test libcreg_key_name_entry_initialize with malloc failing
-	 */
-	creg_test_malloc_attempts_before_fail = 0;
-
-	result = libcreg_key_name_entry_initialize(
-	          &key_name_entry,
-	          &error );
-
-	if( creg_test_malloc_attempts_before_fail != -1 )
+	for( test_number = 0;
+	     test_number < number_of_malloc_fail_tests;
+	     test_number++ )
 	{
-		creg_test_malloc_attempts_before_fail = -1;
+		/* Test libcreg_key_name_entry_initialize with malloc failing
+		 */
+		creg_test_malloc_attempts_before_fail = test_number;
 
-		if( key_name_entry != NULL )
+		result = libcreg_key_name_entry_initialize(
+		          &key_name_entry,
+		          &error );
+
+		if( creg_test_malloc_attempts_before_fail != -1 )
 		{
-			libcreg_key_name_entry_free(
-			 &key_name_entry,
-			 NULL );
+			creg_test_malloc_attempts_before_fail = -1;
+
+			if( key_name_entry != NULL )
+			{
+				libcreg_key_name_entry_free(
+				 &key_name_entry,
+				 NULL );
+			}
+		}
+		else
+		{
+			CREG_TEST_ASSERT_EQUAL_INT(
+			 "result",
+			 result,
+			 -1 );
+
+			CREG_TEST_ASSERT_IS_NULL(
+			 "key_name_entry",
+			 key_name_entry );
+
+			CREG_TEST_ASSERT_IS_NOT_NULL(
+			 "error",
+			 error );
+
+			libcerror_error_free(
+			 &error );
 		}
 	}
-	else
+	for( test_number = 0;
+	     test_number < number_of_memset_fail_tests;
+	     test_number++ )
 	{
-		CREG_TEST_ASSERT_EQUAL_INT(
-		 "result",
-		 result,
-		 -1 );
+		/* Test libcreg_key_name_entry_initialize with memset failing
+		 */
+		creg_test_memset_attempts_before_fail = test_number;
 
-		CREG_TEST_ASSERT_IS_NULL(
-		 "key_name_entry",
-		 key_name_entry );
+		result = libcreg_key_name_entry_initialize(
+		          &key_name_entry,
+		          &error );
 
-		CREG_TEST_ASSERT_IS_NOT_NULL(
-		 "error",
-		 error );
-
-		libcerror_error_free(
-		 &error );
-	}
-	/* Test libcreg_key_name_entry_initialize with memset failing
-	 */
-	creg_test_memset_attempts_before_fail = 0;
-
-	result = libcreg_key_name_entry_initialize(
-	          &key_name_entry,
-	          &error );
-
-	if( creg_test_memset_attempts_before_fail != -1 )
-	{
-		creg_test_memset_attempts_before_fail = -1;
-
-		if( key_name_entry != NULL )
+		if( creg_test_memset_attempts_before_fail != -1 )
 		{
-			libcreg_key_name_entry_free(
-			 &key_name_entry,
-			 NULL );
+			creg_test_memset_attempts_before_fail = -1;
+
+			if( key_name_entry != NULL )
+			{
+				libcreg_key_name_entry_free(
+				 &key_name_entry,
+				 NULL );
+			}
 		}
-	}
-	else
-	{
-		CREG_TEST_ASSERT_EQUAL_INT(
-		 "result",
-		 result,
-		 -1 );
+		else
+		{
+			CREG_TEST_ASSERT_EQUAL_INT(
+			 "result",
+			 result,
+			 -1 );
 
-		CREG_TEST_ASSERT_IS_NULL(
-		 "key_name_entry",
-		 key_name_entry );
+			CREG_TEST_ASSERT_IS_NULL(
+			 "key_name_entry",
+			 key_name_entry );
 
-		CREG_TEST_ASSERT_IS_NOT_NULL(
-		 "error",
-		 error );
+			CREG_TEST_ASSERT_IS_NOT_NULL(
+			 "error",
+			 error );
 
-		libcerror_error_free(
-		 &error );
+			libcerror_error_free(
+			 &error );
+		}
 	}
 #endif /* defined( HAVE_CREG_TEST_MEMORY ) */
 
@@ -254,6 +270,129 @@ on_error:
 	return( 0 );
 }
 
+/* Tests the libcreg_key_name_entry_get_number_of_entries function
+ * Returns 1 if successful or 0 if not
+ */
+int creg_test_key_name_entry_get_number_of_entries(
+     void )
+{
+	libcerror_error_t *error                 = NULL;
+	libcreg_key_name_entry_t *key_name_entry = NULL;
+	int number_of_entries                    = 0;
+	int number_of_entries_is_set             = 0;
+	int result                               = 0;
+
+	/* Initialize test
+	 */
+	result = libcreg_key_name_entry_initialize(
+	          &key_name_entry,
+	          &error );
+
+	CREG_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	CREG_TEST_ASSERT_IS_NOT_NULL(
+	 "key_name_entry",
+	 key_name_entry );
+
+	CREG_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test regular cases
+	 */
+	result = libcreg_key_name_entry_get_number_of_entries(
+	          key_name_entry,
+	          &number_of_entries,
+	          &error );
+
+	CREG_TEST_ASSERT_NOT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	CREG_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	number_of_entries_is_set = result;
+
+	/* Test error cases
+	 */
+	result = libcreg_key_name_entry_get_number_of_entries(
+	          NULL,
+	          &number_of_entries,
+	          &error );
+
+	CREG_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	CREG_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	if( number_of_entries_is_set != 0 )
+	{
+		result = libcreg_key_name_entry_get_number_of_entries(
+		          key_name_entry,
+		          NULL,
+		          &error );
+
+		CREG_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 -1 );
+
+		CREG_TEST_ASSERT_IS_NOT_NULL(
+		 "error",
+		 error );
+
+		libcerror_error_free(
+		 &error );
+	}
+	/* Clean up
+	 */
+	result = libcreg_key_name_entry_free(
+	          &key_name_entry,
+	          &error );
+
+	CREG_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	CREG_TEST_ASSERT_IS_NULL(
+	 "key_name_entry",
+	 key_name_entry );
+
+	CREG_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	if( key_name_entry != NULL )
+	{
+		libcreg_key_name_entry_free(
+		 &key_name_entry,
+		 NULL );
+	}
+	return( 0 );
+}
+
 #endif /* defined( __GNUC__ ) */
 
 /* The main program
@@ -280,6 +419,22 @@ int main(
 	CREG_TEST_RUN(
 	 "libcreg_key_name_entry_free",
 	 creg_test_key_name_entry_free );
+
+	/* TODO: add tests for libcreg_key_name_entry_read_entry_size */
+
+	/* TODO: add tests for libcreg_key_name_entry_read */
+
+	/* TODO: add tests for libcreg_key_name_entry_read_values */
+
+	CREG_TEST_RUN(
+	 "libcreg_key_name_entry_get_number_of_entries",
+	 creg_test_key_name_entry_get_number_of_entries );
+
+	/* TODO: add tests for libcreg_key_name_entry_get_entry_by_index */
+
+	/* TODO: add tests for libcreg_key_name_entry_compare_name_with_utf8_string */
+
+	/* TODO: add tests for libcreg_key_name_entry_compare_name_with_utf16_string */
 
 #endif /* defined( __GNUC__ ) */
 

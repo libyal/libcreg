@@ -33,12 +33,6 @@
 #include "creg_test_memory.h"
 #include "creg_test_unused.h"
 
-#include "../libcreg/libcreg_data_type.h"
-
-#if defined( __GNUC__ )
-
-#endif /* defined( __GNUC__ ) */
-
 /* The main program
  */
 #if defined( HAVE_WIDE_SYSTEM_CHARACTER )
@@ -56,8 +50,9 @@ int main(
 
 #if defined( __GNUC__ )
 
-		/* TODO: add tests */
+	/* TODO: add tests for libcreg_data_type_get_identifier */
 
+	/* TODO: add tests for libcreg_data_type_get_description */
 
 #endif /* defined( __GNUC__ ) */
 

@@ -38,7 +38,7 @@
 #include "creg_test_macros.h"
 #include "creg_test_memory.h"
 
-#if SIZEOF_WCHAR_T != 2 && SIZEOF_WCHAR_T != 4
+#if defined( HAVE_WIDE_SYSTEM_CHARACTER ) && SIZEOF_WCHAR_T != 2 && SIZEOF_WCHAR_T != 4
 #error Unsupported size of wchar_t
 #endif
 
@@ -256,8 +256,8 @@ int creg_test_file_get_wide_source(
      libcerror_error_t **error )
 {
 	static char *function   = "creg_test_file_get_wide_source";
-	size_t wide_source_size = 0;
 	size_t source_length    = 0;
+	size_t wide_source_size = 0;
 
 #if !defined( HAVE_WIDE_SYSTEM_CHARACTER )
 	int result              = 0;
@@ -584,11 +584,17 @@ int creg_test_file_close_source(
 int creg_test_file_initialize(
      void )
 {
-	libcerror_error_t *error = NULL;
-	libcreg_file_t *file      = NULL;
-	int result               = 0;
+	libcerror_error_t *error        = NULL;
+	libcreg_file_t *file            = NULL;
+	int result                      = 0;
 
-	/* Test libcreg_file_initialize
+#if defined( HAVE_CREG_TEST_MEMORY )
+	int number_of_malloc_fail_tests = 1;
+	int number_of_memset_fail_tests = 1;
+	int test_number                 = 0;
+#endif
+
+	/* Test regular cases
 	 */
 	result = libcreg_file_initialize(
 	          &file,
@@ -664,79 +670,89 @@ int creg_test_file_initialize(
 
 #if defined( HAVE_CREG_TEST_MEMORY )
 
-	/* Test libcreg_file_initialize with malloc failing
-	 */
-	creg_test_malloc_attempts_before_fail = 0;
-
-	result = libcreg_file_initialize(
-	          &file,
-	          &error );
-
-	if( creg_test_malloc_attempts_before_fail != -1 )
+	for( test_number = 0;
+	     test_number < number_of_malloc_fail_tests;
+	     test_number++ )
 	{
-		creg_test_malloc_attempts_before_fail = -1;
+		/* Test libcreg_file_initialize with malloc failing
+		 */
+		creg_test_malloc_attempts_before_fail = test_number;
 
-		if( file != NULL )
+		result = libcreg_file_initialize(
+		          &file,
+		          &error );
+
+		if( creg_test_malloc_attempts_before_fail != -1 )
 		{
-			libcreg_file_free(
-			 &file,
-			 NULL );
+			creg_test_malloc_attempts_before_fail = -1;
+
+			if( file != NULL )
+			{
+				libcreg_file_free(
+				 &file,
+				 NULL );
+			}
+		}
+		else
+		{
+			CREG_TEST_ASSERT_EQUAL_INT(
+			 "result",
+			 result,
+			 -1 );
+
+			CREG_TEST_ASSERT_IS_NULL(
+			 "file",
+			 file );
+
+			CREG_TEST_ASSERT_IS_NOT_NULL(
+			 "error",
+			 error );
+
+			libcerror_error_free(
+			 &error );
 		}
 	}
-	else
+	for( test_number = 0;
+	     test_number < number_of_memset_fail_tests;
+	     test_number++ )
 	{
-		CREG_TEST_ASSERT_EQUAL_INT(
-		 "result",
-		 result,
-		 -1 );
+		/* Test libcreg_file_initialize with memset failing
+		 */
+		creg_test_memset_attempts_before_fail = test_number;
 
-		CREG_TEST_ASSERT_IS_NULL(
-		 "file",
-		 file );
+		result = libcreg_file_initialize(
+		          &file,
+		          &error );
 
-		CREG_TEST_ASSERT_IS_NOT_NULL(
-		 "error",
-		 error );
-
-		libcerror_error_free(
-		 &error );
-	}
-	/* Test libcreg_file_initialize with memset failing
-	 */
-	creg_test_memset_attempts_before_fail = 0;
-
-	result = libcreg_file_initialize(
-	          &file,
-	          &error );
-
-	if( creg_test_memset_attempts_before_fail != -1 )
-	{
-		creg_test_memset_attempts_before_fail = -1;
-
-		if( file != NULL )
+		if( creg_test_memset_attempts_before_fail != -1 )
 		{
-			libcreg_file_free(
-			 &file,
-			 NULL );
+			creg_test_memset_attempts_before_fail = -1;
+
+			if( file != NULL )
+			{
+				libcreg_file_free(
+				 &file,
+				 NULL );
+			}
 		}
-	}
-	else
-	{
-		CREG_TEST_ASSERT_EQUAL_INT(
-		 "result",
-		 result,
-		 -1 );
+		else
+		{
+			CREG_TEST_ASSERT_EQUAL_INT(
+			 "result",
+			 result,
+			 -1 );
 
-		CREG_TEST_ASSERT_IS_NULL(
-		 "file",
-		 file );
+			CREG_TEST_ASSERT_IS_NULL(
+			 "file",
+			 file );
 
-		CREG_TEST_ASSERT_IS_NOT_NULL(
-		 "error",
-		 error );
+			CREG_TEST_ASSERT_IS_NOT_NULL(
+			 "error",
+			 error );
 
-		libcerror_error_free(
-		 &error );
+			libcerror_error_free(
+			 &error );
+		}
 	}
 #endif /* defined( HAVE_CREG_TEST_MEMORY ) */
 
@@ -795,7 +811,7 @@ on_error:
 	return( 0 );
 }
 
-/* Tests the libcreg_file_open functions
+/* Tests the libcreg_file_open function
  * Returns 1 if successful or 0 if not
  */
 int creg_test_file_open(
@@ -858,21 +874,28 @@ int creg_test_file_open(
          "error",
          error );
 
-	/* Clean up
+	/* Test error cases
 	 */
-	result = libcreg_file_close(
+	result = libcreg_file_open(
 	          file,
+	          narrow_source,
+	          LIBCREG_OPEN_READ,
 	          &error );
 
 	CREG_TEST_ASSERT_EQUAL_INT(
 	 "result",
 	 result,
-	 0 );
+	 -1 );
 
-        CREG_TEST_ASSERT_IS_NULL(
+        CREG_TEST_ASSERT_IS_NOT_NULL(
          "error",
          error );
 
+	libcerror_error_free(
+	 &error );
+
+	/* Clean up
+	 */
 	result = libcreg_file_free(
 	          &file,
 	          &error );
@@ -909,7 +932,7 @@ on_error:
 
 #if defined( HAVE_WIDE_CHARACTER_TYPE )
 
-/* Tests the libcreg_file_open_wide functions
+/* Tests the libcreg_file_open_wide function
  * Returns 1 if successful or 0 if not
  */
 int creg_test_file_open_wide(
@@ -972,21 +995,28 @@ int creg_test_file_open_wide(
          "error",
          error );
 
-	/* Clean up
+	/* Test error cases
 	 */
-	result = libcreg_file_close(
+	result = libcreg_file_open_wide(
 	          file,
+	          wide_source,
+	          LIBCREG_OPEN_READ,
 	          &error );
 
 	CREG_TEST_ASSERT_EQUAL_INT(
 	 "result",
 	 result,
-	 0 );
+	 -1 );
 
-        CREG_TEST_ASSERT_IS_NULL(
+        CREG_TEST_ASSERT_IS_NOT_NULL(
          "error",
          error );
 
+	libcerror_error_free(
+	 &error );
+
+	/* Clean up
+	 */
 	result = libcreg_file_free(
 	          &file,
 	          &error );
@@ -1023,51 +1053,18 @@ on_error:
 
 #endif /* defined( HAVE_WIDE_CHARACTER_TYPE ) */
 
-/* Tests the libcreg_file_get_ascii_codepage functions
+/* Tests the libcreg_file_close function
  * Returns 1 if successful or 0 if not
  */
-int creg_test_file_get_ascii_codepage(
-     libcreg_file_t *file )
+int creg_test_file_close(
+     void )
 {
 	libcerror_error_t *error = NULL;
-	int codepage             = 0;
 	int result               = 0;
-
-	result = libcreg_file_get_ascii_codepage(
-	          file,
-	          &codepage,
-	          &error );
-
-	CREG_TEST_ASSERT_EQUAL_INT(
-	 "result",
-	 result,
-	 1 );
-
-        CREG_TEST_ASSERT_IS_NULL(
-         "error",
-         error );
 
 	/* Test error cases
 	 */
-	result = libcreg_file_get_ascii_codepage(
-	          NULL,
-	          &codepage,
-	          &error );
-
-	CREG_TEST_ASSERT_EQUAL_INT(
-	 "result",
-	 result,
-	 -1 );
-
-        CREG_TEST_ASSERT_IS_NOT_NULL(
-         "error",
-         error );
-
-	libcerror_error_free(
-	 &error );
-
-	result = libcreg_file_get_ascii_codepage(
-	          file,
+	result = libcreg_file_close(
 	          NULL,
 	          &error );
 
@@ -1094,11 +1091,283 @@ on_error:
 	return( 0 );
 }
 
-/* Tests the libcreg_file_set_ascii_codepage functions
+/* Tests the libcreg_file_open and libcreg_file_close functions
+ * Returns 1 if successful or 0 if not
+ */
+int creg_test_file_open_close(
+     const system_character_t *source )
+{
+	libcerror_error_t *error = NULL;
+	libcreg_file_t *file     = NULL;
+	int result               = 0;
+
+	/* Initialize test
+	 */
+	result = libcreg_file_initialize(
+	          &file,
+	          &error );
+
+	CREG_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+        CREG_TEST_ASSERT_IS_NOT_NULL(
+         "file",
+         file );
+
+        CREG_TEST_ASSERT_IS_NULL(
+         "error",
+         error );
+
+	/* Test open and close
+	 */
+#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
+	result = libcreg_file_open_wide(
+	          file,
+	          source,
+	          LIBCREG_OPEN_READ,
+	          &error );
+#else
+	result = libcreg_file_open(
+	          file,
+	          source,
+	          LIBCREG_OPEN_READ,
+	          &error );
+#endif
+
+	CREG_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+        CREG_TEST_ASSERT_IS_NULL(
+         "error",
+         error );
+
+	result = libcreg_file_close(
+	          file,
+	          &error );
+
+	CREG_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 0 );
+
+        CREG_TEST_ASSERT_IS_NULL(
+         "error",
+         error );
+
+	/* Test open and close a second time to validate clean up on close
+	 */
+#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
+	result = libcreg_file_open_wide(
+	          file,
+	          source,
+	          LIBCREG_OPEN_READ,
+	          &error );
+#else
+	result = libcreg_file_open(
+	          file,
+	          source,
+	          LIBCREG_OPEN_READ,
+	          &error );
+#endif
+
+	CREG_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+        CREG_TEST_ASSERT_IS_NULL(
+         "error",
+         error );
+
+	result = libcreg_file_close(
+	          file,
+	          &error );
+
+	CREG_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 0 );
+
+        CREG_TEST_ASSERT_IS_NULL(
+         "error",
+         error );
+
+	/* Clean up
+	 */
+	result = libcreg_file_free(
+	          &file,
+	          &error );
+
+	CREG_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+        CREG_TEST_ASSERT_IS_NULL(
+         "file",
+         file );
+
+        CREG_TEST_ASSERT_IS_NULL(
+         "error",
+         error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	if( file != NULL )
+	{
+		libcreg_file_free(
+		 &file,
+		 NULL );
+	}
+	return( 0 );
+}
+
+/* Tests the libcreg_file_signal_abort function
+ * Returns 1 if successful or 0 if not
+ */
+int creg_test_file_signal_abort(
+     libcreg_file_t *file )
+{
+	libcerror_error_t *error = NULL;
+	int result               = 0;
+
+	/* Test regular cases
+	 */
+	result = libcreg_file_signal_abort(
+	          file,
+	          &error );
+
+	CREG_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+        CREG_TEST_ASSERT_IS_NULL(
+         "error",
+         error );
+
+	/* Test error cases
+	 */
+	result = libcreg_file_signal_abort(
+	          NULL,
+	          &error );
+
+	CREG_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+        CREG_TEST_ASSERT_IS_NOT_NULL(
+         "error",
+         error );
+
+	libcerror_error_free(
+	 &error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	return( 0 );
+}
+
+/* Tests the libcreg_file_get_ascii_codepage function
+ * Returns 1 if successful or 0 if not
+ */
+int creg_test_file_get_ascii_codepage(
+     libcreg_file_t *file )
+{
+	libcerror_error_t *error  = NULL;
+	int ascii_codepage        = 0;
+	int ascii_codepage_is_set = 0;
+	int result                = 0;
+
+	/* Test regular cases
+	 */
+	result = libcreg_file_get_ascii_codepage(
+	          file,
+	          &ascii_codepage,
+	          &error );
+
+	CREG_TEST_ASSERT_NOT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	CREG_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	ascii_codepage_is_set = result;
+
+	/* Test error cases
+	 */
+	result = libcreg_file_get_ascii_codepage(
+	          NULL,
+	          &ascii_codepage,
+	          &error );
+
+	CREG_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	CREG_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	if( ascii_codepage_is_set != 0 )
+	{
+		result = libcreg_file_get_ascii_codepage(
+		          file,
+		          NULL,
+		          &error );
+
+		CREG_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 -1 );
+
+		CREG_TEST_ASSERT_IS_NOT_NULL(
+		 "error",
+		 error );
+
+		libcerror_error_free(
+		 &error );
+	}
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	return( 0 );
+}
+
+/* Tests the libcreg_file_set_ascii_codepage function
  * Returns 1 if successful or 0 if not
  */
 int creg_test_file_set_ascii_codepage(
-     void )
+     libcreg_file_t *file )
 {
 	int supported_codepages[ 15 ] = {
 		LIBCREG_CODEPAGE_ASCII,
@@ -1137,29 +1406,9 @@ int creg_test_file_set_ascii_codepage(
 		LIBCREG_CODEPAGE_KOI8_U };
 
 	libcerror_error_t *error = NULL;
-	libcreg_file_t *file      = NULL;
 	int codepage             = 0;
 	int index                = 0;
 	int result               = 0;
-
-	/* Initialize test
-	 */
-	result = libcreg_file_initialize(
-	          &file,
-	          &error );
-
-	CREG_TEST_ASSERT_EQUAL_INT(
-	 "result",
-	 result,
-	 1 );
-
-        CREG_TEST_ASSERT_IS_NOT_NULL(
-         "file",
-         file );
-
-        CREG_TEST_ASSERT_IS_NULL(
-         "error",
-         error );
 
 	/* Test set ASCII codepage
 	 */
@@ -1227,18 +1476,15 @@ int creg_test_file_set_ascii_codepage(
 	}
 	/* Clean up
 	 */
-	result = libcreg_file_free(
-	          &file,
+	result = libcreg_file_set_ascii_codepage(
+	          file,
+	          LIBCREG_CODEPAGE_WINDOWS_1252,
 	          &error );
 
 	CREG_TEST_ASSERT_EQUAL_INT(
 	 "result",
 	 result,
 	 1 );
-
-        CREG_TEST_ASSERT_IS_NULL(
-         "file",
-         file );
 
         CREG_TEST_ASSERT_IS_NULL(
          "error",
@@ -1252,10 +1498,193 @@ on_error:
 		libcerror_error_free(
 		 &error );
 	}
-	if( file != NULL )
+	return( 0 );
+}
+
+/* Tests the libcreg_file_get_type function
+ * Returns 1 if successful or 0 if not
+ */
+int creg_test_file_get_type(
+     libcreg_file_t *file )
+{
+	libcerror_error_t *error = NULL;
+	uint32_t type            = 0;
+	int result               = 0;
+	int type_is_set          = 0;
+
+	/* Test regular cases
+	 */
+	result = libcreg_file_get_type(
+	          file,
+	          &type,
+	          &error );
+
+	CREG_TEST_ASSERT_NOT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	CREG_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	type_is_set = result;
+
+	/* Test error cases
+	 */
+	result = libcreg_file_get_type(
+	          NULL,
+	          &type,
+	          &error );
+
+	CREG_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	CREG_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	if( type_is_set != 0 )
 	{
-		libcreg_file_free(
-		 &file,
+		result = libcreg_file_get_type(
+		          file,
+		          NULL,
+		          &error );
+
+		CREG_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 -1 );
+
+		CREG_TEST_ASSERT_IS_NOT_NULL(
+		 "error",
+		 error );
+
+		libcerror_error_free(
+		 &error );
+	}
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	return( 0 );
+}
+
+/* Tests the libcreg_file_get_root_key function
+ * Returns 1 if successful or 0 if not
+ */
+int creg_test_file_get_root_key(
+     libcreg_file_t *file )
+{
+	libcerror_error_t *error = NULL;
+	libcreg_key_t *root_key  = 0;
+	int result               = 0;
+	int root_key_is_set      = 0;
+
+	/* Test regular cases
+	 */
+	result = libcreg_file_get_root_key(
+	          file,
+	          &root_key,
+	          &error );
+
+	CREG_TEST_ASSERT_NOT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	CREG_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	root_key_is_set = result;
+
+	if( root_key_is_set != 0 )
+	{
+		CREG_TEST_ASSERT_IS_NOT_NULL(
+		 "root_key",
+		 root_key );
+
+		result = libcreg_key_free(
+		          &root_key,
+		          &error );
+
+		CREG_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 1 );
+
+		CREG_TEST_ASSERT_IS_NULL(
+		 "error",
+		 error );
+	}
+	/* Test error cases
+	 */
+	result = libcreg_file_get_root_key(
+	          NULL,
+	          &root_key,
+	          &error );
+
+	CREG_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	CREG_TEST_ASSERT_IS_NULL(
+	 "root_key",
+	 root_key );
+
+	CREG_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	if( root_key_is_set != 0 )
+	{
+		result = libcreg_file_get_root_key(
+		          file,
+		          NULL,
+		          &error );
+
+		CREG_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 -1 );
+
+		CREG_TEST_ASSERT_IS_NULL(
+		 "root_key",
+		 root_key );
+
+		CREG_TEST_ASSERT_IS_NOT_NULL(
+		 "error",
+		 error );
+
+		libcerror_error_free(
+		 &error );
+	}
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	if( root_key != NULL )
+	{
+		libcreg_key_free(
+		 &root_key,
 		 NULL );
 	}
 	return( 0 );
@@ -1274,8 +1703,8 @@ int main(
 #endif
 {
 	libcerror_error_t *error   = NULL;
-	system_character_t *source = NULL;
 	libcreg_file_t *file       = NULL;
+	system_character_t *source = NULL;
 	system_integer_t option    = 0;
 	int result                 = 0;
 
@@ -1316,10 +1745,6 @@ int main(
 	 "libcreg_file_free",
 	 creg_test_file_free );
 
-	CREG_TEST_RUN(
-	 "libcreg_file_set_ascii_codepage",
-	 creg_test_file_set_ascii_codepage );
-
 #if !defined( __BORLANDC__ ) || ( __BORLANDC__ >= 0x0560 )
 	if( source != NULL )
 	{
@@ -1343,7 +1768,14 @@ int main(
 
 #endif /* defined( LIBCREG_HAVE_BFIO ) */
 
-		/* TODO add test for libcreg_file_close */
+		CREG_TEST_RUN(
+		 "libcreg_file_close",
+		 creg_test_file_close );
+
+		CREG_TEST_RUN_WITH_ARGS(
+		 "libcreg_file_open_close",
+		 creg_test_file_open_close,
+		 source );
 
 		/* Initialize test
 		 */
@@ -1366,9 +1798,43 @@ int main(
 	         error );
 
 		CREG_TEST_RUN_WITH_ARGS(
+		 "libcreg_file_signal_abort",
+		 creg_test_file_signal_abort,
+		 file );
+
+#if defined( __GNUC__ )
+
+		/* TODO: add tests for libcreg_file_open_read */
+
+#endif /* defined( __GNUC__ ) */
+
+		/* TODO: add tests for libcreg_file_is_corrupted */
+
+		CREG_TEST_RUN_WITH_ARGS(
 		 "libcreg_file_get_ascii_codepage",
 		 creg_test_file_get_ascii_codepage,
 		 file );
+
+		CREG_TEST_RUN_WITH_ARGS(
+		 "libcreg_file_set_ascii_codepage",
+		 creg_test_file_set_ascii_codepage,
+		 file );
+
+		/* TODO: add tests for libcreg_file_get_format_version */
+
+		CREG_TEST_RUN_WITH_ARGS(
+		 "libcreg_file_get_type",
+		 creg_test_file_get_type,
+		 file );
+
+		CREG_TEST_RUN_WITH_ARGS(
+		 "libcreg_file_get_root_key",
+		 creg_test_file_get_root_key,
+		 file );
+
+		/* TODO: add tests for libcreg_file_get_key_by_utf8_path */
+
+		/* TODO: add tests for libcreg_file_get_key_by_utf16_path */
 
 		/* Clean up
 		 */

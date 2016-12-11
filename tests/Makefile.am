@@ -13,7 +13,6 @@ AM_CPPFLAGS = \
 	@LIBFCACHE_CPPFLAGS@ \
 	@LIBFDATA_CPPFLAGS@ \
 	@LIBCSYSTEM_CPPFLAGS@ \
-	@PTHREAD_CPPFLAGS@ \
 	@LIBCREG_DLL_IMPORT@
 
 if HAVE_PYTHON_TESTS
@@ -196,6 +195,7 @@ creg_test_notify_LDADD = \
 	../libcreg/libcreg.la
 
 creg_test_support_SOURCES = \
+	creg_test_libbfio.h \
 	creg_test_libcerror.h \
 	creg_test_libclocale.h \
 	creg_test_libcreg.h \
@@ -206,6 +206,9 @@ creg_test_support_SOURCES = \
 
 creg_test_support_LDADD = \
 	@LIBCSYSTEM_LIBADD@ \
+	@LIBBFIO_LIBADD@ \
+	@LIBCPATH_LIBADD@ \
+	@LIBCFILE_LIBADD@ \
 	@LIBUNA_LIBADD@ \
 	@LIBCNOTIFY_LIBADD@ \
 	@LIBCLOCALE_LIBADD@ \

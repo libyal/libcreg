@@ -47,7 +47,13 @@ int creg_test_data_block_entry_initialize(
 	libcreg_data_block_entry_t *data_block_entry = NULL;
 	int result                                   = 0;
 
-	/* Test data_block_entry initialization
+#if defined( HAVE_CREG_TEST_MEMORY )
+	int number_of_malloc_fail_tests              = 1;
+	int number_of_memset_fail_tests              = 1;
+	int test_number                              = 0;
+#endif
+
+	/* Test regular cases
 	 */
 	result = libcreg_data_block_entry_initialize(
 	          &data_block_entry,
@@ -123,79 +129,89 @@ int creg_test_data_block_entry_initialize(
 
 #if defined( HAVE_CREG_TEST_MEMORY )
 
-	/* Test libcreg_data_block_entry_initialize with malloc failing
-	 */
-	creg_test_malloc_attempts_before_fail = 0;
-
-	result = libcreg_data_block_entry_initialize(
-	          &data_block_entry,
-	          &error );
-
-	if( creg_test_malloc_attempts_before_fail != -1 )
+	for( test_number = 0;
+	     test_number < number_of_malloc_fail_tests;
+	     test_number++ )
 	{
-		creg_test_malloc_attempts_before_fail = -1;
+		/* Test libcreg_data_block_entry_initialize with malloc failing
+		 */
+		creg_test_malloc_attempts_before_fail = test_number;
 
-		if( data_block_entry != NULL )
+		result = libcreg_data_block_entry_initialize(
+		          &data_block_entry,
+		          &error );
+
+		if( creg_test_malloc_attempts_before_fail != -1 )
 		{
-			libcreg_data_block_entry_free(
-			 &data_block_entry,
-			 NULL );
+			creg_test_malloc_attempts_before_fail = -1;
+
+			if( data_block_entry != NULL )
+			{
+				libcreg_data_block_entry_free(
+				 &data_block_entry,
+				 NULL );
+			}
+		}
+		else
+		{
+			CREG_TEST_ASSERT_EQUAL_INT(
+			 "result",
+			 result,
+			 -1 );
+
+			CREG_TEST_ASSERT_IS_NULL(
+			 "data_block_entry",
+			 data_block_entry );
+
+			CREG_TEST_ASSERT_IS_NOT_NULL(
+			 "error",
+			 error );
+
+			libcerror_error_free(
+			 &error );
 		}
 	}
-	else
+	for( test_number = 0;
+	     test_number < number_of_memset_fail_tests;
+	     test_number++ )
 	{
-		CREG_TEST_ASSERT_EQUAL_INT(
-		 "result",
-		 result,
-		 -1 );
+		/* Test libcreg_data_block_entry_initialize with memset failing
+		 */
+		creg_test_memset_attempts_before_fail = test_number;
 
-		CREG_TEST_ASSERT_IS_NULL(
-		 "data_block_entry",
-		 data_block_entry );
+		result = libcreg_data_block_entry_initialize(
+		          &data_block_entry,
+		          &error );
 
-		CREG_TEST_ASSERT_IS_NOT_NULL(
-		 "error",
-		 error );
-
-		libcerror_error_free(
-		 &error );
-	}
-	/* Test libcreg_data_block_entry_initialize with memset failing
-	 */
-	creg_test_memset_attempts_before_fail = 0;
-
-	result = libcreg_data_block_entry_initialize(
-	          &data_block_entry,
-	          &error );
-
-	if( creg_test_memset_attempts_before_fail != -1 )
-	{
-		creg_test_memset_attempts_before_fail = -1;
-
-		if( data_block_entry != NULL )
+		if( creg_test_memset_attempts_before_fail != -1 )
 		{
-			libcreg_data_block_entry_free(
-			 &data_block_entry,
-			 NULL );
+			creg_test_memset_attempts_before_fail = -1;
+
+			if( data_block_entry != NULL )
+			{
+				libcreg_data_block_entry_free(
+				 &data_block_entry,
+				 NULL );
+			}
 		}
-	}
-	else
-	{
-		CREG_TEST_ASSERT_EQUAL_INT(
-		 "result",
-		 result,
-		 -1 );
+		else
+		{
+			CREG_TEST_ASSERT_EQUAL_INT(
+			 "result",
+			 result,
+			 -1 );
 
-		CREG_TEST_ASSERT_IS_NULL(
-		 "data_block_entry",
-		 data_block_entry );
+			CREG_TEST_ASSERT_IS_NULL(
+			 "data_block_entry",
+			 data_block_entry );
 
-		CREG_TEST_ASSERT_IS_NOT_NULL(
-		 "error",
-		 error );
+			CREG_TEST_ASSERT_IS_NOT_NULL(
+			 "error",
+			 error );
 
-		libcerror_error_free(
-		 &error );
+			libcerror_error_free(
+			 &error );
+		}
 	}
 #endif /* defined( HAVE_CREG_TEST_MEMORY ) */
 

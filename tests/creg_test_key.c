@@ -33,6 +33,8 @@
 #include "creg_test_memory.h"
 #include "creg_test_unused.h"
 
+#include "../libcreg/libcreg_key.h"
+
 /* Tests the libcreg_key_free function
  * Returns 1 if successful or 0 if not
  */
@@ -71,9 +73,13 @@ on_error:
 	return( 0 );
 }
 
+#if defined( __GNUC__ )
+
+#endif /* defined( __GNUC__ ) */
+
 /* The main program
  */
-#if defined( LIBCSTRING_HAVE_WIDE_SYSTEM_CHARACTER )
+#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
 int wmain(
      int argc CREG_TEST_ATTRIBUTE_UNUSED,
      wchar_t * const argv[] CREG_TEST_ATTRIBUTE_UNUSED )
@@ -86,9 +92,55 @@ int main(
 	CREG_TEST_UNREFERENCED_PARAMETER( argc )
 	CREG_TEST_UNREFERENCED_PARAMETER( argv )
 
+#if defined( __GNUC__ )
+
+	/* TODO: add tests for libcreg_key_initialize */
+
+#endif /* defined( __GNUC__ ) */
+
 	CREG_TEST_RUN(
 	 "libcreg_key_free",
 	 creg_test_key_free );
+
+#if defined( __GNUC__ )
+
+	/* TODO: add tests for libcreg_key_is_corrupted */
+
+	/* TODO: add tests for libcreg_key_get_offset */
+
+	/* TODO: add tests for libcreg_key_get_name_size */
+
+	/* TODO: add tests for libcreg_key_get_name */
+
+	/* TODO: add tests for libcreg_key_get_utf8_name_size */
+
+	/* TODO: add tests for libcreg_key_get_utf8_name */
+
+	/* TODO: add tests for libcreg_key_get_utf16_name_size */
+
+	/* TODO: add tests for libcreg_key_get_utf16_name */
+
+	/* TODO: add tests for libcreg_key_get_number_of_values */
+
+	/* TODO: add tests for libcreg_key_get_value */
+
+	/* TODO: add tests for libcreg_key_get_value_by_utf8_name */
+
+	/* TODO: add tests for libcreg_key_get_value_by_utf16_name */
+
+	/* TODO: add tests for libcreg_key_get_number_of_sub_keys */
+
+	/* TODO: add tests for libcreg_key_get_sub_key */
+
+	/* TODO: add tests for libcreg_key_get_sub_key_by_utf8_name */
+
+	/* TODO: add tests for libcreg_key_get_sub_key_by_utf8_path */
+
+	/* TODO: add tests for libcreg_key_get_sub_key_by_utf16_name */
+
+	/* TODO: add tests for libcreg_key_get_sub_key_by_utf16_path */
+
+#endif /* defined( __GNUC__ ) */
 
 	return( EXIT_SUCCESS );
 
