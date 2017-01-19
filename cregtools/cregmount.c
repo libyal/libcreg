@@ -1,7 +1,7 @@
 /*
  * Mounts a Windows 9x/Me Registry File (CREG)
  *
- * Copyright (C) 2013-2016, Joachim Metz <joachim.metz@gmail.com>
+ * Copyright (C) 2013-2017, Joachim Metz <joachim.metz@gmail.com>
  *
  * Refer to AUTHORS for acknowledgements.
  *
@@ -53,13 +53,15 @@
 #include <dokan.h>
 #endif
 
-#include "mount_handle.h"
-#include "cregoutput.h"
+#include "cregtools_getopt.h"
 #include "cregtools_libcerror.h"
 #include "cregtools_libclocale.h"
 #include "cregtools_libcnotify.h"
-#include "cregtools_libcsystem.h"
 #include "cregtools_libcreg.h"
+#include "cregtools_output.h"
+#include "cregtools_signal.h"
+#include "cregtools_unused.h"
+#include "mount_handle.h"
 
 enum CREGMOUNT_FILE_ENTRY_TYPES
 {
@@ -105,12 +107,12 @@ void usage_fprint(
 /* Signal handler for cregmount
  */
 void cregmount_signal_handler(
-      libcsystem_signal_t signal LIBCSYSTEM_ATTRIBUTE_UNUSED )
+      cregtools_signal_t signal CREGTOOLS_ATTRIBUTE_UNUSED )
 {
 	libcerror_error_t *error = NULL;
 	static char *function    = "cregmount_signal_handler";
 
-	LIBCSYSTEM_UNREFERENCED_PARAMETER( signal )
+	CREGTOOLS_UNREFERENCED_PARAMETER( signal )
 
 	cregmount_abort = 1;
 
@@ -132,8 +134,13 @@ void cregmount_signal_handler(
 	}
 	/* Force stdin to close otherwise any function reading it will remain blocked
 	 */
-	if( libcsystem_file_io_close(
+#if defined( WINAPI ) && !defined( __CYGWIN__ )
+	if( _close(
 	     0 ) != 0 )
+#else
+	if( close(
+	     0 ) != 0 )
+#endif
 	{
 		libcnotify_printf(
 		 "%s: unable to close stdin.\n",
@@ -325,7 +332,7 @@ int cregmount_fuse_read(
      char *buffer,
      size_t size,
      off_t offset,
-     struct fuse_file_info *file_info LIBCSYSTEM_ATTRIBUTE_UNUSED )
+     struct fuse_file_info *file_info CREGTOOLS_ATTRIBUTE_UNUSED )
 {
 	libcerror_error_t *error      = NULL;
 	libcreg_key_t *key            = NULL;
@@ -339,7 +346,7 @@ int cregmount_fuse_read(
 	int result                    = 0;
 	uint8_t file_entry_type       = 0;
 
-	LIBCSYSTEM_UNREFERENCED_PARAMETER( file_info )
+	CREGTOOLS_UNREFERENCED_PARAMETER( file_info )
 
 	if( path == NULL )
 	{
@@ -829,8 +836,8 @@ int cregmount_fuse_readdir(
      const char *path,
      void *buffer,
      fuse_fill_dir_t filler,
-     off_t offset LIBCSYSTEM_ATTRIBUTE_UNUSED,
-     struct fuse_file_info *file_info LIBCSYSTEM_ATTRIBUTE_UNUSED )
+     off_t offset CREGTOOLS_ATTRIBUTE_UNUSED,
+     struct fuse_file_info *file_info CREGTOOLS_ATTRIBUTE_UNUSED )
 {
 	struct stat *stat_info        = NULL;
 	libcerror_error_t *error      = NULL;
@@ -849,8 +856,8 @@ int cregmount_fuse_readdir(
 	int value_index               = 0;
 	uint8_t file_entry_type       = 0;
 
-	LIBCSYSTEM_UNREFERENCED_PARAMETER( offset )
-	LIBCSYSTEM_UNREFERENCED_PARAMETER( file_info )
+	CREGTOOLS_UNREFERENCED_PARAMETER( offset )
+	CREGTOOLS_UNREFERENCED_PARAMETER( file_info )
 
 	if( path == NULL )
 	{
@@ -1693,12 +1700,12 @@ on_error:
 /* Cleans up when fuse is done
  */
 void cregmount_fuse_destroy(
-      void *private_data LIBCSYSTEM_ATTRIBUTE_UNUSED )
+      void *private_data CREGTOOLS_ATTRIBUTE_UNUSED )
 {
 	libcerror_error_t *error = NULL;
 	static char *function    = "cregmount_fuse_destroy";
 
-	LIBCSYSTEM_UNREFERENCED_PARAMETER( private_data )
+	CREGTOOLS_UNREFERENCED_PARAMETER( private_data )
 
 	if( cregmount_mount_handle != NULL )
 	{
@@ -1737,9 +1744,9 @@ on_error:
 int __stdcall cregmount_dokan_CreateFile(
                const wchar_t *path,
                DWORD desired_access,
-               DWORD share_mode LIBCSYSTEM_ATTRIBUTE_UNUSED,
+               DWORD share_mode CREGTOOLS_ATTRIBUTE_UNUSED,
                DWORD creation_disposition,
-               DWORD attribute_flags LIBCSYSTEM_ATTRIBUTE_UNUSED,
+               DWORD attribute_flags CREGTOOLS_ATTRIBUTE_UNUSED,
                DOKAN_FILE_INFO *file_info )
 {
 	libcerror_error_t *error      = NULL;
@@ -1751,8 +1758,8 @@ int __stdcall cregmount_dokan_CreateFile(
 	int result                    = 0;
 	uint8_t file_entry_type       = 0;
 
-	LIBCSYSTEM_UNREFERENCED_PARAMETER( share_mode )
-	LIBCSYSTEM_UNREFERENCED_PARAMETER( attribute_flags )
+	CREGTOOLS_UNREFERENCED_PARAMETER( share_mode )
+	CREGTOOLS_UNREFERENCED_PARAMETER( attribute_flags )
 
 	if( path == NULL )
 	{
@@ -1979,7 +1986,7 @@ on_error:
  */
 int __stdcall cregmount_dokan_OpenDirectory(
                const wchar_t *path,
-               DOKAN_FILE_INFO *file_info LIBCSYSTEM_ATTRIBUTE_UNUSED )
+               DOKAN_FILE_INFO *file_info CREGTOOLS_ATTRIBUTE_UNUSED )
 {
 	libcerror_error_t *error      = NULL;
 	libcreg_key_t *key            = NULL;
@@ -1989,7 +1996,7 @@ int __stdcall cregmount_dokan_OpenDirectory(
 	int result                    = 0;
 	uint8_t file_entry_type       = 0;
 
-	LIBCSYSTEM_UNREFERENCED_PARAMETER( file_info )
+	CREGTOOLS_UNREFERENCED_PARAMETER( file_info )
 
 	if( path == NULL )
 	{
@@ -2114,13 +2121,13 @@ on_error:
  */
 int __stdcall cregmount_dokan_CloseFile(
                const wchar_t *path,
-               DOKAN_FILE_INFO *file_info LIBCSYSTEM_ATTRIBUTE_UNUSED )
+               DOKAN_FILE_INFO *file_info CREGTOOLS_ATTRIBUTE_UNUSED )
 {
 	libcerror_error_t *error = NULL;
 	static char *function    = "cregmount_dokan_CloseFile";
 	int result               = 0;
 
-	LIBCSYSTEM_UNREFERENCED_PARAMETER( file_info )
+	CREGTOOLS_UNREFERENCED_PARAMETER( file_info )
 
 	if( path == NULL )
 	{
@@ -2157,7 +2164,7 @@ int __stdcall cregmount_dokan_ReadFile(
                DWORD number_of_bytes_to_read,
                DWORD *number_of_bytes_read,
                LONGLONG offset,
-               DOKAN_FILE_INFO *file_info LIBCSYSTEM_ATTRIBUTE_UNUSED )
+               DOKAN_FILE_INFO *file_info CREGTOOLS_ATTRIBUTE_UNUSED )
 {
 	libcerror_error_t *error      = NULL;
 	libcreg_key_t *key            = NULL;
@@ -2171,7 +2178,7 @@ int __stdcall cregmount_dokan_ReadFile(
 	int result                    = 0;
 	uint8_t file_entry_type       = 0;
 
-	LIBCSYSTEM_UNREFERENCED_PARAMETER( file_info )
+	CREGTOOLS_UNREFERENCED_PARAMETER( file_info )
 
 	if( path == NULL )
 	{
@@ -3527,13 +3534,13 @@ int __stdcall cregmount_dokan_GetVolumeInformation(
                DWORD *file_system_flags,
                wchar_t *file_system_name,
                DWORD file_system_name_size,
-               DOKAN_FILE_INFO *file_info LIBCSYSTEM_ATTRIBUTE_UNUSED )
+               DOKAN_FILE_INFO *file_info CREGTOOLS_ATTRIBUTE_UNUSED )
 {
 	libcerror_error_t *error = NULL;
 	static char *function    = "cregmount_dokan_GetVolumeInformation";
 	int result               = 0;
 
-	LIBCSYSTEM_UNREFERENCED_PARAMETER( file_info )
+	CREGTOOLS_UNREFERENCED_PARAMETER( file_info )
 
 	if( ( volume_name != NULL )
 	 && ( volume_name_size > (DWORD) ( sizeof( wchar_t ) * 4 ) ) )
@@ -3613,11 +3620,11 @@ on_error:
  * Returns 0 if successful or a negative error code otherwise
  */
 int __stdcall cregmount_dokan_Unmount(
-               DOKAN_FILE_INFO *file_info LIBCSYSTEM_ATTRIBUTE_UNUSED )
+               DOKAN_FILE_INFO *file_info CREGTOOLS_ATTRIBUTE_UNUSED )
 {
 	static char *function = "cregmount_dokan_Unmount";
 
-	LIBCSYSTEM_UNREFERENCED_PARAMETER( file_info )
+	CREGTOOLS_UNREFERENCED_PARAMETER( file_info )
 
 	return( 0 );
 }
@@ -3670,13 +3677,13 @@ int main( int argc, char * const argv[] )
 
 		goto on_error;
 	}
-        if( libcsystem_initialize(
+        if( cregtools_output_initialize(
              _IONBF,
              &error ) != 1 )
 	{
 		fprintf(
 		 stderr,
-		 "Unable to initialize system values.\n" );
+		 "Unable to initialize output settings.\n" );
 
 		goto on_error;
 	}
@@ -3684,7 +3691,7 @@ int main( int argc, char * const argv[] )
 	 stdout,
 	 program );
 
-	while( ( option = libcsystem_getopt(
+	while( ( option = cregtools_getopt(
 	                   argc,
 	                   argv,
 	                   _SYSTEM_STRING( "c:hvVX:" ) ) ) != (system_integer_t) -1 )

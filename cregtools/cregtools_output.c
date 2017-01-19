@@ -1,7 +1,7 @@
 /*
  * Common output functions for the cregtools
  *
- * Copyright (C) 2013-2016, Joachim Metz <joachim.metz@gmail.com>
+ * Copyright (C) 2013-2017, Joachim Metz <joachim.metz@gmail.com>
  *
  * Refer to AUTHORS for acknowledgements.
  *
@@ -24,16 +24,74 @@
 #include <memory.h>
 #include <types.h>
 
-#include "cregoutput.h"
+#include "cregtools_i18n.h"
 #include "cregtools_libbfio.h"
 #include "cregtools_libcerror.h"
 #include "cregtools_libclocale.h"
 #include "cregtools_libcnotify.h"
 #include "cregtools_libcreg.h"
-#include "cregtools_libcsystem.h"
 #include "cregtools_libfcache.h"
 #include "cregtools_libfdata.h"
 #include "cregtools_libuna.h"
+#include "cregtools_output.h"
+
+/* Initializes output settings
+ * Returns 1 if successful or -1 on error
+ */
+int cregtools_output_initialize(
+     int stdio_mode,
+     libcerror_error_t **error )
+{
+	static char *function = "cregtools_output_initialize";
+
+	if( ( stdio_mode != _IOFBF )
+	 && ( stdio_mode != _IOLBF )
+	 && ( stdio_mode != _IONBF ) )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_UNSUPPORTED_VALUE,
+		 "%s: unsupported standard IO mode.",
+		 function );
+
+		return( -1 );
+	}
+#if !defined( __BORLANDC__ )
+	if( setvbuf(
+	     stdout,
+	     NULL,
+	     stdio_mode,
+	     0 ) != 0 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to set IO mode of stdout.",
+		 function );
+
+		return( -1 );
+	}
+	if( setvbuf(
+	     stderr,
+	     NULL,
+	     stdio_mode,
+	     0 ) != 0 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to set IO mode of stderr.",
+		 function );
+
+		return( -1 );
+	}
+#endif /* !defined( __BORLANDC__ ) */
+
+	return( 1 );
+}
 
 /* Prints the copyright information
  */
@@ -48,7 +106,7 @@ void cregoutput_copyright_fprint(
 	 */
 	fprintf(
 	 stream,
-	 _( "Copyright (C) 2013-2016, %s.\n" ),
+	 _( "Copyright (C) 2013-2017, %s.\n" ),
 	 _( "Joachim Metz" ) );
 
 	fprintf(

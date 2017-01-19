@@ -26,7 +26,6 @@ MSVSCPP_FILES = \
 	libcpath/libcpath.vcproj \
 	libcreg/libcreg.vcproj \
 	libcsplit/libcsplit.vcproj \
-	libcsystem/libcsystem.vcproj \
 	libcthreads/libcthreads.vcproj \
 	libfcache/libfcache.vcproj \
 	libfdata/libfdata.vcproj \

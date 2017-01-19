@@ -12,32 +12,25 @@ AM_CPPFLAGS = \
 	@LIBBFIO_CPPFLAGS@ \
 	@LIBFCACHE_CPPFLAGS@ \
 	@LIBFDATA_CPPFLAGS@ \
-	@LIBCSYSTEM_CPPFLAGS@ \
 	@LIBCREG_DLL_IMPORT@
 
 if HAVE_PYTHON_TESTS
 TESTS_PYCREG = \
-	test_python_functions.sh \
-	test_pycreg_set_ascii_codepage.sh
+	test_python_module.sh
 endif
 
 TESTS = \
-	test_api_functions.sh \
-	test_api_types.sh \
+	test_library.sh \
 	test_creginfo.sh \
 	test_cregexport.sh \
 	$(TESTS_PYCREG)
 
 check_SCRIPTS = \
-	pycreg_test_get_version.py \
-	pycreg_test_open_close.py \
-	pycreg_test_set_ascii_codepage.py \
-	test_api_functions.sh \
-	test_api_types.sh \
+	pycreg_test_support.py \
 	test_cregexport.sh \
 	test_creginfo.sh \
-	test_pycreg_set_ascii_codepage.sh \
-	test_python_functions.sh \
+	test_library.sh \
+	test_python_module.sh \
 	test_runner.sh
 
 EXTRA_DIST = \
@@ -106,16 +99,16 @@ creg_test_error_LDADD = \
 
 creg_test_file_SOURCES = \
 	creg_test_file.c \
+	creg_test_getopt.c creg_test_getopt.h \
 	creg_test_libcerror.h \
 	creg_test_libclocale.h \
+	creg_test_libcnotify.h \
 	creg_test_libcreg.h \
-	creg_test_libcsystem.h \
 	creg_test_libuna.h \
 	creg_test_macros.h \
 	creg_test_memory.c creg_test_memory.h
 
 creg_test_file_LDADD = \
-	@LIBCSYSTEM_LIBADD@ \
 	@LIBUNA_LIBADD@ \
 	@LIBCNOTIFY_LIBADD@ \
 	@LIBCLOCALE_LIBADD@ \
@@ -195,17 +188,17 @@ creg_test_notify_LDADD = \
 	../libcreg/libcreg.la
 
 creg_test_support_SOURCES = \
+	creg_test_getopt.c creg_test_getopt.h \
 	creg_test_libbfio.h \
 	creg_test_libcerror.h \
 	creg_test_libclocale.h \
+	creg_test_libcnotify.h \
 	creg_test_libcreg.h \
-	creg_test_libcsystem.h \
 	creg_test_libuna.h \
 	creg_test_macros.h \
 	creg_test_support.c
 
 creg_test_support_LDADD = \
-	@LIBCSYSTEM_LIBADD@ \
 	@LIBBFIO_LIBADD@ \
 	@LIBCPATH_LIBADD@ \
 	@LIBCFILE_LIBADD@ \

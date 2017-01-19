@@ -2,7 +2,7 @@ AC_PREREQ( 2.59 )
 
 AC_INIT(
  [libcreg],
- [20161212],
+ [20170119],
  [joachim.metz@gmail.com])
 
 AC_CONFIG_SRCDIR(
@@ -90,8 +90,8 @@ AX_LIBFDATA_CHECK_ENABLE
 dnl Check for library function support
 AX_LIBCREG_CHECK_LOCAL
 
-dnl Check for enabling libcsystem for cross-platform C generic system functions
-AX_LIBCSYSTEM_CHECK_ENABLE
+dnl Check for cregtools function support
+AX_CREGTOOLS_CHECK_LOCAL
 
 dnl Check for libfuse Filesystem in Userspace (FUSE) support
 AX_LIBFUSE_CHECK_ENABLE
@@ -101,15 +101,6 @@ AS_IF(
  [test "x$ac_cv_enable_winapi" = xno],
  [AC_CHECK_FUNCS([getegid geteuid])
  ])
-
-dnl Check if cregtools should be build as static executables
-AX_COMMON_CHECK_ENABLE_STATIC_EXECUTABLES
-
-dnl Check if libcreg should be build with verbose output
-AX_COMMON_CHECK_ENABLE_VERBOSE_OUTPUT
-
-dnl Check if libcreg should be build with debug output
-AX_COMMON_CHECK_ENABLE_DEBUG_OUTPUT
 
 dnl Check if libcreg python bindings (pycreg) should be build
 AX_PYTHON_CHECK_PYPREFIX
@@ -134,29 +125,6 @@ AS_IF(
 dnl Check for test function support
 AX_TESTS_CHECK_LOCAL
 
-dnl Check if DLL support is needed
-AS_IF(
- [test "x$enable_shared" = xyes],
- [AS_CASE(
-  [$host],
-  [*cygwin* | *mingw*],
-  [AC_DEFINE(
-   [HAVE_DLLMAIN],
-   [1],
-   [Define to 1 to enable the DllMain function.])
-  AC_SUBST(
-   [HAVE_DLLMAIN],
-   [1])
-
-  AS_IF(
-   [test "x$ac_cv_enable_static_executables" = xno],
-   [AC_SUBST(
-    [LIBCREG_DLL_IMPORT],
-    ["-DLIBCREG_DLL_IMPORT"])
-   ])
-  ])
- ])
-
 dnl Set additional compiler flags
 CFLAGS="$CFLAGS -Wall";
 
@@ -172,7 +140,7 @@ AS_IF(
  ])
 
 AS_IF(
- [test "x$ac_cv_libcsystem" = xyes || test "x$ac_cv_libfuse" != xno],
+ [test "x$ac_cv_libfuse" != xno],
  [AC_SUBST(
   [libcreg_spec_tools_build_requires],
   [BuildRequires:])
@@ -210,7 +178,6 @@ AC_CONFIG_FILES([libbfio/Makefile])
 AC_CONFIG_FILES([libfcache/Makefile])
 AC_CONFIG_FILES([libfdata/Makefile])
 AC_CONFIG_FILES([libcreg/Makefile])
-AC_CONFIG_FILES([libcsystem/Makefile])
 AC_CONFIG_FILES([cregtools/Makefile])
 AC_CONFIG_FILES([pycreg/Makefile])
 AC_CONFIG_FILES([pycreg-python2/Makefile])
@@ -253,7 +220,6 @@ Building:
    libbfio support:                           $ac_cv_libbfio
    libfcache support:                         $ac_cv_libfcache
    libfdata support:                          $ac_cv_libfdata
-   libcsystem support:                        $ac_cv_libcsystem
    FUSE support:                              $ac_cv_libfuse
 
 Features:

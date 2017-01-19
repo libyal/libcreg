@@ -1,7 +1,7 @@
 /*
- * Library file type testing program
+ * Library file type test program
  *
- * Copyright (C) 2013-2016, Joachim Metz <joachim.metz@gmail.com>
+ * Copyright (C) 2013-2017, Joachim Metz <joachim.metz@gmail.com>
  *
  * Refer to AUTHORS for acknowledgements.
  *
@@ -30,10 +30,10 @@
 #include <stdlib.h>
 #endif
 
+#include "creg_test_getopt.h"
 #include "creg_test_libcerror.h"
 #include "creg_test_libclocale.h"
 #include "creg_test_libcreg.h"
-#include "creg_test_libcsystem.h"
 #include "creg_test_libuna.h"
 #include "creg_test_macros.h"
 #include "creg_test_memory.h"
@@ -1708,7 +1708,7 @@ int main(
 	system_integer_t option    = 0;
 	int result                 = 0;
 
-	while( ( option = libcsystem_getopt(
+	while( ( option = creg_test_getopt(
 	                   argc,
 	                   argv,
 	                   _SYSTEM_STRING( "" ) ) ) != (system_integer_t) -1 )

@@ -16,7 +16,6 @@ SUBDIRS = \
 	libfcache \
 	libfdata \
 	libcreg \
-	libcsystem \
 	cregtools \
 	pycreg \
 	pycreg-python2 \
@@ -118,7 +117,6 @@ splint:
 	(cd $(srcdir)/libfcache && $(MAKE) splint $(AM_MAKEFLAGS))
 	(cd $(srcdir)/libfdata && $(MAKE) splint $(AM_MAKEFLAGS))
 	(cd $(srcdir)/libcreg && $(MAKE) splint $(AM_MAKEFLAGS))
-	(cd $(srcdir)/libcsystem && $(MAKE) splint $(AM_MAKEFLAGS))
 	(cd $(srcdir)/cregtools && $(MAKE) splint $(AM_MAKEFLAGS))
 	(cd $(srcdir)/pycreg && $(MAKE) splint $(AM_MAKEFLAGS))
 	(cd $(srcdir)/po && $(MAKE) splint $(AM_MAKEFLAGS))

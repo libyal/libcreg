@@ -11,7 +11,6 @@ AM_CPPFLAGS = \
 	@LIBBFIO_CPPFLAGS@ \
 	@LIBFCACHE_CPPFLAGS@ \
 	@LIBFDATA_CPPFLAGS@ \
-	@LIBCSYSTEM_CPPFLAGS@ \
 	@LIBFUSE_CPPFLAGS@ \
 	@LIBCREG_DLL_IMPORT@
 
@@ -26,67 +25,70 @@ cregexport_SOURCES = \
 	export_handle.c export_handle.h \
 	log_handle.c log_handle.h \
 	cregexport.c \
-	cregoutput.c cregoutput.h \
+	cregtools_getopt.c cregtools_getopt.h \
 	cregtools_libbfio.h \
 	cregtools_libcerror.h \
 	cregtools_libclocale.h \
 	cregtools_libcnotify.h \
 	cregtools_libcreg.h \
-	cregtools_libcsystem.h \
 	cregtools_libfcache.h \
 	cregtools_libfdata.h \
-	cregtools_libuna.h
+	cregtools_libuna.h \
+	cregtools_output.c cregtools_output.h \
+	cregtools_signal.c cregtools_signal.h \
+	cregtools_unused.h
 
 cregexport_LDADD = \
-	@LIBCSYSTEM_LIBADD@ \
-	../libcreg/libcreg.la \
 	@LIBCNOTIFY_LIBADD@ \
 	@LIBCLOCALE_LIBADD@ \
+	../libcreg/libcreg.la \
 	@LIBCERROR_LIBADD@ \
 	@LIBINTL@
 
 creginfo_SOURCES = \
 	info_handle.c info_handle.h \
 	creginfo.c \
-	cregoutput.c cregoutput.h \
+	cregtools_getopt.c cregtools_getopt.h \
 	cregtools_libbfio.h \
 	cregtools_libcerror.h \
 	cregtools_libclocale.h \
 	cregtools_libcnotify.h \
 	cregtools_libcreg.h \
-	cregtools_libcsystem.h \
 	cregtools_libfcache.h \
 	cregtools_libfdata.h \
-	cregtools_libuna.h
+	cregtools_libuna.h \
+	cregtools_output.c cregtools_output.h \
+	cregtools_signal.c cregtools_signal.h \
+	cregtools_unused.h
 
 creginfo_LDADD = \
-	@LIBCSYSTEM_LIBADD@ \
-	../libcreg/libcreg.la \
 	@LIBCNOTIFY_LIBADD@ \
 	@LIBCLOCALE_LIBADD@ \
+	../libcreg/libcreg.la \
 	@LIBCERROR_LIBADD@ \
 	@LIBINTL@
 
 cregmount_SOURCES = \
 	mount_handle.c mount_handle.h \
 	cregmount.c \
-	cregoutput.c cregoutput.h \
+	cregtools_getopt.c cregtools_getopt.h \
 	cregtools_libbfio.h \
 	cregtools_libcerror.h \
 	cregtools_libclocale.h \
 	cregtools_libcnotify.h \
 	cregtools_libcreg.h \
-	cregtools_libcsystem.h \
 	cregtools_libfcache.h \
 	cregtools_libfdata.h \
-	cregtools_libuna.h
+	cregtools_libuna.h \
+	cregtools_output.c cregtools_output.h \
+	cregtools_signal.c cregtools_signal.h \
+	cregtools_unused.h
 
 cregmount_LDADD = \
 	@LIBFUSE_LIBADD@ \
-	@LIBCSYSTEM_LIBADD@ \
-	../libcreg/libcreg.la \
 	@LIBCNOTIFY_LIBADD@ \
 	@LIBCLOCALE_LIBADD@ \
+	../libcreg/libcreg.la \
 	@LIBCERROR_LIBADD@ \
 	@LIBINTL@
 

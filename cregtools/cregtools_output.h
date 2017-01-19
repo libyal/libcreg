@@ -1,7 +1,7 @@
 /*
  * Common output functions for the cregtools
  *
- * Copyright (C) 2013-2016, Joachim Metz <joachim.metz@gmail.com>
+ * Copyright (C) 2013-2017, Joachim Metz <joachim.metz@gmail.com>
  *
  * Refer to AUTHORS for acknowledgements.
  *
@@ -29,6 +29,10 @@
 #if defined( __cplusplus )
 extern "C" {
 #endif
+
+int cregtools_output_initialize(
+     int stdio_mode,
+     libcerror_error_t **error );
 
 void cregoutput_copyright_fprint(
       FILE *stream );

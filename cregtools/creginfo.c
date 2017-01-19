@@ -1,7 +1,7 @@
 /*
  * Shows information obtained from a Windows 9x/Me Registry File (CREG)
  *
- * Copyright (C) 2009-2016, Joachim Metz <joachim.metz@gmail.com>
+ * Copyright (C) 2009-2017, Joachim Metz <joachim.metz@gmail.com>
  *
  * Refer to AUTHORS for acknowledgements.
  *
@@ -33,12 +33,14 @@
 #include <stdlib.h>
 #endif
 
-#include "cregoutput.h"
+#include "cregtools_getopt.h"
 #include "cregtools_libcerror.h"
 #include "cregtools_libclocale.h"
 #include "cregtools_libcnotify.h"
-#include "cregtools_libcsystem.h"
 #include "cregtools_libcreg.h"
+#include "cregtools_output.h"
+#include "cregtools_signal.h"
+#include "cregtools_unused.h"
 #include "info_handle.h"
 
 info_handle_t *creginfo_info_handle = NULL;
@@ -73,12 +75,12 @@ void usage_fprint(
 /* Signal handler for creginfo
  */
 void creginfo_signal_handler(
-      libcsystem_signal_t signal LIBCSYSTEM_ATTRIBUTE_UNUSED )
+      cregtools_signal_t signal CREGTOOLS_ATTRIBUTE_UNUSED )
 {
 	libcerror_error_t *error = NULL;
 	static char *function   = "creginfo_signal_handler";
 
-	LIBCSYSTEM_UNREFERENCED_PARAMETER( signal )
+	CREGTOOLS_UNREFERENCED_PARAMETER( signal )
 
 	creginfo_abort = 1;
 
@@ -100,8 +102,13 @@ void creginfo_signal_handler(
 	}
 	/* Force stdin to close otherwise any function reading it will remain blocked
 	 */
-	if( libcsystem_file_io_close(
+#if defined( WINAPI ) && !defined( __CYGWIN__ )
+	if( _close(
 	     0 ) != 0 )
+#else
+	if( close(
+	     0 ) != 0 )
+#endif
 	{
 		libcnotify_printf(
 		 "%s: unable to close stdin.\n",
@@ -141,13 +148,13 @@ int main( int argc, char * const argv[] )
 
 		goto on_error;
 	}
-	if( libcsystem_initialize(
+	if( cregtools_output_initialize(
 	     _IONBF,
 	     &error ) != 1 )
 	{
 		fprintf(
 		 stderr,
-		 "Unable to initialize system values.\n" );
+		 "Unable to initialize output settings.\n" );
 
 		goto on_error;
 	}
@@ -155,7 +162,7 @@ int main( int argc, char * const argv[] )
 	 stdout,
 	 program );
 
-	while( ( option = libcsystem_getopt(
+	while( ( option = cregtools_getopt(
 	                   argc,
 	                   argv,
 	                   _SYSTEM_STRING( "c:hvV" ) ) ) != (system_integer_t) -1 )
