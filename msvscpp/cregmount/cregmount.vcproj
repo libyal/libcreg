@@ -206,6 +206,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\cregtools\cregtools_i18n.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\cregtools\cregtools_libbfio.h"
 				>
 			</File>

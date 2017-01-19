@@ -344,7 +344,7 @@ int libcreg_value_entry_read(
 #if defined( HAVE_DEBUG_OUTPUT )
 		if( libcnotify_verbose != 0 )
 		{
-			if( libfwsi_debug_print_string_value(
+			if( libcreg_debug_print_string_value(
 			     function,
 			     "name\t\t\t\t\t\t",
 			     &( data[ value_data_offset ] ),

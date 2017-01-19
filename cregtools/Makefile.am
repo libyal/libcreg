@@ -26,6 +26,7 @@ cregexport_SOURCES = \
 	log_handle.c log_handle.h \
 	cregexport.c \
 	cregtools_getopt.c cregtools_getopt.h \
+	cregtools_i18n.h \
 	cregtools_libbfio.h \
 	cregtools_libcerror.h \
 	cregtools_libclocale.h \
@@ -49,6 +50,7 @@ creginfo_SOURCES = \
 	info_handle.c info_handle.h \
 	creginfo.c \
 	cregtools_getopt.c cregtools_getopt.h \
+	cregtools_i18n.h \
 	cregtools_libbfio.h \
 	cregtools_libcerror.h \
 	cregtools_libclocale.h \
@@ -72,6 +74,7 @@ cregmount_SOURCES = \
 	mount_handle.c mount_handle.h \
 	cregmount.c \
 	cregtools_getopt.c cregtools_getopt.h \
+	cregtools_i18n.h \
 	cregtools_libbfio.h \
 	cregtools_libcerror.h \
 	cregtools_libclocale.h \
