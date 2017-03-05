@@ -26,6 +26,7 @@ TESTS = \
 	$(TESTS_PYCREG)
 
 check_SCRIPTS = \
+	pycreg_test_file.py \
 	pycreg_test_support.py \
 	test_cregexport.sh \
 	test_creginfo.sh \

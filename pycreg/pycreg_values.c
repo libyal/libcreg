@@ -1,5 +1,5 @@
 /*
- * Python object definition of the values sequence and iterator
+ * Python object definition of the sequence and iterator object of values
  *
  * Copyright (C) 2013-2017, Joachim Metz <joachim.metz@gmail.com>
  *
@@ -26,7 +26,6 @@
 #include <stdlib.h>
 #endif
 
-#include "pycreg_key.h"
 #include "pycreg_libcerror.h"
 #include "pycreg_libcreg.h"
 #include "pycreg_python.h"
@@ -98,7 +97,7 @@ PyTypeObject pycreg_values_type_object = {
 	/* tp_flags */
 	Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HAVE_ITER,
 	/* tp_doc */
-	"internal pycreg values sequence and iterator object",
+	"pycreg internal sequence and iterator object of values",
 	/* tp_traverse */
 	0,
 	/* tp_clear */
@@ -155,72 +154,72 @@ PyTypeObject pycreg_values_type_object = {
  * Returns a Python object if successful or NULL on error
  */
 PyObject *pycreg_values_new(
-           pycreg_key_t *key_object,
-           PyObject* (*get_value_by_index)(
-                        pycreg_key_t *key_object,
-                        int value_index ),
-           int number_of_values )
+           PyObject *parent_object,
+           PyObject* (*get_item_by_index)(
+                        PyObject *parent_object,
+                        int index ),
+           int number_of_items )
 {
-	pycreg_values_t *pycreg_values = NULL;
+	pycreg_values_t *values_object = NULL;
 	static char *function          = "pycreg_values_new";
 
-	if( key_object == NULL )
+	if( parent_object == NULL )
 	{
 		PyErr_Format(
 		 PyExc_ValueError,
-		 "%s: invalid key object.",
+		 "%s: invalid parent object.",
 		 function );
 
 		return( NULL );
 	}
-	if( get_value_by_index == NULL )
+	if( get_item_by_index == NULL )
 	{
 		PyErr_Format(
 		 PyExc_ValueError,
-		 "%s: invalid get value by index function.",
+		 "%s: invalid get item by index function.",
 		 function );
 
 		return( NULL );
 	}
 	/* Make sure the values values are initialized
 	 */
-	pycreg_values = PyObject_New(
+	values_object = PyObject_New(
 	                 struct pycreg_values,
 	                 &pycreg_values_type_object );
 
-	if( pycreg_values == NULL )
+	if( values_object == NULL )
 	{
 		PyErr_Format(
 		 PyExc_MemoryError,
-		 "%s: unable to initialize values.",
+		 "%s: unable to create values object.",
 		 function );
 
 		goto on_error;
 	}
 	if( pycreg_values_init(
-	     pycreg_values ) != 0 )
+	     values_object ) != 0 )
 	{
 		PyErr_Format(
 		 PyExc_MemoryError,
-		 "%s: unable to initialize values.",
+		 "%s: unable to initialize values object.",
 		 function );
 
 		goto on_error;
 	}
-	pycreg_values->key_object         = key_object;
-	pycreg_values->get_value_by_index = get_value_by_index;
-	pycreg_values->number_of_values   = number_of_values;
+	values_object->parent_object     = parent_object;
+	values_object->get_item_by_index = get_item_by_index;
+	values_object->number_of_items   = number_of_items;
 
 	Py_IncRef(
-	 (PyObject *) pycreg_values->key_object );
+	 (PyObject *) values_object->parent_object );
 
-	return( (PyObject *) pycreg_values );
+	return( (PyObject *) values_object );
 
 on_error:
-	if( pycreg_values != NULL )
+	if( values_object != NULL )
 	{
 		Py_DecRef(
-		 (PyObject *) pycreg_values );
+		 (PyObject *) values_object );
 	}
 	return( NULL );
 }
@@ -229,25 +228,25 @@ on_error:
  * Returns 0 if successful or -1 on error
  */
 int pycreg_values_init(
-     pycreg_values_t *pycreg_values )
+     pycreg_values_t *values_object )
 {
 	static char *function = "pycreg_values_init";
 
-	if( pycreg_values == NULL )
+	if( values_object == NULL )
 	{
 		PyErr_Format(
 		 PyExc_ValueError,
-		 "%s: invalid values.",
+		 "%s: invalid values object.",
 		 function );
 
 		return( -1 );
 	}
 	/* Make sure the values values are initialized
 	 */
-	pycreg_values->key_object         = NULL;
-	pycreg_values->get_value_by_index = NULL;
-	pycreg_values->value_index        = 0;
-	pycreg_values->number_of_values   = 0;
+	values_object->parent_object     = NULL;
+	values_object->get_item_by_index = NULL;
+	values_object->current_index     = 0;
+	values_object->number_of_items   = 0;
 
 	return( 0 );
 }
@@ -255,22 +254,22 @@ int pycreg_values_init(
 /* Frees a values object
  */
 void pycreg_values_free(
-      pycreg_values_t *pycreg_values )
+      pycreg_values_t *values_object )
 {
 	struct _typeobject *ob_type = NULL;
 	static char *function       = "pycreg_values_free";
 
-	if( pycreg_values == NULL )
+	if( values_object == NULL )
 	{
 		PyErr_Format(
 		 PyExc_ValueError,
-		 "%s: invalid values.",
+		 "%s: invalid values object.",
 		 function );
 
 		return;
 	}
 	ob_type = Py_TYPE(
-	           pycreg_values );
+	           values_object );
 
 	if( ob_type == NULL )
 	{
@@ -290,72 +289,72 @@ void pycreg_values_free(
 
 		return;
 	}
-	if( pycreg_values->key_object != NULL )
+	if( values_object->parent_object != NULL )
 	{
 		Py_DecRef(
-		 (PyObject *) pycreg_values->key_object );
+		 (PyObject *) values_object->parent_object );
 	}
 	ob_type->tp_free(
-	 (PyObject*) pycreg_values );
+	 (PyObject*) values_object );
 }
 
 /* The values len() function
  */
 Py_ssize_t pycreg_values_len(
-            pycreg_values_t *pycreg_values )
+            pycreg_values_t *values_object )
 {
 	static char *function = "pycreg_values_len";
 
-	if( pycreg_values == NULL )
+	if( values_object == NULL )
 	{
 		PyErr_Format(
 		 PyExc_ValueError,
-		 "%s: invalid values.",
+		 "%s: invalid values object.",
 		 function );
 
 		return( -1 );
 	}
-	return( (Py_ssize_t) pycreg_values->number_of_values );
+	return( (Py_ssize_t) values_object->number_of_items );
 }
 
 /* The values getitem() function
  */
 PyObject *pycreg_values_getitem(
-           pycreg_values_t *pycreg_values,
+           pycreg_values_t *values_object,
            Py_ssize_t item_index )
 {
 	PyObject *value_object = NULL;
 	static char *function  = "pycreg_values_getitem";
 
-	if( pycreg_values == NULL )
+	if( values_object == NULL )
 	{
 		PyErr_Format(
 		 PyExc_ValueError,
-		 "%s: invalid values.",
+		 "%s: invalid values object.",
 		 function );
 
 		return( NULL );
 	}
-	if( pycreg_values->get_value_by_index == NULL )
+	if( values_object->get_item_by_index == NULL )
 	{
 		PyErr_Format(
 		 PyExc_ValueError,
-		 "%s: invalid values - missing get value by index function.",
+		 "%s: invalid values object - missing get item by index function.",
 		 function );
 
 		return( NULL );
 	}
-	if( pycreg_values->number_of_values < 0 )
+	if( values_object->number_of_items < 0 )
 	{
 		PyErr_Format(
 		 PyExc_ValueError,
-		 "%s: invalid values - invalid number of -1ecords.",
+		 "%s: invalid values object - invalid number of items.",
 		 function );
 
 		return( NULL );
 	}
 	if( ( item_index < 0 )
-	 || ( item_index >= (Py_ssize_t) pycreg_values->number_of_values ) )
+	 || ( item_index >= (Py_ssize_t) values_object->number_of_items ) )
 	{
 		PyErr_Format(
 		 PyExc_ValueError,
@@ -364,8 +363,8 @@ PyObject *pycreg_values_getitem(
 
 		return( NULL );
 	}
-	value_object = pycreg_values->get_value_by_index(
-	                pycreg_values->key_object,
+	value_object = values_object->get_item_by_index(
+	                values_object->parent_object,
 	                (int) item_index );
 
 	return( value_object );
@@ -374,83 +373,83 @@ PyObject *pycreg_values_getitem(
 /* The values iter() function
  */
 PyObject *pycreg_values_iter(
-           pycreg_values_t *pycreg_values )
+           pycreg_values_t *values_object )
 {
 	static char *function = "pycreg_values_iter";
 
-	if( pycreg_values == NULL )
+	if( values_object == NULL )
 	{
 		PyErr_Format(
 		 PyExc_ValueError,
-		 "%s: invalid values.",
+		 "%s: invalid values object.",
 		 function );
 
 		return( NULL );
 	}
 	Py_IncRef(
-	 (PyObject *) pycreg_values );
+	 (PyObject *) values_object );
 
-	return( (PyObject *) pycreg_values );
+	return( (PyObject *) values_object );
 }
 
 /* The values iternext() function
  */
 PyObject *pycreg_values_iternext(
-           pycreg_values_t *pycreg_values )
+           pycreg_values_t *values_object )
 {
 	PyObject *value_object = NULL;
 	static char *function  = "pycreg_values_iternext";
 
-	if( pycreg_values == NULL )
+	if( values_object == NULL )
 	{
 		PyErr_Format(
 		 PyExc_ValueError,
-		 "%s: invalid values.",
+		 "%s: invalid values object.",
 		 function );
 
 		return( NULL );
 	}
-	if( pycreg_values->get_value_by_index == NULL )
+	if( values_object->get_item_by_index == NULL )
 	{
 		PyErr_Format(
 		 PyExc_ValueError,
-		 "%s: invalid values - missing get value by index function.",
+		 "%s: invalid values object - missing get item by index function.",
 		 function );
 
 		return( NULL );
 	}
-	if( pycreg_values->value_index < 0 )
+	if( values_object->current_index < 0 )
 	{
 		PyErr_Format(
 		 PyExc_ValueError,
-		 "%s: invalid values - invalid value index.",
+		 "%s: invalid values object - invalid current index.",
 		 function );
 
 		return( NULL );
 	}
-	if( pycreg_values->number_of_values < 0 )
+	if( values_object->number_of_items < 0 )
 	{
 		PyErr_Format(
 		 PyExc_ValueError,
-		 "%s: invalid values - invalid number of values.",
+		 "%s: invalid values object - invalid number of items.",
 		 function );
 
 		return( NULL );
 	}
-	if( pycreg_values->value_index >= pycreg_values->number_of_values )
+	if( values_object->current_index >= values_object->number_of_items )
 	{
 		PyErr_SetNone(
 		 PyExc_StopIteration );
 
 		return( NULL );
 	}
-	value_object = pycreg_values->get_value_by_index(
-	                pycreg_values->key_object,
-	                pycreg_values->value_index );
+	value_object = values_object->get_item_by_index(
+	                values_object->parent_object,
+	                values_object->current_index );
 
 	if( value_object != NULL )
 	{
-		pycreg_values->value_index++;
+		values_object->current_index++;
 	}
 	return( value_object );
 }

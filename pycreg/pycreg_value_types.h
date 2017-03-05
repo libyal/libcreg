@@ -50,10 +50,10 @@ PyObject *pycreg_value_types_new(
            void );
 
 int pycreg_value_types_init(
-     pycreg_value_types_t *pycreg_value_types );
+     pycreg_value_types_t *definitions_object );
 
 void pycreg_value_types_free(
-      pycreg_value_types_t *pycreg_value_types );
+      pycreg_value_types_t *definitions_object );
 
 #if defined( __cplusplus )
 }

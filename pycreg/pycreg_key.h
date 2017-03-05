@@ -1,5 +1,5 @@
 /*
- * Python object definition of the libcreg key
+ * Python object wrapper of libcreg_key_t
  *
  * Copyright (C) 2013-2017, Joachim Metz <joachim.metz@gmail.com>
  *
@@ -80,7 +80,7 @@ PyObject *pycreg_key_get_number_of_sub_keys(
            PyObject *arguments );
 
 PyObject *pycreg_key_get_sub_key_by_index(
-           pycreg_key_t *pycreg_key,
+           PyObject *pycreg_key,
            int sub_key_index );
 
 PyObject *pycreg_key_get_sub_key(
@@ -107,7 +107,7 @@ PyObject *pycreg_key_get_number_of_values(
            PyObject *arguments );
 
 PyObject *pycreg_key_get_value_by_index(
-           pycreg_key_t *pycreg_key,
+           PyObject *pycreg_key,
            int value_index );
 
 PyObject *pycreg_key_get_value(

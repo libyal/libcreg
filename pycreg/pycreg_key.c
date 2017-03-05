@@ -1,5 +1,5 @@
 /*
- * Python object definition of the libcreg key
+ * Python object wrapper of libcreg_key_t
  *
  * Copyright (C) 2013-2017, Joachim Metz <joachim.metz@gmail.com>
  *
@@ -699,7 +699,7 @@ PyObject *pycreg_key_get_number_of_sub_keys(
  * Returns a Python object if successful or NULL on error
  */
 PyObject *pycreg_key_get_sub_key_by_index(
-           pycreg_key_t *pycreg_key,
+           PyObject *pycreg_key,
            int sub_key_index )
 {
 	libcerror_error_t *error = NULL;
@@ -720,7 +720,7 @@ PyObject *pycreg_key_get_sub_key_by_index(
 	Py_BEGIN_ALLOW_THREADS
 
 	result = libcreg_key_get_sub_key(
-	          pycreg_key->key,
+	          ( (pycreg_key_t *) pycreg_key )->key,
 	          sub_key_index,
 	          &sub_key,
 	          &error );
@@ -743,7 +743,7 @@ PyObject *pycreg_key_get_sub_key_by_index(
 	}
 	key_object = pycreg_key_new(
 	              sub_key,
-	              pycreg_key->file_object );
+	              ( (pycreg_key_t *) pycreg_key )->file_object );
 
 	if( key_object == NULL )
 	{
@@ -788,7 +788,7 @@ PyObject *pycreg_key_get_sub_key(
 		return( NULL );
 	}
 	key_object = pycreg_key_get_sub_key_by_index(
-	              pycreg_key,
+	              (PyObject *) pycreg_key,
 	              sub_key_index );
 
 	return( key_object );
@@ -841,7 +841,7 @@ PyObject *pycreg_key_get_sub_keys(
 		return( NULL );
 	}
 	sub_keys_object = pycreg_keys_new(
-	                   pycreg_key,
+	                   (PyObject *) pycreg_key,
 	                   &pycreg_key_get_sub_key_by_index,
 	                   number_of_sub_keys );
 
@@ -1109,7 +1109,7 @@ PyObject *pycreg_key_get_number_of_values(
  * Returns a Python object if successful or NULL on error
  */
 PyObject *pycreg_key_get_value_by_index(
-           pycreg_key_t *pycreg_key,
+           PyObject *pycreg_key,
            int value_index )
 {
 	libcerror_error_t *error = NULL;
@@ -1130,7 +1130,7 @@ PyObject *pycreg_key_get_value_by_index(
 	Py_BEGIN_ALLOW_THREADS
 
 	result = libcreg_key_get_value(
-	          pycreg_key->key,
+	          ( (pycreg_key_t *) pycreg_key )->key,
 	          value_index,
 	          &value,
 	          &error );
@@ -1153,7 +1153,7 @@ PyObject *pycreg_key_get_value_by_index(
 	}
 	value_object = pycreg_value_new(
 	                value,
-	                pycreg_key->file_object );
+	                ( (pycreg_key_t *) pycreg_key )->file_object );
 
 	if( value_object == NULL )
 	{
@@ -1198,7 +1198,7 @@ PyObject *pycreg_key_get_value(
 		return( NULL );
 	}
 	value_object = pycreg_key_get_value_by_index(
-	                pycreg_key,
+	                (PyObject *) pycreg_key,
 	                value_index );
 
 	return( value_object );
@@ -1251,7 +1251,7 @@ PyObject *pycreg_key_get_values(
 		return( NULL );
 	}
 	values_object = pycreg_values_new(
-	                 pycreg_key,
+	                 (PyObject *) pycreg_key,
 	                 &pycreg_key_get_value_by_index,
 	                 number_of_values );
 

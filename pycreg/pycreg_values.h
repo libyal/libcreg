@@ -1,5 +1,5 @@
 /*
- * Python object definition of the values sequence and iterator
+ * Python object definition of the sequence and iterator object of values
  *
  * Copyright (C) 2013-2017, Joachim Metz <joachim.metz@gmail.com>
  *
@@ -25,7 +25,6 @@
 #include <common.h>
 #include <types.h>
 
-#include "pycreg_key.h"
 #include "pycreg_libcreg.h"
 #include "pycreg_python.h"
 
@@ -41,52 +40,52 @@ struct pycreg_values
 	 */
 	PyObject_HEAD
 
-	/* The pycreg key object
+	/* The parent object
 	 */
-	pycreg_key_t *key_object;
+	PyObject *parent_object;
 
-	/* The get value by index callback function
+	/* The get item by index callback function
 	 */
-	PyObject* (*get_value_by_index)(
-	             pycreg_key_t *key_object,
-	             int value_index );
+	PyObject* (*get_item_by_index)(
+	             PyObject *parent_object,
+	             int index );
 
-	/* The (current) value index
+	/* The current index
 	 */
-	int value_index;
+	int current_index;
 
-	/* The number of values
+	/* The number of items
 	 */
-	int number_of_values;
+	int number_of_items;
 };
 
 extern PyTypeObject pycreg_values_type_object;
 
 PyObject *pycreg_values_new(
-           pycreg_key_t *key_object,
-           PyObject* (*get_value_by_index)(
-                        pycreg_key_t *key_object,
-                        int value_index ),
-           int number_of_values );
+           PyObject *parent_object,
+           PyObject* (*get_item_by_index)(
+                        PyObject *parent_object,
+                        int index ),
+           int number_of_items );
 
 int pycreg_values_init(
-     pycreg_values_t *pycreg_values );
+     pycreg_values_t *values_object );
 
 void pycreg_values_free(
-      pycreg_values_t *pycreg_values );
+      pycreg_values_t *values_object );
 
 Py_ssize_t pycreg_values_len(
-            pycreg_values_t *pycreg_values );
+            pycreg_values_t *values_object );
 
 PyObject *pycreg_values_getitem(
-           pycreg_values_t *pycreg_values,
+           pycreg_values_t *values_object,
            Py_ssize_t item_index );
 
 PyObject *pycreg_values_iter(
-           pycreg_values_t *pycreg_values );
+           pycreg_values_t *values_object );
 
 PyObject *pycreg_values_iternext(
-           pycreg_values_t *pycreg_values );
+           pycreg_values_t *values_object );
 
 #if defined( __cplusplus )
 }

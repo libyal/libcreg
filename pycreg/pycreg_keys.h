@@ -1,5 +1,5 @@
 /*
- * Python object definition of the keys sequence and iterator
+ * Python object definition of the sequence and iterator object of keys
  *
  * Copyright (C) 2013-2017, Joachim Metz <joachim.metz@gmail.com>
  *
@@ -25,7 +25,6 @@
 #include <common.h>
 #include <types.h>
 
-#include "pycreg_key.h"
 #include "pycreg_libcreg.h"
 #include "pycreg_python.h"
 
@@ -41,52 +40,52 @@ struct pycreg_keys
 	 */
 	PyObject_HEAD
 
-	/* The pycreg key object
+	/* The parent object
 	 */
-	pycreg_key_t *key_object;
+	PyObject *parent_object;
 
-	/* The get sub key by index callback function
+	/* The get item by index callback function
 	 */
-	PyObject* (*get_sub_key_by_index)(
-	             pycreg_key_t *key_object,
-	             int sub_key_index );
+	PyObject* (*get_item_by_index)(
+	             PyObject *parent_object,
+	             int index );
 
-	/* The (current) sub key index
+	/* The current index
 	 */
-	int sub_key_index;
+	int current_index;
 
-	/* The number of sub keys
+	/* The number of items
 	 */
-	int number_of_sub_keys;
+	int number_of_items;
 };
 
 extern PyTypeObject pycreg_keys_type_object;
 
 PyObject *pycreg_keys_new(
-           pycreg_key_t *key_object,
-           PyObject* (*get_sub_key_by_index)(
-                        pycreg_key_t *key_object,
-                        int sub_key_index ),
-           int number_of_sub_keys );
+           PyObject *parent_object,
+           PyObject* (*get_item_by_index)(
+                        PyObject *parent_object,
+                        int index ),
+           int number_of_items );
 
 int pycreg_keys_init(
-     pycreg_keys_t *pycreg_keys );
+     pycreg_keys_t *keys_object );
 
 void pycreg_keys_free(
-      pycreg_keys_t *pycreg_keys );
+      pycreg_keys_t *keys_object );
 
 Py_ssize_t pycreg_keys_len(
-            pycreg_keys_t *pycreg_keys );
+            pycreg_keys_t *keys_object );
 
 PyObject *pycreg_keys_getitem(
-           pycreg_keys_t *pycreg_keys,
+           pycreg_keys_t *keys_object,
            Py_ssize_t item_index );
 
 PyObject *pycreg_keys_iter(
-           pycreg_keys_t *pycreg_keys );
+           pycreg_keys_t *keys_object );
 
 PyObject *pycreg_keys_iternext(
-           pycreg_keys_t *pycreg_keys );
+           pycreg_keys_t *keys_object );
 
 #if defined( __cplusplus )
 }

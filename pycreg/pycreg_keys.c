@@ -1,5 +1,5 @@
 /*
- * Python object definition of the keys sequence and iterator
+ * Python object definition of the sequence and iterator object of keys
  *
  * Copyright (C) 2013-2017, Joachim Metz <joachim.metz@gmail.com>
  *
@@ -97,7 +97,7 @@ PyTypeObject pycreg_keys_type_object = {
 	/* tp_flags */
 	Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HAVE_ITER,
 	/* tp_doc */
-	"internal pycreg keys sequence and iterator object",
+	"pycreg internal sequence and iterator object of keys",
 	/* tp_traverse */
 	0,
 	/* tp_clear */
@@ -154,72 +154,72 @@ PyTypeObject pycreg_keys_type_object = {
  * Returns a Python object if successful or NULL on error
  */
 PyObject *pycreg_keys_new(
-           pycreg_key_t *key_object,
-           PyObject* (*get_sub_key_by_index)(
-                        pycreg_key_t *key_object,
-                        int sub_key_index ),
-           int number_of_sub_keys )
+           PyObject *parent_object,
+           PyObject* (*get_item_by_index)(
+                        PyObject *parent_object,
+                        int index ),
+           int number_of_items )
 {
-	pycreg_keys_t *pycreg_keys = NULL;
+	pycreg_keys_t *keys_object = NULL;
 	static char *function      = "pycreg_keys_new";
 
-	if( key_object == NULL )
+	if( parent_object == NULL )
 	{
 		PyErr_Format(
 		 PyExc_ValueError,
-		 "%s: invalid key object.",
+		 "%s: invalid parent object.",
 		 function );
 
 		return( NULL );
 	}
-	if( get_sub_key_by_index == NULL )
+	if( get_item_by_index == NULL )
 	{
 		PyErr_Format(
 		 PyExc_ValueError,
-		 "%s: invalid get sub key by index function.",
+		 "%s: invalid get item by index function.",
 		 function );
 
 		return( NULL );
 	}
 	/* Make sure the keys values are initialized
 	 */
-	pycreg_keys = PyObject_New(
+	keys_object = PyObject_New(
 	               struct pycreg_keys,
 	               &pycreg_keys_type_object );
 
-	if( pycreg_keys == NULL )
+	if( keys_object == NULL )
 	{
 		PyErr_Format(
 		 PyExc_MemoryError,
-		 "%s: unable to initialize keys.",
+		 "%s: unable to create keys object.",
 		 function );
 
 		goto on_error;
 	}
 	if( pycreg_keys_init(
-	     pycreg_keys ) != 0 )
+	     keys_object ) != 0 )
 	{
 		PyErr_Format(
 		 PyExc_MemoryError,
-		 "%s: unable to initialize keys.",
+		 "%s: unable to initialize keys object.",
 		 function );
 
 		goto on_error;
 	}
-	pycreg_keys->key_object           = key_object;
-	pycreg_keys->get_sub_key_by_index = get_sub_key_by_index;
-	pycreg_keys->number_of_sub_keys   = number_of_sub_keys;
+	keys_object->parent_object     = parent_object;
+	keys_object->get_item_by_index = get_item_by_index;
+	keys_object->number_of_items   = number_of_items;
 
 	Py_IncRef(
-	 (PyObject *) pycreg_keys->key_object );
+	 (PyObject *) keys_object->parent_object );
 
-	return( (PyObject *) pycreg_keys );
+	return( (PyObject *) keys_object );
 
 on_error:
-	if( pycreg_keys != NULL )
+	if( keys_object != NULL )
 	{
 		Py_DecRef(
-		 (PyObject *) pycreg_keys );
+		 (PyObject *) keys_object );
 	}
 	return( NULL );
 }
@@ -228,25 +228,25 @@ on_error:
  * Returns 0 if successful or -1 on error
  */
 int pycreg_keys_init(
-     pycreg_keys_t *pycreg_keys )
+     pycreg_keys_t *keys_object )
 {
 	static char *function = "pycreg_keys_init";
 
-	if( pycreg_keys == NULL )
+	if( keys_object == NULL )
 	{
 		PyErr_Format(
 		 PyExc_ValueError,
-		 "%s: invalid keys.",
+		 "%s: invalid keys object.",
 		 function );
 
 		return( -1 );
 	}
 	/* Make sure the keys values are initialized
 	 */
-	pycreg_keys->key_object           = NULL;
-	pycreg_keys->get_sub_key_by_index = NULL;
-	pycreg_keys->sub_key_index        = 0;
-	pycreg_keys->number_of_sub_keys   = 0;
+	keys_object->parent_object     = NULL;
+	keys_object->get_item_by_index = NULL;
+	keys_object->current_index     = 0;
+	keys_object->number_of_items   = 0;
 
 	return( 0 );
 }
@@ -254,22 +254,22 @@ int pycreg_keys_init(
 /* Frees a keys object
  */
 void pycreg_keys_free(
-      pycreg_keys_t *pycreg_keys )
+      pycreg_keys_t *keys_object )
 {
 	struct _typeobject *ob_type = NULL;
 	static char *function       = "pycreg_keys_free";
 
-	if( pycreg_keys == NULL )
+	if( keys_object == NULL )
 	{
 		PyErr_Format(
 		 PyExc_ValueError,
-		 "%s: invalid keys.",
+		 "%s: invalid keys object.",
 		 function );
 
 		return;
 	}
 	ob_type = Py_TYPE(
-	           pycreg_keys );
+	           keys_object );
 
 	if( ob_type == NULL )
 	{
@@ -289,72 +289,72 @@ void pycreg_keys_free(
 
 		return;
 	}
-	if( pycreg_keys->key_object != NULL )
+	if( keys_object->parent_object != NULL )
 	{
 		Py_DecRef(
-		 (PyObject *) pycreg_keys->key_object );
+		 (PyObject *) keys_object->parent_object );
 	}
 	ob_type->tp_free(
-	 (PyObject*) pycreg_keys );
+	 (PyObject*) keys_object );
 }
 
 /* The keys len() function
  */
 Py_ssize_t pycreg_keys_len(
-            pycreg_keys_t *pycreg_keys )
+            pycreg_keys_t *keys_object )
 {
 	static char *function = "pycreg_keys_len";
 
-	if( pycreg_keys == NULL )
+	if( keys_object == NULL )
 	{
 		PyErr_Format(
 		 PyExc_ValueError,
-		 "%s: invalid keys.",
+		 "%s: invalid keys object.",
 		 function );
 
 		return( -1 );
 	}
-	return( (Py_ssize_t) pycreg_keys->number_of_sub_keys );
+	return( (Py_ssize_t) keys_object->number_of_items );
 }
 
 /* The keys getitem() function
  */
 PyObject *pycreg_keys_getitem(
-           pycreg_keys_t *pycreg_keys,
+           pycreg_keys_t *keys_object,
            Py_ssize_t item_index )
 {
 	PyObject *key_object  = NULL;
 	static char *function = "pycreg_keys_getitem";
 
-	if( pycreg_keys == NULL )
+	if( keys_object == NULL )
 	{
 		PyErr_Format(
 		 PyExc_ValueError,
-		 "%s: invalid keys.",
+		 "%s: invalid keys object.",
 		 function );
 
 		return( NULL );
 	}
-	if( pycreg_keys->get_sub_key_by_index == NULL )
+	if( keys_object->get_item_by_index == NULL )
 	{
 		PyErr_Format(
 		 PyExc_ValueError,
-		 "%s: invalid keys - missing get sub key by index function.",
+		 "%s: invalid keys object - missing get item by index function.",
 		 function );
 
 		return( NULL );
 	}
-	if( pycreg_keys->number_of_sub_keys < 0 )
+	if( keys_object->number_of_items < 0 )
 	{
 		PyErr_Format(
 		 PyExc_ValueError,
-		 "%s: invalid keys - invalid number of sub keys.",
+		 "%s: invalid keys object - invalid number of items.",
 		 function );
 
 		return( NULL );
 	}
 	if( ( item_index < 0 )
-	 || ( item_index >= (Py_ssize_t) pycreg_keys->number_of_sub_keys ) )
+	 || ( item_index >= (Py_ssize_t) keys_object->number_of_items ) )
 	{
 		PyErr_Format(
 		 PyExc_ValueError,
@@ -363,8 +363,8 @@ PyObject *pycreg_keys_getitem(
 
 		return( NULL );
 	}
-	key_object = pycreg_keys->get_sub_key_by_index(
-	              pycreg_keys->key_object,
+	key_object = keys_object->get_item_by_index(
+	              keys_object->parent_object,
 	              (int) item_index );
 
 	return( key_object );
@@ -373,83 +373,83 @@ PyObject *pycreg_keys_getitem(
 /* The keys iter() function
  */
 PyObject *pycreg_keys_iter(
-           pycreg_keys_t *pycreg_keys )
+           pycreg_keys_t *keys_object )
 {
 	static char *function = "pycreg_keys_iter";
 
-	if( pycreg_keys == NULL )
+	if( keys_object == NULL )
 	{
 		PyErr_Format(
 		 PyExc_ValueError,
-		 "%s: invalid keys.",
+		 "%s: invalid keys object.",
 		 function );
 
 		return( NULL );
 	}
 	Py_IncRef(
-	 (PyObject *) pycreg_keys );
+	 (PyObject *) keys_object );
 
-	return( (PyObject *) pycreg_keys );
+	return( (PyObject *) keys_object );
 }
 
 /* The keys iternext() function
  */
 PyObject *pycreg_keys_iternext(
-           pycreg_keys_t *pycreg_keys )
+           pycreg_keys_t *keys_object )
 {
 	PyObject *key_object  = NULL;
 	static char *function = "pycreg_keys_iternext";
 
-	if( pycreg_keys == NULL )
+	if( keys_object == NULL )
 	{
 		PyErr_Format(
 		 PyExc_ValueError,
-		 "%s: invalid keys.",
+		 "%s: invalid keys object.",
 		 function );
 
 		return( NULL );
 	}
-	if( pycreg_keys->get_sub_key_by_index == NULL )
+	if( keys_object->get_item_by_index == NULL )
 	{
 		PyErr_Format(
 		 PyExc_ValueError,
-		 "%s: invalid keys - missing get sub key by index function.",
+		 "%s: invalid keys object - missing get item by index function.",
 		 function );
 
 		return( NULL );
 	}
-	if( pycreg_keys->sub_key_index < 0 )
+	if( keys_object->current_index < 0 )
 	{
 		PyErr_Format(
 		 PyExc_ValueError,
-		 "%s: invalid keys - invalid sub key index.",
+		 "%s: invalid keys object - invalid current index.",
 		 function );
 
 		return( NULL );
 	}
-	if( pycreg_keys->number_of_sub_keys < 0 )
+	if( keys_object->number_of_items < 0 )
 	{
 		PyErr_Format(
 		 PyExc_ValueError,
-		 "%s: invalid keys - invalid number of sub keys.",
+		 "%s: invalid keys object - invalid number of items.",
 		 function );
 
 		return( NULL );
 	}
-	if( pycreg_keys->sub_key_index >= pycreg_keys->number_of_sub_keys )
+	if( keys_object->current_index >= keys_object->number_of_items )
 	{
 		PyErr_SetNone(
 		 PyExc_StopIteration );
 
 		return( NULL );
 	}
-	key_object = pycreg_keys->get_sub_key_by_index(
-	              pycreg_keys->key_object,
-	              pycreg_keys->sub_key_index );
+	key_object = keys_object->get_item_by_index(
+	              keys_object->parent_object,
+	              keys_object->current_index );
 
 	if( key_object != NULL )
 	{
-		pycreg_keys->sub_key_index++;
+		keys_object->current_index++;
 	}
 	return( key_object );
 }

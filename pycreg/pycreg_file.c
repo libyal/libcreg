@@ -1,5 +1,5 @@
 /*
- * Python object definition of the libcreg file
+ * Python object wrapper of libcreg_file_t
  *
  * Copyright (C) 2013-2017, Joachim Metz <joachim.metz@gmail.com>
  *
@@ -31,22 +31,24 @@
 #include "pycreg_error.h"
 #include "pycreg_file.h"
 #include "pycreg_file_object_io_handle.h"
+#include "pycreg_key.h"
 #include "pycreg_libbfio.h"
 #include "pycreg_libcerror.h"
 #include "pycreg_libclocale.h"
 #include "pycreg_libcreg.h"
-#include "pycreg_key.h"
 #include "pycreg_python.h"
 #include "pycreg_unused.h"
 
 #if !defined( LIBCREG_HAVE_BFIO )
+
 LIBCREG_EXTERN \
 int libcreg_file_open_file_io_handle(
      libcreg_file_t *file,
      libbfio_handle_t *file_io_handle,
      int access_flags,
      libcreg_error_t **error );
-#endif
+
+#endif /* !defined( LIBCREG_HAVE_BFIO ) */
 
 PyMethodDef pycreg_file_object_methods[] = {
 
@@ -56,8 +58,6 @@ PyMethodDef pycreg_file_object_methods[] = {
 	  "signal_abort() -> None\n"
 	  "\n"
 	  "Signals the file to abort the current activity." },
-
-	/* Functions to access the file */
 
 	{ "open",
 	  (PyCFunction) pycreg_file_open,
@@ -79,8 +79,6 @@ PyMethodDef pycreg_file_object_methods[] = {
 	  "close() -> None\n"
 	  "\n"
 	  "Closes a file." },
-
-	/* Functions to access metadata */
 
 	{ "is_corrupted",
 	  (PyCFunction) pycreg_file_is_corrupted,
@@ -117,8 +115,6 @@ PyMethodDef pycreg_file_object_methods[] = {
 	  "get_type -> Integer\n"
 	  "\n"
 	  "Retrieves the type." },
-
-	/* Functions to access the keys */
 
 	{ "get_root_key",
 	  (PyCFunction) pycreg_file_get_root_key,
@@ -766,6 +762,16 @@ PyObject *pycreg_file_open_file_object(
 		 mode );
 
 		return( NULL );
+	}
+	if( pycreg_file->file_io_handle != NULL )
+	{
+		pycreg_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: invalid file - file IO handle already set.",
+		 function );
+
+		goto on_error;
 	}
 	if( pycreg_file_object_initialize(
 	     &( pycreg_file->file_io_handle ),

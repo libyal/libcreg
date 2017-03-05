@@ -11,6 +11,7 @@ configuration:
 
 install:
 - cmd: git clone https://github.com/libyal/libyal.git && move libyal ..\
+- cmd: git clone https://github.com/joachimmetz/dokan.git && move dokan ..\
 
 before_build:
 - cmd: xcopy /q /s C:\projects\libcreg C:\cygwin\home\appveyor\
@@ -18,7 +19,6 @@ before_build:
 
 build_script:
 - ps: .\synclibs.ps1
-- cmd: git clone https://github.com/joachimmetz/dokan.git && move dokan ..\
 - ps: .\autogen.ps1
 - cmd: >-
     rem Prepare Visual Studio 2010 build

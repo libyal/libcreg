@@ -48,7 +48,7 @@
 
 #include <libbfio.h>
 
-#endif
+#endif /* defined( HAVE_LOCAL_LIBBFIO ) */
 
-#endif
+#endif /* !defined( _PYCREG_LIBBFIO_H ) */
 

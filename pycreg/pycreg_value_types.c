@@ -70,7 +70,7 @@ PyTypeObject pycreg_value_types_type_object = {
 	0,
 	/* tp_as_buffer */
 	0,
-	/* tp_types */
+	/* tp_flags */
 	Py_TPFLAGS_DEFAULT,
 	/* tp_doc */
 	"pycreg value types object (wraps LIBCREG_VALUE_TYPES)",
@@ -300,10 +300,10 @@ int pycreg_value_types_init_type(
 	}
 #if PY_MAJOR_VERSION >= 3
 	value_object = PyLong_FromLong(
-	                LIBCREG_VALUE_TYPE_INTEGER_32BIT_LITTLE_ENDIAN );
+	                LIBCREG_VALUE_TYPE_INTEGER_64BIT_LITTLE_ENDIAN );
 #else
 	value_object = PyInt_FromLong(
-	                LIBCREG_VALUE_TYPE_INTEGER_32BIT_LITTLE_ENDIAN );
+	                LIBCREG_VALUE_TYPE_INTEGER_64BIT_LITTLE_ENDIAN );
 #endif
 	if( PyDict_SetItemString(
 	     type_object->tp_dict,

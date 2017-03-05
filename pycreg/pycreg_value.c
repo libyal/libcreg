@@ -1,5 +1,5 @@
 /*
- * Python object definition of the libcreg value
+ * Python object wrapper of libcreg_value_t
  *
  * Copyright (C) 2013-2017, Joachim Metz <joachim.metz@gmail.com>
  *
