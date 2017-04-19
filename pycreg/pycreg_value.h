@@ -25,7 +25,6 @@
 #include <common.h>
 #include <types.h>
 
-#include "pycreg_file.h"
 #include "pycreg_libcreg.h"
 #include "pycreg_python.h"
 
@@ -45,17 +44,18 @@ struct pycreg_value
 	 */
 	libcreg_value_t *value;
 
-	/* The pycreg file object
+	/* The parent object
 	 */
-	pycreg_file_t *file_object;
+	PyObject *parent_object;
 };
 
 extern PyMethodDef pycreg_value_object_methods[];
 extern PyTypeObject pycreg_value_type_object;
 
 PyObject *pycreg_value_new(
+           PyTypeObject *type_object,
            libcreg_value_t *value,
-           pycreg_file_t *file_object );
+           PyObject *parent_object );
 
 int pycreg_value_init(
      pycreg_value_t *pycreg_value );

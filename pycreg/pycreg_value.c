@@ -27,7 +27,6 @@
 #endif
 
 #include "pycreg_error.h"
-#include "pycreg_file.h"
 #include "pycreg_integer.h"
 #include "pycreg_libcerror.h"
 #include "pycreg_libcreg.h"
@@ -252,8 +251,9 @@ PyTypeObject pycreg_value_type_object = {
  * Returns a Python object if successful or NULL on error
  */
 PyObject *pycreg_value_new(
+           PyTypeObject *type_object,
            libcreg_value_t *value,
-           pycreg_file_t *file_object )
+           PyObject *parent_object )
 {
 	pycreg_value_t *pycreg_value = NULL;
 	static char *function        = "pycreg_value_new";
@@ -268,8 +268,8 @@ PyObject *pycreg_value_new(
 		return( NULL );
 	}
 	pycreg_value = PyObject_New(
-	              struct pycreg_value,
-	              &pycreg_value_type_object );
+	                struct pycreg_value,
+	                type_object );
 
 	if( pycreg_value == NULL )
 	{
@@ -290,11 +290,11 @@ PyObject *pycreg_value_new(
 
 		goto on_error;
 	}
-	pycreg_value->value       = value;
-	pycreg_value->file_object = file_object;
+	pycreg_value->parent_object = parent_object;
+	pycreg_value->value         = value;
 
 	Py_IncRef(
-	 (PyObject *) pycreg_value->file_object );
+	 (PyObject *) pycreg_value->parent_object );
 
 	return( (PyObject *) pycreg_value );
 
@@ -392,10 +392,10 @@ void pycreg_value_free(
 		libcerror_error_free(
 		 &error );
 	}
-	if( pycreg_value->file_object != NULL )
+	if( pycreg_value->parent_object != NULL )
 	{
 		Py_DecRef(
-		 (PyObject *) pycreg_value->file_object );
+		 (PyObject *) pycreg_value->parent_object );
 	}
 	ob_type->tp_free(
 	 (PyObject*) pycreg_value );

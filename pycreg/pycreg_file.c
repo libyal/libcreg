@@ -85,41 +85,41 @@ PyMethodDef pycreg_file_object_methods[] = {
 	  METH_NOARGS,
 	  "is_corrupted() -> Boolean\n"
 	  "\n"
-	  "Indicates if the file is corrupted." },
+	  "Determines if the file is corrupted." },
 
 	{ "get_ascii_codepage",
 	  (PyCFunction) pycreg_file_get_ascii_codepage,
 	  METH_NOARGS,
 	  "get_ascii_codepage() -> String\n"
 	  "\n"
-	  "Returns the codepage used for ASCII strings in the file." },
+	  "Retrieves the codepage for ASCII strings used in the file." },
 
 	{ "set_ascii_codepage",
 	  (PyCFunction) pycreg_file_set_ascii_codepage,
 	  METH_VARARGS | METH_KEYWORDS,
 	  "set_ascii_codepage(codepage) -> None\n"
 	  "\n"
-	  "Set the codepage used for ASCII strings in the file.\n"
-	  "Expects the codepage to be a String containing a Python codec definition." },
+	  "Sets the codepage for ASCII strings used in the file.\n"
+	  "Expects the codepage to be a string containing a Python codec definition." },
 
 	{ "get_format_version",
 	  (PyCFunction) pycreg_file_get_format_version,
 	  METH_NOARGS,
-	  "get_format_version -> String\n"
+	  "get_format_version() -> Unicode string or None\n"
 	  "\n"
 	  "Retrieves the format version." },
 
 	{ "get_type",
 	  (PyCFunction) pycreg_file_get_type,
 	  METH_NOARGS,
-	  "get_type -> Integer\n"
+	  "get_type() -> Integer or None\n"
 	  "\n"
 	  "Retrieves the type." },
 
 	{ "get_root_key",
 	  (PyCFunction) pycreg_file_get_root_key,
 	  METH_NOARGS,
-	  "get_root_key -> Object or None\n"
+	  "get_root_key() -> Object or None\n"
 	  "\n"
 	  "Retrieves the root key." },
 
@@ -128,7 +128,7 @@ PyMethodDef pycreg_file_object_methods[] = {
 	  METH_VARARGS | METH_KEYWORDS,
 	  "get_key_by_path(path) -> Object or None\n"
 	  "\n"
-	  "Retrieves a key specified by the key path." },
+	  "Retrieves the key specified by the path." },
 
 	/* Sentinel */
 	{ NULL, NULL, 0, NULL }
@@ -330,7 +330,7 @@ PyObject *pycreg_file_new_open(
 	return( pycreg_file );
 }
 
-/* Creates a new file object and opens it
+/* Creates a new file object and opens it using a file-like object
  * Returns a Python object if successful or NULL on error
  */
 PyObject *pycreg_file_new_open_file_object(
@@ -358,13 +358,13 @@ PyObject *pycreg_file_new_open_file_object(
 int pycreg_file_init(
      pycreg_file_t *pycreg_file )
 {
-	static char *function    = "pycreg_file_init";
 	libcerror_error_t *error = NULL;
+	static char *function    = "pycreg_file_init";
 
 	if( pycreg_file == NULL )
 	{
 		PyErr_Format(
-		 PyExc_TypeError,
+		 PyExc_ValueError,
 		 "%s: invalid file.",
 		 function );
 
@@ -396,15 +396,15 @@ int pycreg_file_init(
 void pycreg_file_free(
       pycreg_file_t *pycreg_file )
 {
-	libcerror_error_t *error    = NULL;
 	struct _typeobject *ob_type = NULL;
+	libcerror_error_t *error    = NULL;
 	static char *function       = "pycreg_file_free";
 	int result                  = 0;
 
 	if( pycreg_file == NULL )
 	{
 		PyErr_Format(
-		 PyExc_TypeError,
+		 PyExc_ValueError,
 		 "%s: invalid file.",
 		 function );
 
@@ -413,7 +413,7 @@ void pycreg_file_free(
 	if( pycreg_file->file == NULL )
 	{
 		PyErr_Format(
-		 PyExc_TypeError,
+		 PyExc_ValueError,
 		 "%s: invalid file - missing libcreg file.",
 		 function );
 
@@ -452,7 +452,7 @@ void pycreg_file_free(
 	{
 		pycreg_error_raise(
 		 error,
-		 PyExc_IOError,
+		 PyExc_MemoryError,
 		 "%s: unable to free libcreg file.",
 		 function );
 
@@ -479,7 +479,7 @@ PyObject *pycreg_file_signal_abort(
 	if( pycreg_file == NULL )
 	{
 		PyErr_Format(
-		 PyExc_TypeError,
+		 PyExc_ValueError,
 		 "%s: invalid file.",
 		 function );
 
@@ -522,9 +522,9 @@ PyObject *pycreg_file_open(
 {
 	PyObject *string_object      = NULL;
 	libcerror_error_t *error     = NULL;
+	const char *filename_narrow  = NULL;
 	static char *function        = "pycreg_file_open";
 	static char *keyword_list[]  = { "filename", "mode", NULL };
-	const char *filename_narrow  = NULL;
 	char *mode                   = NULL;
 	int result                   = 0;
 
@@ -578,7 +578,7 @@ PyObject *pycreg_file_open(
 	if( result == -1 )
 	{
 		pycreg_error_fetch_and_raise(
-	         PyExc_RuntimeError,
+		 PyExc_RuntimeError,
 		 "%s: unable to determine if string object is of type unicode.",
 		 function );
 
@@ -595,7 +595,7 @@ PyObject *pycreg_file_open(
 
 		result = libcreg_file_open_wide(
 		          pycreg_file->file,
-	                  filename_wide,
+		          filename_wide,
 		          LIBCREG_OPEN_READ,
 		          &error );
 
@@ -615,16 +615,16 @@ PyObject *pycreg_file_open(
 		}
 #if PY_MAJOR_VERSION >= 3
 		filename_narrow = PyBytes_AsString(
-				   utf8_string_object );
+		                   utf8_string_object );
 #else
 		filename_narrow = PyString_AsString(
-				   utf8_string_object );
+		                   utf8_string_object );
 #endif
 		Py_BEGIN_ALLOW_THREADS
 
 		result = libcreg_file_open(
 		          pycreg_file->file,
-	                  filename_narrow,
+		          filename_narrow,
 		          LIBCREG_OPEN_READ,
 		          &error );
 
@@ -655,17 +655,17 @@ PyObject *pycreg_file_open(
 
 #if PY_MAJOR_VERSION >= 3
 	result = PyObject_IsInstance(
-		  string_object,
-		  (PyObject *) &PyBytes_Type );
+	          string_object,
+	          (PyObject *) &PyBytes_Type );
 #else
 	result = PyObject_IsInstance(
-		  string_object,
-		  (PyObject *) &PyString_Type );
+	          string_object,
+	          (PyObject *) &PyString_Type );
 #endif
 	if( result == -1 )
 	{
 		pycreg_error_fetch_and_raise(
-	         PyExc_RuntimeError,
+		 PyExc_RuntimeError,
 		 "%s: unable to determine if string object is of type string.",
 		 function );
 
@@ -677,16 +677,16 @@ PyObject *pycreg_file_open(
 
 #if PY_MAJOR_VERSION >= 3
 		filename_narrow = PyBytes_AsString(
-				   string_object );
+		                   string_object );
 #else
 		filename_narrow = PyString_AsString(
-				   string_object );
+		                   string_object );
 #endif
 		Py_BEGIN_ALLOW_THREADS
 
 		result = libcreg_file_open(
 		          pycreg_file->file,
-	                  filename_narrow,
+		          filename_narrow,
 		          LIBCREG_OPEN_READ,
 		          &error );
 
@@ -728,9 +728,9 @@ PyObject *pycreg_file_open_file_object(
 {
 	PyObject *file_object       = NULL;
 	libcerror_error_t *error    = NULL;
-	char *mode                  = NULL;
-	static char *keyword_list[] = { "file_object", "mode", NULL };
 	static char *function       = "pycreg_file_open_file_object";
+	static char *keyword_list[] = { "file_object", "mode", NULL };
+	char *mode                  = NULL;
 	int result                  = 0;
 
 	if( pycreg_file == NULL )
@@ -843,7 +843,7 @@ PyObject *pycreg_file_close(
 	if( pycreg_file == NULL )
 	{
 		PyErr_Format(
-		 PyExc_TypeError,
+		 PyExc_ValueError,
 		 "%s: invalid file.",
 		 function );
 
@@ -963,11 +963,12 @@ PyObject *pycreg_file_get_ascii_codepage(
            pycreg_file_t *pycreg_file,
            PyObject *arguments PYCREG_ATTRIBUTE_UNUSED )
 {
-	libcerror_error_t *error    = NULL;
 	PyObject *string_object     = NULL;
+	libcerror_error_t *error    = NULL;
 	const char *codepage_string = NULL;
 	static char *function       = "pycreg_file_get_ascii_codepage";
 	int ascii_codepage          = 0;
+	int result                  = 0;
 
 	PYCREG_UNREFERENCED_PARAMETER( arguments )
 
@@ -980,10 +981,16 @@ PyObject *pycreg_file_get_ascii_codepage(
 
 		return( NULL );
 	}
-	if( libcreg_file_get_ascii_codepage(
-	     pycreg_file->file,
-	     &ascii_codepage,
-	     &error ) != 1 )
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libcreg_file_get_ascii_codepage(
+	          pycreg_file->file,
+	          &ascii_codepage,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result != 1 )
 	{
 		pycreg_error_raise(
 		 error,
@@ -1116,8 +1123,8 @@ PyObject *pycreg_file_set_ascii_codepage(
            PyObject *arguments,
            PyObject *keywords )
 {
-	static char *keyword_list[] = { "codepage", NULL };
 	char *codepage_string       = NULL;
+	static char *keyword_list[] = { "codepage", NULL };
 	int result                  = 0;
 
 	if( PyArg_ParseTupleAndKeywords(
@@ -1152,8 +1159,8 @@ int pycreg_file_set_ascii_codepage_setter(
      void *closure PYCREG_ATTRIBUTE_UNUSED )
 {
 	PyObject *utf8_string_object = NULL;
-	static char *function        = "pycreg_file_set_ascii_codepage_setter";
 	char *codepage_string        = NULL;
+	static char *function        = "pycreg_file_set_ascii_codepage_setter";
 	int result                   = 0;
 
 	PYCREG_UNREFERENCED_PARAMETER( closure )
@@ -1167,7 +1174,7 @@ int pycreg_file_set_ascii_codepage_setter(
 	if( result == -1 )
 	{
 		pycreg_error_fetch_and_raise(
-	         PyExc_RuntimeError,
+		 PyExc_RuntimeError,
 		 "%s: unable to determine if string object is of type unicode.",
 		 function );
 
@@ -1191,10 +1198,10 @@ int pycreg_file_set_ascii_codepage_setter(
 		}
 #if PY_MAJOR_VERSION >= 3
 		codepage_string = PyBytes_AsString(
-				   utf8_string_object );
+		                   utf8_string_object );
 #else
 		codepage_string = PyString_AsString(
-				   utf8_string_object );
+		                   utf8_string_object );
 #endif
 		if( codepage_string == NULL )
 		{
@@ -1214,17 +1221,17 @@ int pycreg_file_set_ascii_codepage_setter(
 
 #if PY_MAJOR_VERSION >= 3
 	result = PyObject_IsInstance(
-		  string_object,
-		  (PyObject *) &PyBytes_Type );
+	          string_object,
+	          (PyObject *) &PyBytes_Type );
 #else
 	result = PyObject_IsInstance(
-		  string_object,
-		  (PyObject *) &PyString_Type );
+	          string_object,
+	          (PyObject *) &PyString_Type );
 #endif
 	if( result == -1 )
 	{
 		pycreg_error_fetch_and_raise(
-	         PyExc_RuntimeError,
+		 PyExc_RuntimeError,
 		 "%s: unable to determine if string object is of type string.",
 		 function );
 
@@ -1244,8 +1251,8 @@ int pycreg_file_set_ascii_codepage_setter(
 			return( -1 );
 		}
 		result = pycreg_file_set_ascii_codepage_from_string(
-			  pycreg_file,
-			  codepage_string );
+		          pycreg_file,
+		          codepage_string );
 
 		if( result != 1 )
 		{
@@ -1268,8 +1275,9 @@ PyObject *pycreg_file_get_format_version(
            pycreg_file_t *pycreg_file,
            PyObject *arguments PYCREG_ATTRIBUTE_UNUSED )
 {
-	char version_string[ 4 ];
+	char utf8_string[ 4 ];
 
+	PyObject *string_object  = NULL;
 	libcerror_error_t *error = NULL;
 	const char *errors       = NULL;
 	static char *function    = "pycreg_file_get_format_version";
@@ -1282,7 +1290,7 @@ PyObject *pycreg_file_get_format_version(
 	if( pycreg_file == NULL )
 	{
 		PyErr_Format(
-		 PyExc_TypeError,
+		 PyExc_ValueError,
 		 "%s: invalid file.",
 		 function );
 
@@ -1303,7 +1311,7 @@ PyObject *pycreg_file_get_format_version(
 		pycreg_error_raise(
 		 error,
 		 PyExc_IOError,
-		 "%s: unable to determine format version.",
+		 "%s: unable to retrieve format version.",
 		 function );
 
 		libcerror_error_free(
@@ -1314,8 +1322,8 @@ PyObject *pycreg_file_get_format_version(
 	if( major_version > 9 )
 	{
 		PyErr_Format(
-		 PyExc_TypeError,
-		 "%s: invalid major version value out of bounds.",
+		 PyExc_ValueError,
+		 "%s: major version out of bounds.",
 		 function );
 
 		return( NULL );
@@ -1323,38 +1331,48 @@ PyObject *pycreg_file_get_format_version(
 	if( minor_version > 9 )
 	{
 		PyErr_Format(
-		 PyExc_TypeError,
-		 "%s: invalid minor version value out of bounds.",
+		 PyExc_ValueError,
+		 "%s: minor version out of bounds.",
 		 function );
 
 		return( NULL );
 	}
-	version_string[ 0 ] = '0' + (char) major_version;
-	version_string[ 1 ] = '.';
-	version_string[ 2 ] = '0' + (char) minor_version;
-	version_string[ 3 ] = 0;
+	utf8_string[ 0 ] = '0' + (char) major_version;
+	utf8_string[ 1 ] = '.';
+	utf8_string[ 2 ] = '0' + (char) minor_version;
+	utf8_string[ 3 ] = 0;
 
-	/* Pass the string length to PyUnicode_DecodeUTF8
-	 * otherwise it makes the end of string character is part
-	 * of the string
+	/* Pass the string length to PyUnicode_DecodeUTF8 otherwise it makes
+	 * the end of string character is part of the string
 	 */
-	return( PyUnicode_DecodeUTF8(
-	         version_string,
-	         (Py_ssize_t) 3,
-	         errors ) );
+	string_object = PyUnicode_DecodeUTF8(
+	                 utf8_string,
+	                 (Py_ssize_t) 3,
+	                 errors );
+
+	if( string_object == NULL )
+	{
+		PyErr_Format(
+		 PyExc_IOError,
+		 "%s: unable to convert UTF-8 string into Unicode object.",
+		 function );
+
+		return( NULL );
+	}
+	return( string_object );
 }
 
-/* Retrieves the file type
+/* Retrieves the type
  * Returns a Python object if successful or NULL on error
  */
 PyObject *pycreg_file_get_type(
            pycreg_file_t *pycreg_file,
            PyObject *arguments PYCREG_ATTRIBUTE_UNUSED )
 {
-	libcerror_error_t *error = NULL;
 	PyObject *integer_object = NULL;
+	libcerror_error_t *error = NULL;
 	static char *function    = "pycreg_file_get_type";
-	uint32_t file_type       = 0;
+	uint32_t value_32bit     = 0;
 	int result               = 0;
 
 	PYCREG_UNREFERENCED_PARAMETER( arguments )
@@ -1362,7 +1380,7 @@ PyObject *pycreg_file_get_type(
 	if( pycreg_file == NULL )
 	{
 		PyErr_Format(
-		 PyExc_TypeError,
+		 PyExc_ValueError,
 		 "%s: invalid file.",
 		 function );
 
@@ -1372,17 +1390,17 @@ PyObject *pycreg_file_get_type(
 
 	result = libcreg_file_get_type(
 	          pycreg_file->file,
-	          &file_type,
+	          &value_32bit,
 	          &error );
 
 	Py_END_ALLOW_THREADS
 
-	if( result != 1 )
+	if( result == -1 )
 	{
 		pycreg_error_raise(
 		 error,
 		 PyExc_IOError,
-		 "%s: unable to retrieve file type.",
+		 "%s: unable to retrieve type.",
 		 function );
 
 		libcerror_error_free(
@@ -1390,13 +1408,16 @@ PyObject *pycreg_file_get_type(
 
 		return( NULL );
 	}
-#if PY_MAJOR_VERSION >= 3
-	integer_object = PyLong_FromLong(
-	                  (long) file_type );
-#else
-	integer_object = PyInt_FromLong(
-	                  (long) file_type );
-#endif
+	else if( result == 0 )
+	{
+		Py_IncRef(
+		 Py_None );
+
+		return( Py_None );
+	}
+	integer_object = PyLong_FromUnsignedLong(
+	                  (unsigned long) value_32bit );
+
 	return( integer_object );
 }
 
@@ -1407,9 +1428,9 @@ PyObject *pycreg_file_get_root_key(
            pycreg_file_t *pycreg_file,
            PyObject *arguments PYCREG_ATTRIBUTE_UNUSED )
 {
+	PyObject *key_object     = NULL;
 	libcerror_error_t *error = NULL;
 	libcreg_key_t *root_key  = NULL;
-	PyObject *key_object     = NULL;
 	static char *function    = "pycreg_file_get_root_key";
 	int result               = 0;
 
@@ -1418,7 +1439,7 @@ PyObject *pycreg_file_get_root_key(
 	if( pycreg_file == NULL )
 	{
 		PyErr_Format(
-		 PyExc_TypeError,
+		 PyExc_ValueError,
 		 "%s: invalid file.",
 		 function );
 
@@ -1454,8 +1475,9 @@ PyObject *pycreg_file_get_root_key(
 		return( Py_None );
 	}
 	key_object = pycreg_key_new(
+	              &pycreg_key_type_object,
 	              root_key,
-	              pycreg_file );
+	              (PyObject *) pycreg_file );
 
 	if( key_object == NULL )
 	{
@@ -1486,19 +1508,19 @@ PyObject *pycreg_file_get_key_by_path(
            PyObject *arguments,
            PyObject *keywords )
 {
+	PyObject *key_object        = NULL;
 	libcerror_error_t *error    = NULL;
 	libcreg_key_t *key          = NULL;
-	PyObject *key_object        = NULL;
-	char *key_path              = NULL;
-	static char *keyword_list[] = { "key_path", NULL };
 	static char *function       = "pycreg_file_get_key_by_path";
-	size_t key_path_length      = 0;
+	static char *keyword_list[] = { "path", NULL };
+	char *utf8_path             = NULL;
+	size_t utf8_path_length     = 0;
 	int result                  = 0;
 
 	if( pycreg_file == NULL )
 	{
 		PyErr_Format(
-		 PyExc_TypeError,
+		 PyExc_ValueError,
 		 "%s: invalid file.",
 		 function );
 
@@ -1509,21 +1531,21 @@ PyObject *pycreg_file_get_key_by_path(
 	     keywords,
 	     "s",
 	     keyword_list,
-	     &key_path ) == 0 )
+	     &utf8_path ) == 0 )
 	{
 		goto on_error;
 	}
-	key_path_length = narrow_string_length(
-	                   key_path );
+	utf8_path_length = narrow_string_length(
+	                    utf8_path );
 
 	Py_BEGIN_ALLOW_THREADS
 
 	result = libcreg_file_get_key_by_utf8_path(
-	           pycreg_file->file,
-	           (uint8_t *) key_path,
-	           key_path_length,
-	           &key,
-	           &error );
+	          pycreg_file->file,
+	          (uint8_t *) utf8_path,
+	          utf8_path_length,
+	          &key,
+	          &error );
 
 	Py_END_ALLOW_THREADS
 
@@ -1540,8 +1562,6 @@ PyObject *pycreg_file_get_key_by_path(
 
 		goto on_error;
 	}
-	/* Check if the key is present
-	 */
 	else if( result == 0 )
 	{
 		Py_IncRef(
@@ -1550,8 +1570,9 @@ PyObject *pycreg_file_get_key_by_path(
 		return( Py_None );
 	}
 	key_object = pycreg_key_new(
+	              &pycreg_key_type_object,
 	              key,
-	              pycreg_file );
+	              (PyObject *) pycreg_file );
 
 	if( key_object == NULL )
 	{

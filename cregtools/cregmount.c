@@ -1454,7 +1454,6 @@ int cregmount_fuse_getattr(
 	libcerror_error_t *error      = NULL;
 	libcreg_key_t *key            = NULL;
 	libcreg_value_t *value        = NULL;
-	uint8_t *data                 = NULL;
 	static char *function         = "cregmount_fuse_getattr";
 	size_t data_size              = 0;
 	size_t normalized_path_length = 0;

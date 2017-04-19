@@ -331,39 +331,39 @@ on_error:
 PyObject *pycreg_value_types_new(
            void )
 {
-	pycreg_value_types_t *pycreg_value_types = NULL;
+	pycreg_value_types_t *definitions_object = NULL;
 	static char *function                    = "pycreg_value_types_new";
 
-	pycreg_value_types = PyObject_New(
+	definitions_object = PyObject_New(
 	                      struct pycreg_value_types,
 	                      &pycreg_value_types_type_object );
 
-	if( pycreg_value_types == NULL )
+	if( definitions_object == NULL )
 	{
 		PyErr_Format(
 		 PyExc_MemoryError,
-		 "%s: unable to initialize value types.",
+		 "%s: unable to create definitions object.",
 		 function );
 
 		goto on_error;
 	}
 	if( pycreg_value_types_init(
-	     pycreg_value_types ) != 0 )
+	     definitions_object ) != 0 )
 	{
 		PyErr_Format(
 		 PyExc_MemoryError,
-		 "%s: unable to initialize value types.",
+		 "%s: unable to initialize definitions object.",
 		 function );
 
 		goto on_error;
 	}
-	return( (PyObject *) pycreg_value_types );
+	return( (PyObject *) definitions_object );
 
 on_error:
-	if( pycreg_value_types != NULL )
+	if( definitions_object != NULL )
 	{
 		Py_DecRef(
-		 (PyObject *) pycreg_value_types );
+		 (PyObject *) definitions_object );
 	}
 	return( NULL );
 }
@@ -372,15 +372,15 @@ on_error:
  * Returns 0 if successful or -1 on error
  */
 int pycreg_value_types_init(
-     pycreg_value_types_t *pycreg_value_types )
+     pycreg_value_types_t *definitions_object )
 {
 	static char *function = "pycreg_value_types_init";
 
-	if( pycreg_value_types == NULL )
+	if( definitions_object == NULL )
 	{
 		PyErr_Format(
 		 PyExc_TypeError,
-		 "%s: invalid value types.",
+		 "%s: invalid definitions object.",
 		 function );
 
 		return( -1 );
@@ -391,22 +391,22 @@ int pycreg_value_types_init(
 /* Frees a value types object
  */
 void pycreg_value_types_free(
-      pycreg_value_types_t *pycreg_value_types )
+      pycreg_value_types_t *definitions_object )
 {
 	struct _typeobject *ob_type = NULL;
 	static char *function       = "pycreg_value_types_free";
 
-	if( pycreg_value_types == NULL )
+	if( definitions_object == NULL )
 	{
 		PyErr_Format(
 		 PyExc_TypeError,
-		 "%s: invalid value types.",
+		 "%s: invalid definitions object.",
 		 function );
 
 		return;
 	}
 	ob_type = Py_TYPE(
-	           pycreg_value_types );
+	           definitions_object );
 
 	if( ob_type == NULL )
 	{
@@ -427,6 +427,6 @@ void pycreg_value_types_free(
 		return;
 	}
 	ob_type->tp_free(
-	 (PyObject*) pycreg_value_types );
+	 (PyObject*) definitions_object );
 }
 
