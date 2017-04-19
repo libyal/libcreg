@@ -2,7 +2,7 @@ AC_PREREQ( 2.59 )
 
 AC_INIT(
  [libcreg],
- [20170305],
+ [20170419],
  [joachim.metz@gmail.com])
 
 AC_CONFIG_SRCDIR(
@@ -196,7 +196,6 @@ AC_CONFIG_FILES([libcreg/libcreg_definitions.h])
 dnl Have configure make distribution specific files
 AC_CONFIG_FILES([common/types.h])
 AC_CONFIG_FILES([dpkg/changelog])
-AC_CONFIG_FILES([dpkg/copyright])
 AC_CONFIG_FILES([libcreg/libcreg.rc])
 AC_CONFIG_FILES([libcreg.pc])
 AC_CONFIG_FILES([libcreg.spec])

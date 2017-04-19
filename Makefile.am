@@ -31,13 +31,12 @@ DPKG_FILES = \
 	dpkg/compat \
 	dpkg/control \
 	dpkg/copyright \
-	dpkg/copyright.in \
 	dpkg/rules \
-	dpkg/libcreg.docs \
-	dpkg/libcreg-dev.docs \
-	dpkg/libcreg-python.docs \
-	dpkg/libcreg-python3.docs \
-	dpkg/libcreg-tools.docs \
+	dpkg/libcreg.install \
+	dpkg/libcreg-dev.install \
+	dpkg/libcreg-python.install \
+	dpkg/libcreg-python3.install \
+	dpkg/libcreg-tools.install \
 	dpkg/source/format
 
 GETTEXT_FILES = \
