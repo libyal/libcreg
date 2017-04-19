@@ -85,40 +85,40 @@ int libcreg_key_get_offset(
 LIBCREG_EXTERN \
 int libcreg_key_get_name_size(
      libcreg_key_t *key,
-     size_t *name_size,
+     size_t *string_size,
      libcerror_error_t **error );
 
 LIBCREG_EXTERN \
 int libcreg_key_get_name(
      libcreg_key_t *key,
-     uint8_t *name,
-     size_t name_size,
+     uint8_t *string,
+     size_t string_size,
      libcerror_error_t **error );
 
 LIBCREG_EXTERN \
 int libcreg_key_get_utf8_name_size(
      libcreg_key_t *key,
-     size_t *utf8_name_size,
+     size_t *utf8_string_size,
      libcerror_error_t **error );
 
 LIBCREG_EXTERN \
 int libcreg_key_get_utf8_name(
      libcreg_key_t *key,
-     uint8_t *utf8_name,
-     size_t utf8_name_size,
+     uint8_t *utf8_string,
+     size_t utf8_string_size,
      libcerror_error_t **error );
 
 LIBCREG_EXTERN \
 int libcreg_key_get_utf16_name_size(
      libcreg_key_t *key,
-     size_t *utf16_name_size,
+     size_t *utf16_string_size,
      libcerror_error_t **error );
 
 LIBCREG_EXTERN \
 int libcreg_key_get_utf16_name(
      libcreg_key_t *key,
-     uint16_t *utf16_name,
-     size_t utf16_name_size,
+     uint16_t *utf16_string,
+     size_t utf16_string_size,
      libcerror_error_t **error );
 
 LIBCREG_EXTERN \

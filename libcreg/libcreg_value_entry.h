@@ -80,7 +80,7 @@ int libcreg_value_entry_free(
      libcreg_value_entry_t **value_entry,
      libcerror_error_t **error );
 
-int libcreg_value_entry_read(
+int libcreg_value_entry_read_data(
      libcreg_value_entry_t *value_entry,
      const uint8_t *data,
      size_t data_size,

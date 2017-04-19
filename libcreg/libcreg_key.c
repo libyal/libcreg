@@ -307,7 +307,7 @@ int libcreg_key_get_offset(
  */
 int libcreg_key_get_name_size(
      libcreg_key_t *key,
-     size_t *name_size,
+     size_t *string_size,
      libcerror_error_t **error )
 {
 	libcreg_internal_key_t *internal_key     = NULL;
@@ -327,13 +327,13 @@ int libcreg_key_get_name_size(
 	}
 	internal_key = (libcreg_internal_key_t *) key;
 
-	if( name_size == NULL )
+	if( string_size == NULL )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid name size.",
+		 "%s: invalid string size.",
 		 function );
 
 		return( -1 );
@@ -357,11 +357,11 @@ int libcreg_key_get_name_size(
 	}
 	if( key_name_entry == NULL )
 	{
-		*name_size = 0;
+		*string_size = 0;
 	}
 	else
 	{
-		*name_size = key_name_entry->name_size;
+		*string_size = key_name_entry->name_size;
 	}
 	return( 1 );
 }
@@ -371,8 +371,8 @@ int libcreg_key_get_name_size(
  */
 int libcreg_key_get_name(
      libcreg_key_t *key,
-     uint8_t *name,
-     size_t name_size,
+     uint8_t *string,
+     size_t string_size,
      libcerror_error_t **error )
 {
 	libcreg_internal_key_t *internal_key     = NULL;
@@ -392,24 +392,24 @@ int libcreg_key_get_name(
 	}
 	internal_key = (libcreg_internal_key_t *) key;
 
-	if( name == NULL )
+	if( string == NULL )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid name.",
+		 "%s: invalid string.",
 		 function );
 
 		return( -1 );
 	}
-	if( name_size > (size_t) SSIZE_MAX )
+	if( string_size > (size_t) SSIZE_MAX )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 		 LIBCERROR_RUNTIME_ERROR_VALUE_EXCEEDS_MAXIMUM,
-		 "%s: invalid name size value exceeds maximum.",
+		 "%s: invalid string size value exceeds maximum.",
 		 function );
 
 		return( -1 );
@@ -433,34 +433,34 @@ int libcreg_key_get_name(
 	}
 	if( key_name_entry == NULL )
 	{
-		if( name_size < 1 )
+		if( string_size < 1 )
 		{
 			libcerror_error_set(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 			 LIBCERROR_ARGUMENT_ERROR_VALUE_OUT_OF_BOUNDS,
-			 "%s: invalid name size value out of bounds.",
+			 "%s: invalid string size value out of bounds.",
 			 function );
 
 			return( -1 );
 		}
-		name[ 0 ] = 0;
+		string[ 0 ] = 0;
 	}
 	else
 	{
-		if( name_size < key_name_entry->name_size )
+		if( string_size < key_name_entry->name_size )
 		{
 			libcerror_error_set(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 			 LIBCERROR_ARGUMENT_ERROR_VALUE_OUT_OF_BOUNDS,
-			 "%s: invalid name size value out of bounds.",
+			 "%s: invalid string size value out of bounds.",
 			 function );
 
 			return( -1 );
 		}
 		if( memory_copy(
-		     name,
+		     string,
 		     key_name_entry->name,
 		     key_name_entry->name_size ) == NULL )
 		{
@@ -483,7 +483,7 @@ int libcreg_key_get_name(
  */
 int libcreg_key_get_utf8_name_size(
      libcreg_key_t *key,
-     size_t *utf8_name_size,
+     size_t *utf8_string_size,
      libcerror_error_t **error )
 {
 	libcreg_internal_key_t *internal_key     = NULL;
@@ -533,18 +533,18 @@ int libcreg_key_get_utf8_name_size(
 	}
 	if( key_name_entry == NULL )
 	{
-		if( utf8_name_size == NULL )
+		if( utf8_string_size == NULL )
 		{
 			libcerror_error_set(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 			 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-			 "%s: invalid UTF-8 name size.",
+			 "%s: invalid UTF-8 string size.",
 			 function );
 
 			return( -1 );
 		}
-		*utf8_name_size = 0;
+		*utf8_string_size = 0;
 	}
 	else
 	{
@@ -563,7 +563,7 @@ int libcreg_key_get_utf8_name_size(
 		     key_name_entry->name,
 		     (size_t) key_name_entry->name_size,
 		     internal_key->io_handle->ascii_codepage,
-		     utf8_name_size,
+		     utf8_string_size,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
@@ -586,8 +586,8 @@ int libcreg_key_get_utf8_name_size(
  */
 int libcreg_key_get_utf8_name(
      libcreg_key_t *key,
-     uint8_t *utf8_name,
-     size_t utf8_name_size,
+     uint8_t *utf8_string,
+     size_t utf8_string_size,
      libcerror_error_t **error )
 {
 	libcreg_internal_key_t *internal_key     = NULL;
@@ -637,18 +637,18 @@ int libcreg_key_get_utf8_name(
 	}
 	if( key_name_entry == NULL )
 	{
-		if( utf8_name_size < 1 )
+		if( utf8_string_size < 1 )
 		{
 			libcerror_error_set(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 			 LIBCERROR_ARGUMENT_ERROR_VALUE_OUT_OF_BOUNDS,
-			 "%s: invalid UTF-8 name size value out of bounds.",
+			 "%s: invalid UTF-8 string size value out of bounds.",
 			 function );
 
 			return( -1 );
 		}
-		utf8_name[ 0 ] = 0;
+		utf8_string[ 0 ] = 0;
 	}
 	else
 	{
@@ -664,8 +664,8 @@ int libcreg_key_get_utf8_name(
 			return( -1 );
 		}
 		if( libuna_utf8_string_copy_from_byte_stream(
-		     utf8_name,
-		     utf8_name_size,
+		     utf8_string,
+		     utf8_string_size,
 		     key_name_entry->name,
 		     (size_t) key_name_entry->name_size,
 		     internal_key->io_handle->ascii_codepage,
@@ -690,7 +690,7 @@ int libcreg_key_get_utf8_name(
  */
 int libcreg_key_get_utf16_name_size(
      libcreg_key_t *key,
-     size_t *utf16_name_size,
+     size_t *utf16_string_size,
      libcerror_error_t **error )
 {
 	libcreg_internal_key_t *internal_key     = NULL;
@@ -740,18 +740,18 @@ int libcreg_key_get_utf16_name_size(
 	}
 	if( key_name_entry == NULL )
 	{
-		if( utf16_name_size == NULL )
+		if( utf16_string_size == NULL )
 		{
 			libcerror_error_set(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 			 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-			 "%s: invalid UTF-16 name size.",
+			 "%s: invalid UTF-16 string size.",
 			 function );
 
 			return( -1 );
 		}
-		*utf16_name_size = 0;
+		*utf16_string_size = 0;
 	}
 	else
 	{
@@ -770,7 +770,7 @@ int libcreg_key_get_utf16_name_size(
 		     key_name_entry->name,
 		     (size_t) key_name_entry->name_size,
 		     internal_key->io_handle->ascii_codepage,
-		     utf16_name_size,
+		     utf16_string_size,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
@@ -793,8 +793,8 @@ int libcreg_key_get_utf16_name_size(
  */
 int libcreg_key_get_utf16_name(
      libcreg_key_t *key,
-     uint16_t *utf16_name,
-     size_t utf16_name_size,
+     uint16_t *utf16_string,
+     size_t utf16_string_size,
      libcerror_error_t **error )
 {
 	libcreg_internal_key_t *internal_key     = NULL;
@@ -844,18 +844,18 @@ int libcreg_key_get_utf16_name(
 	}
 	if( key_name_entry == NULL )
 	{
-		if( utf16_name_size < 1 )
+		if( utf16_string_size < 1 )
 		{
 			libcerror_error_set(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 			 LIBCERROR_ARGUMENT_ERROR_VALUE_OUT_OF_BOUNDS,
-			 "%s: invalid UTF-16 name size value out of bounds.",
+			 "%s: invalid UTF-16 string size value out of bounds.",
 			 function );
 
 			return( -1 );
 		}
-		utf16_name[ 0 ] = 0;
+		utf16_string[ 0 ] = 0;
 	}
 	else
 	{
@@ -871,8 +871,8 @@ int libcreg_key_get_utf16_name(
 			return( -1 );
 		}
 		if( libuna_utf16_string_copy_from_byte_stream(
-		     utf16_name,
-		     utf16_name_size,
+		     utf16_string,
+		     utf16_string_size,
 		     key_name_entry->name,
 		     (size_t) key_name_entry->name_size,
 		     internal_key->io_handle->ascii_codepage,

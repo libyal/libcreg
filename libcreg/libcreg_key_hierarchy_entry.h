@@ -68,7 +68,7 @@ int libcreg_key_hierarchy_entry_free(
      libcreg_key_hierarchy_entry_t **key_hierarchy_entry,
      libcerror_error_t **error );
 
-int libcreg_key_hierarchy_entry_read(
+int libcreg_key_hierarchy_entry_read_data(
      libcreg_key_hierarchy_entry_t *key_hierarchy_entry,
      const uint8_t *data,
      size_t data_size,

@@ -134,17 +134,17 @@ int libcreg_key_hierarchy_entry_free(
 	return( 1 );
 }
 
-/* Reads a key hierarchy entry
+/* Reads key hierarchy entry data
  * Returns 1 if successful or -1 on error
  */
-int libcreg_key_hierarchy_entry_read(
+int libcreg_key_hierarchy_entry_read_data(
      libcreg_key_hierarchy_entry_t *key_hierarchy_entry,
      const uint8_t *data,
      size_t data_size,
      size_t data_offset LIBCREG_ATTRIBUTE_UNUSED,
      libcerror_error_t **error )
 {
-	static char *function = "libcreg_key_hierarchy_entry_read";
+	static char *function = "libcreg_key_hierarchy_entry_read_data";
 
 #if defined( HAVE_DEBUG_OUTPUT )
 	uint32_t value_32bit  = 0;

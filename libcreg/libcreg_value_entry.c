@@ -153,14 +153,14 @@ int libcreg_value_entry_free(
 /* Reads a value entry
  * Returns 1 if successful or -1 on error
  */
-int libcreg_value_entry_read(
+int libcreg_value_entry_read_data(
      libcreg_value_entry_t *value_entry,
      const uint8_t *data,
      size_t data_size,
      int ascii_codepage LIBCREG_ATTRIBUTE_UNUSED,
      libcerror_error_t **error )
 {
-	static char *function    = "libcreg_value_entry_read";
+	static char *function    = "libcreg_value_entry_read_data";
 	size_t value_data_offset = 0; 
 
 #if defined( HAVE_DEBUG_OUTPUT )

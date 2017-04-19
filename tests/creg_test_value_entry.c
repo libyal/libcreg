@@ -270,6 +270,113 @@ on_error:
 	return( 0 );
 }
 
+/* Tests the libcreg_value_entry_read_data function
+ * Returns 1 if successful or 0 if not
+ */
+int creg_test_value_entry_read_data(
+     void )
+{
+	libcerror_error_t *error           = NULL;
+	libcreg_value_entry_t *value_entry = NULL;
+	int result                         = 0;
+
+	/* Initialize test
+	 */
+	result = libcreg_value_entry_initialize(
+	          &value_entry,
+	          &error );
+
+	CREG_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+        CREG_TEST_ASSERT_IS_NOT_NULL(
+         "value_entry",
+         value_entry );
+
+        CREG_TEST_ASSERT_IS_NULL(
+         "error",
+         error );
+
+	/* Test error cases
+	 */
+	result = libcreg_value_entry_read_data(
+	          NULL,
+	          NULL,
+	          0,
+	          0,
+	          &error );
+
+	CREG_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+        CREG_TEST_ASSERT_IS_NOT_NULL(
+         "error",
+         error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libcreg_value_entry_read_data(
+	          value_entry,
+	          NULL,
+	          0,
+	          0,
+	          &error );
+
+	CREG_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+        CREG_TEST_ASSERT_IS_NOT_NULL(
+         "error",
+         error );
+
+	libcerror_error_free(
+	 &error );
+
+	return( 1 );
+
+	/* Clean up
+	 */
+	result = libcreg_value_entry_free(
+	          &value_entry,
+	          &error );
+
+	CREG_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+        CREG_TEST_ASSERT_IS_NULL(
+         "value_entry",
+         value_entry );
+
+        CREG_TEST_ASSERT_IS_NULL(
+         "error",
+         error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	if( value_entry != NULL )
+	{
+		libcreg_value_entry_free(
+		 &value_entry,
+		 NULL );
+	}
+	return( 0 );
+}
+
 /* Tests the libcreg_value_entry_get_data_size function
  * Returns 1 if successful or 0 if not
  */
@@ -420,7 +527,9 @@ int main(
 	 "libcreg_value_entry_free",
 	 creg_test_value_entry_free );
 
-	/* TODO: add tests for libcreg_value_entry_read */
+	CREG_TEST_RUN(
+	 "libcreg_value_entry_read_data",
+	 creg_test_value_entry_read_data );
 
 	CREG_TEST_RUN(
 	 "libcreg_value_entry_get_data_size",

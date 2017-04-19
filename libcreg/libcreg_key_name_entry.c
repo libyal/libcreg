@@ -266,14 +266,14 @@ int libcreg_key_name_entry_read_entry_size(
 /* Reads a key name entry
  * Returns 1 if successful or -1 on error
  */
-int libcreg_key_name_entry_read(
+int libcreg_key_name_entry_read_data(
      libcreg_key_name_entry_t *key_name_entry,
      const uint8_t *data,
      size_t data_size,
      int ascii_codepage LIBCREG_ATTRIBUTE_UNUSED,
      libcerror_error_t **error )
 {
-	static char *function          = "libcreg_key_name_entry_read";
+	static char *function          = "libcreg_key_name_entry_read_data";
 	size_t data_offset             = 0;
 	uint32_t used_size             = 0;
 	uint16_t number_of_values      = 0;
@@ -686,7 +686,7 @@ int libcreg_key_name_entry_read_values(
 			 value_entries_offset );
 		}
 #endif
-		if( libcreg_value_entry_read(
+		if( libcreg_value_entry_read_data(
 		     value_entry,
 		     &( value_entries_data[ value_entries_offset ] ),
 		     (size_t) value_entries_data_size - value_entries_offset,

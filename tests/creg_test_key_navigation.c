@@ -286,6 +286,18 @@ int main(
 	 "libcreg_key_navigation_free",
 	 creg_test_key_navigation_free );
 
+	/* TODO: add tests for libcreg_key_navigation_read */
+
+	/* TODO: add tests for libcreg_key_navigation_read_data_blocks */
+
+	/* TODO: add tests for libcreg_key_navigation_get_key_hierarchy_entry_at_offset */
+
+	/* TODO: add tests for libcreg_key_navigation_get_number_of_data_blocks */
+
+	/* TODO: add tests for libcreg_key_navigation_get_data_block_at_index */
+
+	/* TODO: add tests for libcreg_key_navigation_read_data_block_element_data */
+
 #endif /* defined( __GNUC__ ) */
 
 	return( EXIT_SUCCESS );

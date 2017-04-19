@@ -539,7 +539,7 @@ int libcreg_data_block_read_entries(
 
 				goto on_error;
 			}
-			if( libcreg_key_name_entry_read(
+			if( libcreg_key_name_entry_read_data(
 			     key_name_entry,
 			     &( ( data_block->data )[ data_block_entry->offset ] ),
 			     data_block_entry->size,
@@ -791,7 +791,7 @@ int libcreg_data_block_get_entry_by_index(
 
 		goto on_error;
 	}
-	if( libcreg_key_name_entry_read(
+	if( libcreg_key_name_entry_read_data(
 	     *key_name_entry,
 	     &( ( data_block->data )[ data_block_entry->offset ] ),
 	     data_block_entry->size,

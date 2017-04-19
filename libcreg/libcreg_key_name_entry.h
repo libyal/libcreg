@@ -80,7 +80,7 @@ int libcreg_key_name_entry_read_entry_size(
      size_t *entry_size,
      libcerror_error_t **error );
 
-int libcreg_key_name_entry_read(
+int libcreg_key_name_entry_read_data(
      libcreg_key_name_entry_t *key_name_entry,
      const uint8_t *data,
      size_t data_size,

@@ -483,7 +483,7 @@ int libcreg_io_handle_read_key_hierarchy_entry(
 
 		goto on_error;
 	}
-	if( libcreg_key_hierarchy_entry_read(
+	if( libcreg_key_hierarchy_entry_read_data(
 	     key_hierarchy_entry,
 	     (uint8_t *) &key_hierarchy_entry_data,
 	     sizeof( creg_key_hierarchy_entry_t ),

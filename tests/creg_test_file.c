@@ -1748,6 +1748,27 @@ int main(
 #if !defined( __BORLANDC__ ) || ( __BORLANDC__ >= 0x0560 )
 	if( source != NULL )
 	{
+#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
+		result = libcreg_check_file_signature_wide(
+		          source,
+		          &error );
+#else
+		result = libcreg_check_file_signature(
+		          source,
+		          &error );
+#endif
+
+		CREG_TEST_ASSERT_NOT_EQUAL_INT(
+		 "result",
+		 result,
+		 -1 );
+
+	        CREG_TEST_ASSERT_IS_NULL(
+	         "error",
+	         error );
+	}
+	if( result != 0 )
+	{
 		CREG_TEST_RUN_WITH_ARGS(
 		 "libcreg_file_open",
 		 creg_test_file_open,

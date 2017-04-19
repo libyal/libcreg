@@ -270,6 +270,113 @@ on_error:
 	return( 0 );
 }
 
+/* Tests the libcreg_key_hierarchy_entry_read_data function
+ * Returns 1 if successful or 0 if not
+ */
+int creg_test_key_hierarchy_entry_read_data(
+     void )
+{
+	libcerror_error_t *error                           = NULL;
+	libcreg_key_hierarchy_entry_t *key_hierarchy_entry = NULL;
+	int result                                         = 0;
+
+	/* Initialize test
+	 */
+	result = libcreg_key_hierarchy_entry_initialize(
+	          &key_hierarchy_entry,
+	          &error );
+
+	CREG_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+        CREG_TEST_ASSERT_IS_NOT_NULL(
+         "key_hierarchy_entry",
+         key_hierarchy_entry );
+
+        CREG_TEST_ASSERT_IS_NULL(
+         "error",
+         error );
+
+	/* Test error cases
+	 */
+	result = libcreg_key_hierarchy_entry_read_data(
+	          NULL,
+	          NULL,
+	          0,
+	          0,
+	          &error );
+
+	CREG_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+        CREG_TEST_ASSERT_IS_NOT_NULL(
+         "error",
+         error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libcreg_key_hierarchy_entry_read_data(
+	          key_hierarchy_entry,
+	          NULL,
+	          0,
+	          0,
+	          &error );
+
+	CREG_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+        CREG_TEST_ASSERT_IS_NOT_NULL(
+         "error",
+         error );
+
+	libcerror_error_free(
+	 &error );
+
+	return( 1 );
+
+	/* Clean up
+	 */
+	result = libcreg_key_hierarchy_entry_free(
+	          &key_hierarchy_entry,
+	          &error );
+
+	CREG_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+        CREG_TEST_ASSERT_IS_NULL(
+         "key_hierarchy_entry",
+         key_hierarchy_entry );
+
+        CREG_TEST_ASSERT_IS_NULL(
+         "error",
+         error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	if( key_hierarchy_entry != NULL )
+	{
+		libcreg_key_hierarchy_entry_free(
+		 &key_hierarchy_entry,
+		 NULL );
+	}
+	return( 0 );
+}
+
 #endif /* defined( __GNUC__ ) */
 
 /* The main program
@@ -297,7 +404,9 @@ int main(
 	 "libcreg_key_hierarchy_entry_free",
 	 creg_test_key_hierarchy_entry_free );
 
-	/* TODO: add tests for libcreg_key_hierarchy_entry_read */
+	CREG_TEST_RUN(
+	 "libcreg_key_hierarchy_entry_read_data",
+	 creg_test_key_hierarchy_entry_read_data );
 
 #endif /* defined( __GNUC__ ) */
 
