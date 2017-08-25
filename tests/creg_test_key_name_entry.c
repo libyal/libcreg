@@ -339,8 +339,6 @@ int creg_test_key_name_entry_read_data(
 	libcerror_error_free(
 	 &error );
 
-	return( 1 );
-
 	/* Clean up
 	 */
 	result = libcreg_key_name_entry_free(
