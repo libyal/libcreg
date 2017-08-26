@@ -35,7 +35,7 @@
 
 #include "../libcreg/libcreg_key_hierarchy_entry.h"
 
-#if defined( __GNUC__ )
+#if defined( __GNUC__ ) && !defined( LIBCREG_DLL_IMPORT )
 
 /* Tests the libcreg_key_hierarchy_entry_initialize function
  * Returns 1 if successful or 0 if not
@@ -375,7 +375,7 @@ on_error:
 	return( 0 );
 }
 
-#endif /* defined( __GNUC__ ) */
+#endif /* defined( __GNUC__ ) && !defined( LIBCREG_DLL_IMPORT ) */
 
 /* The main program
  */
@@ -392,7 +392,7 @@ int main(
 	CREG_TEST_UNREFERENCED_PARAMETER( argc )
 	CREG_TEST_UNREFERENCED_PARAMETER( argv )
 
-#if defined( __GNUC__ )
+#if defined( __GNUC__ ) && !defined( LIBCREG_DLL_IMPORT )
 
 	CREG_TEST_RUN(
 	 "libcreg_key_hierarchy_entry_initialize",
@@ -406,7 +406,7 @@ int main(
 	 "libcreg_key_hierarchy_entry_read_data",
 	 creg_test_key_hierarchy_entry_read_data );
 
-#endif /* defined( __GNUC__ ) */
+#endif /* defined( __GNUC__ ) && !defined( LIBCREG_DLL_IMPORT ) */
 
 	return( EXIT_SUCCESS );
 

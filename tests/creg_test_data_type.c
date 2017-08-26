@@ -48,13 +48,13 @@ int main(
 	CREG_TEST_UNREFERENCED_PARAMETER( argc )
 	CREG_TEST_UNREFERENCED_PARAMETER( argv )
 
-#if defined( __GNUC__ )
+#if defined( __GNUC__ ) && !defined( LIBCREG_DLL_IMPORT )
 
 	/* TODO: add tests for libcreg_data_type_get_identifier */
 
 	/* TODO: add tests for libcreg_data_type_get_description */
 
-#endif /* defined( __GNUC__ ) */
+#endif /* defined( __GNUC__ ) && !defined( LIBCREG_DLL_IMPORT ) */
 
 	return( EXIT_SUCCESS );
 

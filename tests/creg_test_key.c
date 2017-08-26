@@ -73,9 +73,9 @@ on_error:
 	return( 0 );
 }
 
-#if defined( __GNUC__ )
+#if defined( __GNUC__ ) && !defined( LIBCREG_DLL_IMPORT )
 
-#endif /* defined( __GNUC__ ) */
+#endif /* defined( __GNUC__ ) && !defined( LIBCREG_DLL_IMPORT ) */
 
 /* The main program
  */
@@ -92,17 +92,17 @@ int main(
 	CREG_TEST_UNREFERENCED_PARAMETER( argc )
 	CREG_TEST_UNREFERENCED_PARAMETER( argv )
 
-#if defined( __GNUC__ )
+#if defined( __GNUC__ ) && !defined( LIBCREG_DLL_IMPORT )
 
 	/* TODO: add tests for libcreg_key_initialize */
 
-#endif /* defined( __GNUC__ ) */
+#endif /* defined( __GNUC__ ) && !defined( LIBCREG_DLL_IMPORT ) */
 
 	CREG_TEST_RUN(
 	 "libcreg_key_free",
 	 creg_test_key_free );
 
-#if defined( __GNUC__ )
+#if defined( __GNUC__ ) && !defined( LIBCREG_DLL_IMPORT )
 
 	/* TODO: add tests for libcreg_key_is_corrupted */
 
@@ -140,7 +140,7 @@ int main(
 
 	/* TODO: add tests for libcreg_key_get_sub_key_by_utf16_path */
 
-#endif /* defined( __GNUC__ ) */
+#endif /* defined( __GNUC__ ) && !defined( LIBCREG_DLL_IMPORT ) */
 
 	return( EXIT_SUCCESS );
 

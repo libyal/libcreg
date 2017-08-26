@@ -35,7 +35,7 @@
 
 #include "../libcreg/libcreg_data_block_entry.h"
 
-#if defined( __GNUC__ )
+#if defined( __GNUC__ ) && !defined( LIBCREG_DLL_IMPORT )
 
 /* Tests the libcreg_data_block_entry_initialize function
  * Returns 1 if successful or 0 if not
@@ -270,7 +270,7 @@ on_error:
 	return( 0 );
 }
 
-#endif /* defined( __GNUC__ ) */
+#endif /* defined( __GNUC__ ) && !defined( LIBCREG_DLL_IMPORT ) */
 
 /* The main program
  */
@@ -287,7 +287,7 @@ int main(
 	CREG_TEST_UNREFERENCED_PARAMETER( argc )
 	CREG_TEST_UNREFERENCED_PARAMETER( argv )
 
-#if defined( __GNUC__ )
+#if defined( __GNUC__ ) && !defined( LIBCREG_DLL_IMPORT )
 
 	CREG_TEST_RUN(
 	 "libcreg_data_block_entry_initialize",
@@ -297,7 +297,7 @@ int main(
 	 "libcreg_data_block_entry_free",
 	 creg_test_data_block_entry_free );
 
-#endif /* defined( __GNUC__ ) */
+#endif /* defined( __GNUC__ ) && !defined( LIBCREG_DLL_IMPORT ) */
 
 	return( EXIT_SUCCESS );
 
