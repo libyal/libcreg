@@ -64,13 +64,13 @@ int creg_test_data_block_entry_initialize(
 	 result,
 	 1 );
 
-        CREG_TEST_ASSERT_IS_NOT_NULL(
-         "data_block_entry",
-         data_block_entry );
+	CREG_TEST_ASSERT_IS_NOT_NULL(
+	 "data_block_entry",
+	 data_block_entry );
 
-        CREG_TEST_ASSERT_IS_NULL(
-         "error",
-         error );
+	CREG_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
 
 	result = libcreg_data_block_entry_free(
 	          &data_block_entry,
@@ -81,13 +81,13 @@ int creg_test_data_block_entry_initialize(
 	 result,
 	 1 );
 
-        CREG_TEST_ASSERT_IS_NULL(
-         "data_block_entry",
-         data_block_entry );
+	CREG_TEST_ASSERT_IS_NULL(
+	 "data_block_entry",
+	 data_block_entry );
 
-        CREG_TEST_ASSERT_IS_NULL(
-         "error",
-         error );
+	CREG_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
 
 	/* Test error cases
 	 */
@@ -100,9 +100,9 @@ int creg_test_data_block_entry_initialize(
 	 result,
 	 -1 );
 
-        CREG_TEST_ASSERT_IS_NOT_NULL(
-         "error",
-         error );
+	CREG_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
 
 	libcerror_error_free(
 	 &error );
@@ -118,9 +118,9 @@ int creg_test_data_block_entry_initialize(
 	 result,
 	 -1 );
 
-        CREG_TEST_ASSERT_IS_NOT_NULL(
-         "error",
-         error );
+	CREG_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
 
 	libcerror_error_free(
 	 &error );
@@ -252,9 +252,9 @@ int creg_test_data_block_entry_free(
 	 result,
 	 -1 );
 
-        CREG_TEST_ASSERT_IS_NOT_NULL(
-         "error",
-         error );
+	CREG_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
 
 	libcerror_error_free(
 	 &error );

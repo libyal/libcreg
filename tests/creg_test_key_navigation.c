@@ -59,13 +59,13 @@ int creg_test_key_navigation_initialize(
 	 result,
 	 1 );
 
-        CREG_TEST_ASSERT_IS_NOT_NULL(
-         "key_navigation",
-         key_navigation );
+	CREG_TEST_ASSERT_IS_NOT_NULL(
+	 "key_navigation",
+	 key_navigation );
 
-        CREG_TEST_ASSERT_IS_NULL(
-         "error",
-         error );
+	CREG_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
 
 	result = libcreg_key_navigation_free(
 	          &key_navigation,
@@ -76,13 +76,13 @@ int creg_test_key_navigation_initialize(
 	 result,
 	 1 );
 
-        CREG_TEST_ASSERT_IS_NULL(
-         "key_navigation",
-         key_navigation );
+	CREG_TEST_ASSERT_IS_NULL(
+	 "key_navigation",
+	 key_navigation );
 
-        CREG_TEST_ASSERT_IS_NULL(
-         "error",
-         error );
+	CREG_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
 
 	/* Test error cases
 	 */
@@ -96,9 +96,9 @@ int creg_test_key_navigation_initialize(
 	 result,
 	 -1 );
 
-        CREG_TEST_ASSERT_IS_NOT_NULL(
-         "error",
-         error );
+	CREG_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
 
 	libcerror_error_free(
 	 &error );
@@ -115,9 +115,9 @@ int creg_test_key_navigation_initialize(
 	 result,
 	 -1 );
 
-        CREG_TEST_ASSERT_IS_NOT_NULL(
-         "error",
-         error );
+	CREG_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
 
 	libcerror_error_free(
 	 &error );
@@ -241,9 +241,9 @@ int creg_test_key_navigation_free(
 	 result,
 	 -1 );
 
-        CREG_TEST_ASSERT_IS_NOT_NULL(
-         "error",
-         error );
+	CREG_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
 
 	libcerror_error_free(
 	 &error );

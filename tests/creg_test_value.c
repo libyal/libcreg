@@ -55,9 +55,9 @@ int creg_test_value_free(
 	 result,
 	 -1 );
 
-        CREG_TEST_ASSERT_IS_NOT_NULL(
-         "error",
-         error );
+	CREG_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
 
 	libcerror_error_free(
 	 &error );

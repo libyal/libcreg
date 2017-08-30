@@ -64,13 +64,13 @@ int creg_test_key_name_entry_initialize(
 	 result,
 	 1 );
 
-        CREG_TEST_ASSERT_IS_NOT_NULL(
-         "key_name_entry",
-         key_name_entry );
+	CREG_TEST_ASSERT_IS_NOT_NULL(
+	 "key_name_entry",
+	 key_name_entry );
 
-        CREG_TEST_ASSERT_IS_NULL(
-         "error",
-         error );
+	CREG_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
 
 	result = libcreg_key_name_entry_free(
 	          &key_name_entry,
@@ -81,13 +81,13 @@ int creg_test_key_name_entry_initialize(
 	 result,
 	 1 );
 
-        CREG_TEST_ASSERT_IS_NULL(
-         "key_name_entry",
-         key_name_entry );
+	CREG_TEST_ASSERT_IS_NULL(
+	 "key_name_entry",
+	 key_name_entry );
 
-        CREG_TEST_ASSERT_IS_NULL(
-         "error",
-         error );
+	CREG_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
 
 	/* Test error cases
 	 */
@@ -100,9 +100,9 @@ int creg_test_key_name_entry_initialize(
 	 result,
 	 -1 );
 
-        CREG_TEST_ASSERT_IS_NOT_NULL(
-         "error",
-         error );
+	CREG_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
 
 	libcerror_error_free(
 	 &error );
@@ -118,9 +118,9 @@ int creg_test_key_name_entry_initialize(
 	 result,
 	 -1 );
 
-        CREG_TEST_ASSERT_IS_NOT_NULL(
-         "error",
-         error );
+	CREG_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
 
 	libcerror_error_free(
 	 &error );
@@ -252,9 +252,9 @@ int creg_test_key_name_entry_free(
 	 result,
 	 -1 );
 
-        CREG_TEST_ASSERT_IS_NOT_NULL(
-         "error",
-         error );
+	CREG_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
 
 	libcerror_error_free(
 	 &error );
@@ -291,13 +291,13 @@ int creg_test_key_name_entry_read_data(
 	 result,
 	 1 );
 
-        CREG_TEST_ASSERT_IS_NOT_NULL(
-         "key_name_entry",
-         key_name_entry );
+	CREG_TEST_ASSERT_IS_NOT_NULL(
+	 "key_name_entry",
+	 key_name_entry );
 
-        CREG_TEST_ASSERT_IS_NULL(
-         "error",
-         error );
+	CREG_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
 
 	/* Test error cases
 	 */
@@ -313,9 +313,9 @@ int creg_test_key_name_entry_read_data(
 	 result,
 	 -1 );
 
-        CREG_TEST_ASSERT_IS_NOT_NULL(
-         "error",
-         error );
+	CREG_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
 
 	libcerror_error_free(
 	 &error );
@@ -332,9 +332,9 @@ int creg_test_key_name_entry_read_data(
 	 result,
 	 -1 );
 
-        CREG_TEST_ASSERT_IS_NOT_NULL(
-         "error",
-         error );
+	CREG_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
 
 	libcerror_error_free(
 	 &error );
@@ -350,13 +350,13 @@ int creg_test_key_name_entry_read_data(
 	 result,
 	 1 );
 
-        CREG_TEST_ASSERT_IS_NULL(
-         "key_name_entry",
-         key_name_entry );
+	CREG_TEST_ASSERT_IS_NULL(
+	 "key_name_entry",
+	 key_name_entry );
 
-        CREG_TEST_ASSERT_IS_NULL(
-         "error",
-         error );
+	CREG_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
 
 	return( 1 );
 
