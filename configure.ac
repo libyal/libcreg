@@ -2,7 +2,7 @@ AC_PREREQ( 2.59 )
 
 AC_INIT(
  [libcreg],
- [20170912],
+ [20170923],
  [joachim.metz@gmail.com])
 
 AC_CONFIG_SRCDIR(
@@ -116,11 +116,11 @@ AM_CONDITIONAL(
   HAVE_PYTHON_TESTS,
   [test "x${ac_cv_enable_python}" != xno || test "x${ac_cv_enable_python2}" != xno || test "x${ac_cv_enable_python3}" != xno])
 
+dnl Check if libfuse or required headers and functions are available
+AX_LIBFUSE_CHECK_ENABLE
+
 dnl Check if cregtools required headers and functions are available
 AX_CREGTOOLS_CHECK_LOCAL
-
-dnl Check for libfuse Filesystem in Userspace (FUSE) support
-AX_LIBFUSE_CHECK_ENABLE
 
 dnl Check if libcreg should be build with verbose output
 AX_COMMON_CHECK_ENABLE_VERBOSE_OUTPUT
