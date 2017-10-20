@@ -33,6 +33,8 @@
 #include "creg_test_memory.h"
 #include "creg_test_unused.h"
 
+#include "../libcreg/libcreg_data_type.h"
+
 /* The main program
  */
 #if defined( HAVE_WIDE_SYSTEM_CHARACTER )

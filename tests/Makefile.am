@@ -100,17 +100,24 @@ creg_test_error_LDADD = \
 
 creg_test_file_SOURCES = \
 	creg_test_file.c \
+	creg_test_functions.c creg_test_functions.h \
 	creg_test_getopt.c creg_test_getopt.h \
+	creg_test_libbfio.h \
 	creg_test_libcerror.h \
 	creg_test_libclocale.h \
 	creg_test_libcnotify.h \
 	creg_test_libcreg.h \
 	creg_test_libuna.h \
 	creg_test_macros.h \
-	creg_test_memory.c creg_test_memory.h
+	creg_test_memory.c creg_test_memory.h \
+	creg_test_unused.h
 
 creg_test_file_LDADD = \
+	@LIBBFIO_LIBADD@ \
+	@LIBCPATH_LIBADD@ \
+	@LIBCFILE_LIBADD@ \
 	@LIBUNA_LIBADD@ \
+	@LIBCSPLIT_LIBADD@ \
 	@LIBCNOTIFY_LIBADD@ \
 	@LIBCLOCALE_LIBADD@ \
 	@LIBCDATA_LIBADD@ \
@@ -189,6 +196,7 @@ creg_test_notify_LDADD = \
 	../libcreg/libcreg.la
 
 creg_test_support_SOURCES = \
+	creg_test_functions.c creg_test_functions.h \
 	creg_test_getopt.c creg_test_getopt.h \
 	creg_test_libbfio.h \
 	creg_test_libcerror.h \
@@ -197,7 +205,8 @@ creg_test_support_SOURCES = \
 	creg_test_libcreg.h \
 	creg_test_libuna.h \
 	creg_test_macros.h \
-	creg_test_support.c
+	creg_test_support.c \
+	creg_test_unused.h
 
 creg_test_support_LDADD = \
 	@LIBBFIO_LIBADD@ \
