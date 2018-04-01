@@ -187,13 +187,15 @@ creg_test_key_navigation_LDADD = \
 	@LIBCERROR_LIBADD@
 
 creg_test_notify_SOURCES = \
+	creg_test_libcerror.h \
 	creg_test_libcreg.h \
 	creg_test_macros.h \
 	creg_test_notify.c \
 	creg_test_unused.h
 
 creg_test_notify_LDADD = \
-	../libcreg/libcreg.la
+	../libcreg/libcreg.la \
+	@LIBCERROR_LIBADD@
 
 creg_test_support_SOURCES = \
 	creg_test_functions.c creg_test_functions.h \
@@ -205,6 +207,7 @@ creg_test_support_SOURCES = \
 	creg_test_libcreg.h \
 	creg_test_libuna.h \
 	creg_test_macros.h \
+	creg_test_memory.c creg_test_memory.h \
 	creg_test_support.c \
 	creg_test_unused.h
 

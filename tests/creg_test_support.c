@@ -36,12 +36,17 @@
 #include "creg_test_libcerror.h"
 #include "creg_test_libcreg.h"
 #include "creg_test_macros.h"
+#include "creg_test_memory.h"
 #include "creg_test_unused.h"
+
+#if !defined( LIBCREG_HAVE_BFIO )
 
 LIBCREG_EXTERN \
 int libcreg_check_file_signature_file_io_handle(
      libbfio_handle_t *file_io_handle,
      libcerror_error_t **error );
+
+#endif /* !defined( LIBCREG_HAVE_BFIO ) */
 
 /* Tests the libcreg_get_version function
  * Returns 1 if successful or 0 if not
@@ -205,38 +210,40 @@ int creg_test_check_file_signature(
 	libcerror_error_t *error = NULL;
 	int result               = 0;
 
-	/* Initialize test
-	 */
-	result = creg_test_get_narrow_source(
-	          source,
-	          narrow_source,
-	          256,
-	          &error );
+	if( source != NULL )
+	{
+		/* Initialize test
+		 */
+		result = creg_test_get_narrow_source(
+		          source,
+		          narrow_source,
+		          256,
+		          &error );
 
-	CREG_TEST_ASSERT_EQUAL_INT(
-	 "result",
-	 result,
-	 1 );
+		CREG_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 1 );
 
-	CREG_TEST_ASSERT_IS_NULL(
-	 "error",
-	 error );
+		CREG_TEST_ASSERT_IS_NULL(
+		 "error",
+		 error );
 
-	/* Test check file signature
-	 */
-	result = libcreg_check_file_signature(
-	          narrow_source,
-	          &error );
+		/* Test check file signature
+		 */
+		result = libcreg_check_file_signature(
+		          narrow_source,
+		          &error );
 
-	CREG_TEST_ASSERT_EQUAL_INT(
-	 "result",
-	 result,
-	 1 );
+		CREG_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 1 );
 
-	CREG_TEST_ASSERT_IS_NULL(
-	 "error",
-	 error );
-
+		CREG_TEST_ASSERT_IS_NULL(
+		 "error",
+		 error );
+	}
 	/* Test error cases
 	 */
 	result = libcreg_check_file_signature(
@@ -255,6 +262,54 @@ int creg_test_check_file_signature(
 	libcerror_error_free(
 	 &error );
 
+	result = libcreg_check_file_signature(
+	          "",
+	          &error );
+
+	CREG_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	CREG_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	if( source != NULL )
+	{
+#if defined( HAVE_CREG_TEST_MEMORY )
+
+		/* Test libcreg_check_file_signature with malloc failing in libbfio_file_initialize
+		 */
+		creg_test_malloc_attempts_before_fail = 0;
+
+		result = libcreg_check_file_signature(
+		          narrow_source,
+		          &error );
+
+		if( creg_test_malloc_attempts_before_fail != -1 )
+		{
+			creg_test_malloc_attempts_before_fail = -1;
+		}
+		else
+		{
+			CREG_TEST_ASSERT_EQUAL_INT(
+			 "result",
+			 result,
+			 -1 );
+
+			CREG_TEST_ASSERT_IS_NOT_NULL(
+			 "error",
+			 error );
+
+			libcerror_error_free(
+			 &error );
+		}
+#endif /* defined( HAVE_CREG_TEST_MEMORY ) */
+	}
 	return( 1 );
 
 on_error:
@@ -279,38 +334,40 @@ int creg_test_check_file_signature_wide(
 	libcerror_error_t *error = NULL;
 	int result               = 0;
 
-	/* Initialize test
-	 */
-	result = creg_test_get_wide_source(
-	          source,
-	          wide_source,
-	          256,
-	          &error );
+	if( source != NULL )
+	{
+		/* Initialize test
+		 */
+		result = creg_test_get_wide_source(
+		          source,
+		          wide_source,
+		          256,
+		          &error );
 
-	CREG_TEST_ASSERT_EQUAL_INT(
-	 "result",
-	 result,
-	 1 );
+		CREG_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 1 );
 
-	CREG_TEST_ASSERT_IS_NULL(
-	 "error",
-	 error );
+		CREG_TEST_ASSERT_IS_NULL(
+		 "error",
+		 error );
 
-	/* Test check file signature
-	 */
-	result = libcreg_check_file_signature_wide(
-	          wide_source,
-	          &error );
+		/* Test check file signature
+		 */
+		result = libcreg_check_file_signature_wide(
+		          wide_source,
+		          &error );
 
-	CREG_TEST_ASSERT_EQUAL_INT(
-	 "result",
-	 result,
-	 1 );
+		CREG_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 1 );
 
-	CREG_TEST_ASSERT_IS_NULL(
-	 "error",
-	 error );
-
+		CREG_TEST_ASSERT_IS_NULL(
+		 "error",
+		 error );
+	}
 	/* Test error cases
 	 */
 	result = libcreg_check_file_signature_wide(
@@ -329,6 +386,54 @@ int creg_test_check_file_signature_wide(
 	libcerror_error_free(
 	 &error );
 
+	result = libcreg_check_file_signature_wide(
+	          L"",
+	          &error );
+
+	CREG_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	CREG_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	if( source != NULL )
+	{
+#if defined( HAVE_CREG_TEST_MEMORY )
+
+		/* Test libcreg_check_file_signature_wide with malloc failing in libbfio_file_initialize
+		 */
+		creg_test_malloc_attempts_before_fail = 0;
+
+		result = libcreg_check_file_signature_wide(
+		          wide_source,
+		          &error );
+
+		if( creg_test_malloc_attempts_before_fail != -1 )
+		{
+			creg_test_malloc_attempts_before_fail = -1;
+		}
+		else
+		{
+			CREG_TEST_ASSERT_EQUAL_INT(
+			 "result",
+			 result,
+			 -1 );
+
+			CREG_TEST_ASSERT_IS_NOT_NULL(
+			 "error",
+			 error );
+
+			libcerror_error_free(
+			 &error );
+		}
+#endif /* defined( HAVE_CREG_TEST_MEMORY ) */
+	}
 	return( 1 );
 
 on_error:
@@ -348,7 +453,7 @@ on_error:
 int creg_test_check_file_signature_file_io_handle(
      const system_character_t *source )
 {
-	uint8_t empty_block[ 512 ];
+	uint8_t empty_block[ 8192 ];
 
 	libbfio_handle_t *file_io_handle = NULL;
 	libcerror_error_t *error         = NULL;
@@ -358,77 +463,90 @@ int creg_test_check_file_signature_file_io_handle(
 
 	/* Initialize test
 	 */
-	result = libbfio_file_initialize(
-	          &file_io_handle,
-	          &error );
-
-	CREG_TEST_ASSERT_EQUAL_INT(
-	 "result",
-	 result,
-	 1 );
+	memset_result = memory_set(
+	                 empty_block,
+	                 0,
+	                 sizeof( uint8_t ) * 8192 );
 
 	CREG_TEST_ASSERT_IS_NOT_NULL(
-	 "file_io_handle",
-	 file_io_handle );
+	 "memset_result",
+	 memset_result );
 
-	CREG_TEST_ASSERT_IS_NULL(
-	 "error",
-	 error );
+	if( source != NULL )
+	{
+		/* Initialize test
+		 */
+		result = libbfio_file_initialize(
+		          &file_io_handle,
+		          &error );
 
-	source_length = system_string_length(
-	                 source );
+		CREG_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 1 );
+
+		CREG_TEST_ASSERT_IS_NOT_NULL(
+		 "file_io_handle",
+		 file_io_handle );
+
+		CREG_TEST_ASSERT_IS_NULL(
+		 "error",
+		 error );
+
+		source_length = system_string_length(
+		                 source );
 
 #if defined( HAVE_WIDE_SYSTEM_CHARACTER )
-	result = libbfio_file_set_name_wide(
-	          file_io_handle,
-	          source,
-	          source_length,
-	          &error );
+		result = libbfio_file_set_name_wide(
+		          file_io_handle,
+		          source,
+		          source_length,
+		          &error );
 #else
-	result = libbfio_file_set_name(
-	          file_io_handle,
-	          source,
-	          source_length,
-	          &error );
+		result = libbfio_file_set_name(
+		          file_io_handle,
+		          source,
+		          source_length,
+		          &error );
 #endif
-	CREG_TEST_ASSERT_EQUAL_INT(
-	 "result",
-	 result,
-	 1 );
+		CREG_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 1 );
 
-	CREG_TEST_ASSERT_IS_NULL(
-	 "error",
-	 error );
+		CREG_TEST_ASSERT_IS_NULL(
+		 "error",
+		 error );
 
-	result = libbfio_handle_open(
-	          file_io_handle,
-	          LIBBFIO_OPEN_READ,
-	          &error );
+		result = libbfio_handle_open(
+		          file_io_handle,
+		          LIBBFIO_OPEN_READ,
+		          &error );
 
-	CREG_TEST_ASSERT_EQUAL_INT(
-	 "result",
-	 result,
-	 1 );
+		CREG_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 1 );
 
-	CREG_TEST_ASSERT_IS_NULL(
-	 "error",
-	 error );
+		CREG_TEST_ASSERT_IS_NULL(
+		 "error",
+		 error );
 
-	/* Test check file signature
-	 */
-	result = libcreg_check_file_signature_file_io_handle(
-	          file_io_handle,
-	          &error );
+		/* Test check file signature
+		 */
+		result = libcreg_check_file_signature_file_io_handle(
+		          file_io_handle,
+		          &error );
 
-	CREG_TEST_ASSERT_EQUAL_INT(
-	 "result",
-	 result,
-	 1 );
+		CREG_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 1 );
 
-	CREG_TEST_ASSERT_IS_NULL(
-	 "error",
-	 error );
-
+		CREG_TEST_ASSERT_IS_NULL(
+		 "error",
+		 error );
+	}
 	/* Test error cases
 	 */
 	result = libcreg_check_file_signature_file_io_handle(
@@ -449,8 +567,77 @@ int creg_test_check_file_signature_file_io_handle(
 
 	/* Clean up
 	 */
-	result = libbfio_handle_close(
+	if( source != NULL )
+	{
+		result = libbfio_handle_close(
+		          file_io_handle,
+		          &error );
+
+		CREG_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 0 );
+
+		CREG_TEST_ASSERT_IS_NULL(
+		 "error",
+		 error );
+
+		result = libbfio_handle_free(
+		          &file_io_handle,
+		          &error );
+
+		CREG_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 1 );
+
+		CREG_TEST_ASSERT_IS_NULL(
+		 "file_io_handle",
+		 file_io_handle );
+
+		CREG_TEST_ASSERT_IS_NULL(
+		 "error",
+		 error );
+	}
+	/* Test check file signature with data too small
+	 */
+	result = creg_test_open_file_io_handle(
+	          &file_io_handle,
+	          empty_block,
+	          sizeof( uint8_t ) * 1,
+	          &error );
+
+	CREG_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	CREG_TEST_ASSERT_IS_NOT_NULL(
+	 "file_io_handle",
+	 file_io_handle );
+
+	CREG_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	result = libcreg_check_file_signature_file_io_handle(
 	          file_io_handle,
+	          &error );
+
+	CREG_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	CREG_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = creg_test_close_file_io_handle(
+	          &file_io_handle,
 	          &error );
 
 	CREG_TEST_ASSERT_EQUAL_INT(
@@ -462,55 +649,12 @@ int creg_test_check_file_signature_file_io_handle(
 	 "error",
 	 error );
 
-	result = libbfio_handle_free(
-	          &file_io_handle,
-	          &error );
-
-	CREG_TEST_ASSERT_EQUAL_INT(
-	 "result",
-	 result,
-	 1 );
-
-	CREG_TEST_ASSERT_IS_NULL(
-	 "file_io_handle",
-	 file_io_handle );
-
-	CREG_TEST_ASSERT_IS_NULL(
-	 "error",
-	 error );
-
-	/* Initialize test
+	/* Test check file signature with empty block
 	 */
-	memset_result = memory_set(
-	                 empty_block,
-	                 0,
-	                 sizeof( uint8_t ) * 512 );
-
-	CREG_TEST_ASSERT_IS_NOT_NULL(
-	 "memset_result",
-	 memset_result );
-
-	result = libbfio_memory_range_initialize(
+	result = creg_test_open_file_io_handle(
 	          &file_io_handle,
-	          &error );
-
-	CREG_TEST_ASSERT_EQUAL_INT(
-	 "result",
-	 result,
-	 1 );
-
-	CREG_TEST_ASSERT_IS_NOT_NULL(
-	 "file_io_handle",
-	 file_io_handle );
-
-	CREG_TEST_ASSERT_IS_NULL(
-	 "error",
-	 error );
-
-	result = libbfio_memory_range_set(
-	          file_io_handle,
 	          empty_block,
-	          sizeof( uint8_t ) * 512,
+	          sizeof( uint8_t ) * 8192,
 	          &error );
 
 	CREG_TEST_ASSERT_EQUAL_INT(
@@ -518,26 +662,14 @@ int creg_test_check_file_signature_file_io_handle(
 	 result,
 	 1 );
 
-	CREG_TEST_ASSERT_IS_NULL(
-	 "error",
-	 error );
-
-	result = libbfio_handle_open(
-	          file_io_handle,
-	          LIBBFIO_OPEN_READ,
-	          &error );
-
-	CREG_TEST_ASSERT_EQUAL_INT(
-	 "result",
-	 result,
-	 1 );
+	CREG_TEST_ASSERT_IS_NOT_NULL(
+	 "file_io_handle",
+	 file_io_handle );
 
 	CREG_TEST_ASSERT_IS_NULL(
 	 "error",
 	 error );
 
-	/* Test check file signature
-	 */
 	result = libcreg_check_file_signature_file_io_handle(
 	          file_io_handle,
 	          &error );
@@ -551,10 +683,8 @@ int creg_test_check_file_signature_file_io_handle(
 	 "error",
 	 error );
 
-	/* Clean up
-	 */
-	result = libbfio_handle_close(
-	          file_io_handle,
+	result = creg_test_close_file_io_handle(
+	          &file_io_handle,
 	          &error );
 
 	CREG_TEST_ASSERT_EQUAL_INT(
@@ -565,25 +695,6 @@ int creg_test_check_file_signature_file_io_handle(
 	CREG_TEST_ASSERT_IS_NULL(
 	 "error",
 	 error );
-
-	result = libbfio_handle_free(
-	          &file_io_handle,
-	          &error );
-
-	CREG_TEST_ASSERT_EQUAL_INT(
-	 "result",
-	 result,
-	 1 );
-
-	CREG_TEST_ASSERT_IS_NULL(
-	 "file_io_handle",
-	 file_io_handle );
-
-	CREG_TEST_ASSERT_IS_NULL(
-	 "error",
-	 error );
-
-	/* TODO test file too small */
 
 	return( 1 );
 
@@ -638,7 +749,6 @@ int main(
 	{
 		source = argv[ optind ];
 	}
-
 	CREG_TEST_RUN(
 	 "libcreg_get_version",
 	 creg_test_get_version );
@@ -656,27 +766,26 @@ int main(
 	 creg_test_set_codepage );
 
 #if !defined( __BORLANDC__ ) || ( __BORLANDC__ >= 0x0560 )
-	if( source != NULL )
-	{
-		CREG_TEST_RUN_WITH_ARGS(
-		 "libcreg_check_file_signature",
-		 creg_test_check_file_signature,
-		 source );
+
+	CREG_TEST_RUN_WITH_ARGS(
+	 "libcreg_check_file_signature",
+	 creg_test_check_file_signature,
+	 source );
 
 #if defined( HAVE_WIDE_CHARACTER_TYPE )
 
-		CREG_TEST_RUN_WITH_ARGS(
-		 "libcreg_check_file_signature_wide",
-		 creg_test_check_file_signature_wide,
-		 source );
+	CREG_TEST_RUN_WITH_ARGS(
+	 "libcreg_check_file_signature_wide",
+	 creg_test_check_file_signature_wide,
+	 source );
 
 #endif /* defined( HAVE_WIDE_CHARACTER_TYPE ) */
 
-		CREG_TEST_RUN_WITH_ARGS(
-		 "libcreg_check_file_signature_file_io_handle",
-		 creg_test_check_file_signature_file_io_handle,
-		 source );
-	}
+	CREG_TEST_RUN_WITH_ARGS(
+	 "libcreg_check_file_signature_file_io_handle",
+	 creg_test_check_file_signature_file_io_handle,
+	 source );
+
 #endif /* !defined( __BORLANDC__ ) || ( __BORLANDC__ >= 0x0560 ) */
 
 	return( EXIT_SUCCESS );
