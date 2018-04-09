@@ -135,6 +135,13 @@ int libcreg_key_get_value(
      libcerror_error_t **error );
 
 LIBCREG_EXTERN \
+int libcreg_key_get_value_by_index(
+     libcreg_key_t *key,
+     int value_index,
+     libcreg_value_t **value,
+     libcerror_error_t **error );
+
+LIBCREG_EXTERN \
 int libcreg_key_get_value_by_utf8_name(
      libcreg_key_t *key,
      const uint8_t *utf8_string,
@@ -158,6 +165,13 @@ int libcreg_key_get_number_of_sub_keys(
 
 LIBCREG_EXTERN \
 int libcreg_key_get_sub_key(
+     libcreg_key_t *key,
+     int sub_key_index,
+     libcreg_key_t **sub_key,
+     libcerror_error_t **error );
+
+LIBCREG_EXTERN \
+int libcreg_key_get_sub_key_by_index(
      libcreg_key_t *key,
      int sub_key_index,
      libcreg_key_t **sub_key,

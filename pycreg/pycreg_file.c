@@ -265,93 +265,6 @@ PyTypeObject pycreg_file_type_object = {
 	0
 };
 
-/* Creates a new file object
- * Returns a Python object if successful or NULL on error
- */
-PyObject *pycreg_file_new(
-           void )
-{
-	pycreg_file_t *pycreg_file = NULL;
-	static char *function      = "pycreg_file_new";
-
-	pycreg_file = PyObject_New(
-	               struct pycreg_file,
-	               &pycreg_file_type_object );
-
-	if( pycreg_file == NULL )
-	{
-		PyErr_Format(
-		 PyExc_MemoryError,
-		 "%s: unable to initialize file.",
-		 function );
-
-		goto on_error;
-	}
-	if( pycreg_file_init(
-	     pycreg_file ) != 0 )
-	{
-		PyErr_Format(
-		 PyExc_MemoryError,
-		 "%s: unable to initialize file.",
-		 function );
-
-		goto on_error;
-	}
-	return( (PyObject *) pycreg_file );
-
-on_error:
-	if( pycreg_file != NULL )
-	{
-		Py_DecRef(
-		 (PyObject *) pycreg_file );
-	}
-	return( NULL );
-}
-
-/* Creates a new file object and opens it
- * Returns a Python object if successful or NULL on error
- */
-PyObject *pycreg_file_new_open(
-           PyObject *self PYCREG_ATTRIBUTE_UNUSED,
-           PyObject *arguments,
-           PyObject *keywords )
-{
-	PyObject *pycreg_file = NULL;
-
-	PYCREG_UNREFERENCED_PARAMETER( self )
-
-	pycreg_file = pycreg_file_new();
-
-	pycreg_file_open(
-	 (pycreg_file_t *) pycreg_file,
-	 arguments,
-	 keywords );
-
-	return( pycreg_file );
-}
-
-/* Creates a new file object and opens it using a file-like object
- * Returns a Python object if successful or NULL on error
- */
-PyObject *pycreg_file_new_open_file_object(
-           PyObject *self PYCREG_ATTRIBUTE_UNUSED,
-           PyObject *arguments,
-           PyObject *keywords )
-{
-	PyObject *pycreg_file = NULL;
-
-	PYCREG_UNREFERENCED_PARAMETER( self )
-
-	pycreg_file = pycreg_file_new();
-
-	pycreg_file_open_file_object(
-	 (pycreg_file_t *) pycreg_file,
-	 arguments,
-	 keywords );
-
-	return( pycreg_file );
-}
-
 /* Intializes a file object
  * Returns 0 if successful or -1 on error
  */
@@ -1475,7 +1388,6 @@ PyObject *pycreg_file_get_root_key(
 		return( Py_None );
 	}
 	key_object = pycreg_key_new(
-	              &pycreg_key_type_object,
 	              root_key,
 	              (PyObject *) pycreg_file );
 
@@ -1570,7 +1482,6 @@ PyObject *pycreg_file_get_key_by_path(
 		return( Py_None );
 	}
 	key_object = pycreg_key_new(
-	              &pycreg_key_type_object,
 	              key,
 	              (PyObject *) pycreg_file );
 

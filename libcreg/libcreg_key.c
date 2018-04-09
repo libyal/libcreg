@@ -23,6 +23,10 @@
 #include <memory.h>
 #include <types.h>
 
+#if defined( HAVE_WCTYPE_H ) || defined( HAVE_WINAPI )
+#include <wctype.h>
+#endif
+
 #include "libcreg_definitions.h"
 #include "libcreg_io_handle.h"
 #include "libcreg_key.h"
@@ -228,7 +232,7 @@ int libcreg_key_is_corrupted(
 	return( 0 );
 }
 
-/* Retrieves the offset of the key
+/* Retrieves the offset
  * Returns 1 if successful or -1 on error
  */
 int libcreg_key_get_offset(
@@ -366,7 +370,7 @@ int libcreg_key_get_name_size(
 	return( 1 );
 }
 
-/* Retrieves the key name data and size
+/* Retrieves the key name
  * Returns 1 if successful or -1 on error
  */
 int libcreg_key_get_name(
@@ -891,7 +895,7 @@ int libcreg_key_get_utf16_name(
 	return( 1 );
 }
 
-/* Retrieves the number of values of the referenced key
+/* Retrieves the number of values
  * All sets in a key contain the same number of values
  * Returns 1 if successful or -1 on error
  */
@@ -1046,7 +1050,117 @@ int libcreg_key_get_value(
 
 		return( -1 );
 	}
+	if( libcreg_key_name_entry_get_entry_by_index(
+	     key_name_entry,
+	     value_index,
+	     &value_entry,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve value entry: %d.",
+		 function,
+		 value_index );
 
+		return( -1 );
+	}
+	if( libcreg_value_initialize(
+	     value,
+	     internal_key->io_handle,
+	     value_entry,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
+		 "%s: unable to initialize value.",
+		 function );
+
+		return( -1 );
+	}
+	return( 1 );
+}
+
+/* Retrieves the value
+ * Returns 1 if successful or -1 on error
+ */
+int libcreg_key_get_value_by_index(
+     libcreg_key_t *key,
+     int value_index,
+     libcreg_value_t **value,
+     libcerror_error_t **error )
+{
+	libcreg_internal_key_t *internal_key     = NULL;
+	libcreg_key_name_entry_t *key_name_entry = NULL;
+	libcreg_value_entry_t *value_entry       = NULL;
+	static char *function                    = "libcreg_key_get_value_by_index";
+
+	if( key == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid key.",
+		 function );
+
+		return( -1 );
+	}
+	internal_key = (libcreg_internal_key_t *) key;
+
+	if( value == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid value.",
+		 function );
+
+		return( -1 );
+	}
+	if( *value != NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_VALUE_ALREADY_SET,
+		 "%s: value already set.",
+		 function );
+
+		return( -1 );
+	}
+	if( libfdata_tree_node_get_node_value(
+	     internal_key->key_tree_node,
+	     (intptr_t *) internal_key->file_io_handle,
+	     internal_key->key_cache,
+	     (intptr_t **) &key_name_entry,
+	     0,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve key name entry.",
+		 function );
+
+		return( -1 );
+	}
+	if( key_name_entry == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_VALUE_MISSING,
+		 "%s: missing key name entry.",
+		 function );
+
+		return( -1 );
+	}
 	if( libcreg_key_name_entry_get_entry_by_index(
 	     key_name_entry,
 	     value_index,
@@ -1641,6 +1755,104 @@ int libcreg_key_get_sub_key(
 	libfdata_tree_node_t *key_tree_sub_node = NULL;
 	libcreg_internal_key_t *internal_key    = NULL;
 	static char *function                   = "libcreg_key_get_sub_key";
+
+	if( key == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid key.",
+		 function );
+
+		return( -1 );
+	}
+	internal_key = (libcreg_internal_key_t *) key;
+
+	if( sub_key == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid sub key.",
+		 function );
+
+		return( -1 );
+	}
+	if( *sub_key != NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_VALUE_ALREADY_SET,
+		 "%s: sub key already set.",
+		 function );
+
+		return( -1 );
+	}
+	if( libfdata_tree_node_get_sub_node_by_index(
+	     internal_key->key_tree_node,
+	     (intptr_t *) internal_key->file_io_handle,
+	     internal_key->key_cache,
+             sub_key_index,
+	     &key_tree_sub_node,
+	     0,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve sub node: %d.",
+		 function,
+		 sub_key_index );
+
+		return( -1 );
+	}
+	if( key_tree_sub_node == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_VALUE_MISSING,
+		 "%s: invalid key tree sub node.",
+		 function );
+
+		return( -1 );
+	}
+	if( libcreg_key_initialize(
+	     sub_key,
+	     internal_key->io_handle,
+	     internal_key->file_io_handle,
+	     key_tree_sub_node,
+	     internal_key->key_cache,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
+		 "%s: unable to initialize sub key.",
+		 function );
+
+		return( -1 );
+	}
+	return( 1 );
+}
+
+/* Retrieves the sub key for the specific index
+ * Returns 1 if successful or -1 on error
+ */
+int libcreg_key_get_sub_key_by_index(
+     libcreg_key_t *key,
+     int sub_key_index,
+     libcreg_key_t **sub_key,
+     libcerror_error_t **error )
+{
+	libfdata_tree_node_t *key_tree_sub_node = NULL;
+	libcreg_internal_key_t *internal_key    = NULL;
+	static char *function                   = "libcreg_key_get_sub_key_by_index";
 
 	if( key == NULL )
 	{

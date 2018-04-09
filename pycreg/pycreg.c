@@ -75,16 +75,16 @@ PyMethodDef pycreg_module_methods[] = {
 	  "Checks if a file has a Windows 9x/Me Registry File (CREG) signature using a file-like object." },
 
 	{ "open",
-	  (PyCFunction) pycreg_file_new_open,
+	  (PyCFunction) pycreg_open_new_file,
 	  METH_VARARGS | METH_KEYWORDS,
 	  "open(filename, mode='r') -> Object\n"
 	  "\n"
 	  "Opens a file." },
 
 	{ "open_file_object",
-	  (PyCFunction) pycreg_file_new_open_file_object,
+	  (PyCFunction) pycreg_open_new_file_with_file_object,
 	  METH_VARARGS | METH_KEYWORDS,
-	  "open_file_object(file_boject, mode='r') -> Object\n"
+	  "open_file_object(file_object, mode='r') -> Object\n"
 	  "\n"
 	  "Opens a file using a file-like object." },
 
@@ -128,7 +128,7 @@ PyObject *pycreg_get_version(
 	         errors ) );
 }
 
-/* Checks if the file has a Windows 9x/Me Registry File (CREG) signature
+/* Checks if a file has a Windows 9x/Me Registry File (CREG) signature
  * Returns a Python object if successful or NULL on error
  */
 PyObject *pycreg_check_file_signature(
@@ -224,7 +224,9 @@ PyObject *pycreg_check_file_signature(
 
 		Py_DecRef(
 		 utf8_string_object );
-#endif
+
+#endif /* #if defined( HAVE_WIDE_SYSTEM_CHARACTER ) */
+
 		if( result == -1 )
 		{
 			pycreg_error_raise(
@@ -322,7 +324,7 @@ PyObject *pycreg_check_file_signature(
 	return( NULL );
 }
 
-/* Checks if the file has a Windows 9x/Me Registry File (CREG) signature using a file-like object
+/* Checks if a file has a Windows 9x/Me Registry File (CREG) signature using a file-like object
  * Returns a Python object if successful or NULL on error
  */
 PyObject *pycreg_check_file_signature_file_object(
@@ -422,6 +424,52 @@ on_error:
 	return( NULL );
 }
 
+/* Creates a new file object and opens it
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pycreg_open_new_file(
+           PyObject *self PYCREG_ATTRIBUTE_UNUSED,
+           PyObject *arguments,
+           PyObject *keywords )
+{
+	PyObject *pycreg_file = NULL;
+
+	PYCREG_UNREFERENCED_PARAMETER( self )
+
+	pycreg_file_init(
+	 (pycreg_file_t *) pycreg_file );
+
+	pycreg_file_open(
+	 (pycreg_file_t *) pycreg_file,
+	 arguments,
+	 keywords );
+
+	return( pycreg_file );
+}
+
+/* Creates a new file object and opens it using a file-like object
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pycreg_open_new_file_with_file_object(
+           PyObject *self PYCREG_ATTRIBUTE_UNUSED,
+           PyObject *arguments,
+           PyObject *keywords )
+{
+	PyObject *pycreg_file = NULL;
+
+	PYCREG_UNREFERENCED_PARAMETER( self )
+
+	pycreg_file_init(
+	 (pycreg_file_t *) pycreg_file );
+
+	pycreg_file_open_file_object(
+	 (pycreg_file_t *) pycreg_file,
+	 arguments,
+	 keywords );
+
+	return( pycreg_file );
+}
+
 #if PY_MAJOR_VERSION >= 3
 
 /* The pycreg module definition
@@ -459,14 +507,8 @@ PyMODINIT_FUNC initpycreg(
                 void )
 #endif
 {
-	PyObject *module                      = NULL;
-	PyTypeObject *file_type_object        = NULL;
-	PyTypeObject *key_type_object         = NULL;
-	PyTypeObject *keys_type_object        = NULL;
-	PyTypeObject *value_type_object       = NULL;
-	PyTypeObject *value_types_type_object = NULL;
-	PyTypeObject *values_type_object      = NULL;
-	PyGILState_STATE gil_state            = 0;
+	PyObject *module           = NULL;
+	PyGILState_STATE gil_state = 0;
 
 #if defined( HAVE_DEBUG_OUTPUT )
 	libcreg_notify_set_stream(
@@ -511,33 +553,12 @@ PyMODINIT_FUNC initpycreg(
 		goto on_error;
 	}
 	Py_IncRef(
-	 (PyObject *) &pycreg_file_type_object );
-
-	file_type_object = &pycreg_file_type_object;
+	 (PyObject * ) &pycreg_file_type_object );
 
 	PyModule_AddObject(
 	 module,
 	 "file",
-	 (PyObject *) file_type_object );
-
-	/* Setup the keys type object
-	 */
-	pycreg_keys_type_object.tp_new = PyType_GenericNew;
-
-	if( PyType_Ready(
-	     &pycreg_keys_type_object ) < 0 )
-	{
-		goto on_error;
-	}
-	Py_IncRef(
-	 (PyObject *) &pycreg_keys_type_object );
-
-	keys_type_object = &pycreg_keys_type_object;
-
-	PyModule_AddObject(
-	 module,
-	 "_keys",
-	 (PyObject *) keys_type_object );
+	 (PyObject *) &pycreg_file_type_object );
 
 	/* Setup the key type object
 	 */
@@ -549,33 +570,29 @@ PyMODINIT_FUNC initpycreg(
 		goto on_error;
 	}
 	Py_IncRef(
-	 (PyObject *) &pycreg_key_type_object );
-
-	key_type_object = &pycreg_key_type_object;
+	 (PyObject * ) &pycreg_key_type_object );
 
 	PyModule_AddObject(
 	 module,
 	 "key",
-	 (PyObject *) key_type_object );
+	 (PyObject *) &pycreg_key_type_object );
 
-	/* Setup the values type object
+	/* Setup the keys type object
 	 */
-	pycreg_values_type_object.tp_new = PyType_GenericNew;
+	pycreg_keys_type_object.tp_new = PyType_GenericNew;
 
 	if( PyType_Ready(
-	     &pycreg_values_type_object ) < 0 )
+	     &pycreg_keys_type_object ) < 0 )
 	{
 		goto on_error;
 	}
 	Py_IncRef(
-	 (PyObject *) &pycreg_values_type_object );
-
-	values_type_object = &pycreg_values_type_object;
+	 (PyObject * ) &pycreg_keys_type_object );
 
 	PyModule_AddObject(
 	 module,
-	 "_values",
-	 (PyObject *) values_type_object );
+	 "keys",
+	 (PyObject *) &pycreg_keys_type_object );
 
 	/* Setup the value type object
 	 */
@@ -587,38 +604,46 @@ PyMODINIT_FUNC initpycreg(
 		goto on_error;
 	}
 	Py_IncRef(
-	 (PyObject *) &pycreg_value_type_object );
-
-	value_type_object = &pycreg_value_type_object;
+	 (PyObject * ) &pycreg_value_type_object );
 
 	PyModule_AddObject(
 	 module,
 	 "value",
-	 (PyObject *) value_type_object );
+	 (PyObject *) &pycreg_value_type_object );
 
-	/* Setup the value types type object
+	/* Setup the value_types type object
 	 */
 	pycreg_value_types_type_object.tp_new = PyType_GenericNew;
 
-	if( pycreg_value_types_init_type(
-	     &pycreg_value_types_type_object ) != 1 )
-	{
-		goto on_error;
-	}
 	if( PyType_Ready(
 	     &pycreg_value_types_type_object ) < 0 )
 	{
 		goto on_error;
 	}
 	Py_IncRef(
-	 (PyObject *) &pycreg_value_types_type_object );
-
-	value_types_type_object = &pycreg_value_types_type_object;
+	 (PyObject * ) &pycreg_value_types_type_object );
 
 	PyModule_AddObject(
 	 module,
 	 "value_types",
-	 (PyObject *) value_types_type_object );
+	 (PyObject *) &pycreg_value_types_type_object );
+
+	/* Setup the values type object
+	 */
+	pycreg_values_type_object.tp_new = PyType_GenericNew;
+
+	if( PyType_Ready(
+	     &pycreg_values_type_object ) < 0 )
+	{
+		goto on_error;
+	}
+	Py_IncRef(
+	 (PyObject * ) &pycreg_values_type_object );
+
+	PyModule_AddObject(
+	 module,
+	 "values",
+	 (PyObject *) &pycreg_values_type_object );
 
 	PyGILState_Release(
 	 gil_state );

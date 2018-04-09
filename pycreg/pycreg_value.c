@@ -251,7 +251,6 @@ PyTypeObject pycreg_value_type_object = {
  * Returns a Python object if successful or NULL on error
  */
 PyObject *pycreg_value_new(
-           PyTypeObject *type_object,
            libcreg_value_t *value,
            PyObject *parent_object )
 {
@@ -269,7 +268,7 @@ PyObject *pycreg_value_new(
 	}
 	pycreg_value = PyObject_New(
 	                struct pycreg_value,
-	                type_object );
+	                &pycreg_value_type_object );
 
 	if( pycreg_value == NULL )
 	{

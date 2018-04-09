@@ -1,5 +1,5 @@
 /*
- * Python bindings for libcreg (pycreg)
+ * Python bindings module for libcreg (pycreg)
  *
  * Copyright (C) 2013-2018, Joachim Metz <joachim.metz@gmail.com>
  *
@@ -41,6 +41,16 @@ PyObject *pycreg_check_file_signature(
            PyObject *keywords );
 
 PyObject *pycreg_check_file_signature_file_object(
+           PyObject *self,
+           PyObject *arguments,
+           PyObject *keywords );
+
+PyObject *pycreg_open_new_file(
+           PyObject *self,
+           PyObject *arguments,
+           PyObject *keywords );
+
+PyObject *pycreg_open_new_file_with_file_object(
            PyObject *self,
            PyObject *arguments,
            PyObject *keywords );

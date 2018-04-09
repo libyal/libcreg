@@ -428,6 +428,66 @@ int libcreg_key_get_utf16_name(
      size_t utf16_string_size,
      libcreg_error_t **error );
 
+/* Retrieves the number of values
+ * All sets in a key contain the same number of values
+ * Returns 1 if successful or -1 on error
+ */
+LIBCREG_EXTERN \
+int libcreg_key_get_number_of_values(
+     libcreg_key_t *key,
+     int *number_of_values,
+     libcreg_error_t **error );
+
+/* Retrieves the value
+ *
+ * This function deprecated use libcreg_key_get_value_by_index instead
+ *
+ * Returns 1 if successful or -1 on error
+ */
+LIBCREG_DEPRECATED \
+LIBCREG_EXTERN \
+int libcreg_key_get_value(
+     libcreg_key_t *key,
+     int value_index,
+     libcreg_value_t **value,
+     libcreg_error_t **error );
+
+/* Retrieves the value
+ * Returns 1 if successful or -1 on error
+ */
+LIBCREG_EXTERN \
+int libcreg_key_get_value_by_index(
+     libcreg_key_t *key,
+     int value_index,
+     libcreg_value_t **value,
+     libcreg_error_t **error );
+
+/* Retrieves the value for the specific UTF-8 encoded name
+ * To retrieve the default value specify value name as NULL
+ * and its length as 0
+ * Returns 1 if successful, 0 if no such value or -1 on error
+ */
+LIBCREG_EXTERN \
+int libcreg_key_get_value_by_utf8_name(
+     libcreg_key_t *key,
+     const uint8_t *utf8_string,
+     size_t utf8_string_length,
+     libcreg_value_t **value,
+     libcreg_error_t **error );
+
+/* Retrieves the value for the specific UTF-16 encoded name
+ * To retrieve the default value specify value name as NULL
+ * and its length as 0
+ * Returns 1 if successful, 0 if no such value or -1 on error
+ */
+LIBCREG_EXTERN \
+int libcreg_key_get_value_by_utf16_name(
+     libcreg_key_t *key,
+     const uint16_t *utf16_string,
+     size_t utf16_string_length,
+     libcreg_value_t **value,
+     libcreg_error_t **error );
+
 /* Retrieves the number of sub keys
  * Returns 1 if successful or -1 on error
  */
@@ -438,10 +498,24 @@ int libcreg_key_get_number_of_sub_keys(
      libcreg_error_t **error );
 
 /* Retrieves the sub key for the specific index
+ *
+ * This function deprecated use libcreg_key_get_sub_key_by_index instead
+ *
+ * Returns 1 if successful or -1 on error
+ */
+LIBCREG_DEPRECATED \
+LIBCREG_EXTERN \
+int libcreg_key_get_sub_key(
+     libcreg_key_t *key,
+     int sub_key_index,
+     libcreg_key_t **sub_key,
+     libcreg_error_t **error );
+
+/* Retrieves the sub key for the specific index
  * Returns 1 if successful or -1 on error
  */
 LIBCREG_EXTERN \
-int libcreg_key_get_sub_key(
+int libcreg_key_get_sub_key_by_index(
      libcreg_key_t *key,
      int sub_key_index,
      libcreg_key_t **sub_key,
@@ -491,52 +565,6 @@ int libcreg_key_get_sub_key_by_utf16_path(
      const uint16_t *utf16_string,
      size_t utf16_string_length,
      libcreg_key_t **sub_key,
-     libcreg_error_t **error );
-
-/* Retrieves the number of values
- * All sets in a key contain the same number of values
- * Returns 1 if successful or -1 on error
- */
-LIBCREG_EXTERN \
-int libcreg_key_get_number_of_values(
-     libcreg_key_t *key,
-     int *number_of_values,
-     libcreg_error_t **error );
-
-/* Retrieves the value
- * Returns 1 if successful or -1 on error
- */
-LIBCREG_EXTERN \
-int libcreg_key_get_value(
-     libcreg_key_t *key,
-     int value_index,
-     libcreg_value_t **value,
-     libcreg_error_t **error );
-
-/* Retrieves the value for the specific UTF-8 encoded name
- * To retrieve the default value specify value name as NULL
- * and its length as 0
- * Returns 1 if successful, 0 if no such value or -1 on error
- */
-LIBCREG_EXTERN \
-int libcreg_key_get_value_by_utf8_name(
-     libcreg_key_t *key,
-     const uint8_t *utf8_string,
-     size_t utf8_string_length,
-     libcreg_value_t **value,
-     libcreg_error_t **error );
-
-/* Retrieves the value for the specific UTF-16 encoded name
- * To retrieve the default value specify value name as NULL
- * and its length as 0
- * Returns 1 if successful, 0 if no such value or -1 on error
- */
-LIBCREG_EXTERN \
-int libcreg_key_get_value_by_utf16_name(
-     libcreg_key_t *key,
-     const uint16_t *utf16_string,
-     size_t utf16_string_length,
-     libcreg_value_t **value,
      libcreg_error_t **error );
 
 /* -------------------------------------------------------------------------

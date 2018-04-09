@@ -999,7 +999,7 @@ int cregmount_fuse_readdir(
 		     sub_key_index < number_of_sub_keys;
 		     sub_key_index++ )
 		{
-			if( libcreg_key_get_sub_key(
+			if( libcreg_key_get_sub_key_by_index(
 			     key,
 			     sub_key_index,
 			     &sub_key,
@@ -1210,7 +1210,7 @@ int cregmount_fuse_readdir(
 		     value_index < number_of_values;
 		     value_index++ )
 		{
-			if( libcreg_key_get_value(
+			if( libcreg_key_get_value_by_index(
 			     key,
 			     value_index,
 			     &value,
@@ -2806,7 +2806,7 @@ int __stdcall cregmount_dokan_FindFiles(
 		     sub_key_index < number_of_sub_keys;
 		     sub_key_index++ )
 		{
-			if( libcreg_key_get_sub_key(
+			if( libcreg_key_get_sub_key_by_index(
 			     key,
 			     sub_key_index,
 			     &sub_key,
@@ -3000,7 +3000,7 @@ int __stdcall cregmount_dokan_FindFiles(
 		     value_index < number_of_values;
 		     value_index++ )
 		{
-			if( libcreg_key_get_value(
+			if( libcreg_key_get_value_by_index(
 			     key,
 			     value_index,
 			     &value,

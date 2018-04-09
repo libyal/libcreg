@@ -53,19 +53,6 @@ struct pycreg_file
 extern PyMethodDef pycreg_file_object_methods[];
 extern PyTypeObject pycreg_file_type_object;
 
-PyObject *pycreg_file_new(
-           void );
-
-PyObject *pycreg_file_new_open(
-           PyObject *self,
-           PyObject *arguments,
-           PyObject *keywords );
-
-PyObject *pycreg_file_new_open_file_object(
-           PyObject *self,
-           PyObject *arguments,
-           PyObject *keywords );
-
 int pycreg_file_init(
      pycreg_file_t *pycreg_file );
 

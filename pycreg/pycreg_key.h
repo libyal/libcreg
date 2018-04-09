@@ -53,7 +53,6 @@ extern PyMethodDef pycreg_key_object_methods[];
 extern PyTypeObject pycreg_key_type_object;
 
 PyObject *pycreg_key_new(
-           PyTypeObject *type_object,
            libcreg_key_t *key,
            PyObject *parent_object );
 
@@ -74,6 +73,28 @@ PyObject *pycreg_key_get_offset(
 PyObject *pycreg_key_get_name(
            pycreg_key_t *pycreg_key,
            PyObject *arguments );
+
+PyObject *pycreg_key_get_number_of_values(
+           pycreg_key_t *pycreg_key,
+           PyObject *arguments );
+
+PyObject *pycreg_key_get_value_by_index(
+           PyObject *pycreg_key,
+           int value_index );
+
+PyObject *pycreg_key_get_value(
+           pycreg_key_t *pycreg_key,
+           PyObject *arguments,
+           PyObject *keywords );
+
+PyObject *pycreg_key_get_values(
+           pycreg_key_t *pycreg_key,
+           PyObject *arguments );
+
+PyObject *pycreg_key_get_value_by_name(
+           pycreg_key_t *pycreg_key,
+           PyObject *arguments,
+           PyObject *keywords );
 
 PyObject *pycreg_key_get_number_of_sub_keys(
            pycreg_key_t *pycreg_key,
@@ -98,28 +119,6 @@ PyObject *pycreg_key_get_sub_key_by_name(
            PyObject *keywords );
 
 PyObject *pycreg_key_get_sub_key_by_path(
-           pycreg_key_t *pycreg_key,
-           PyObject *arguments,
-           PyObject *keywords );
-
-PyObject *pycreg_key_get_number_of_values(
-           pycreg_key_t *pycreg_key,
-           PyObject *arguments );
-
-PyObject *pycreg_key_get_value_by_index(
-           PyObject *pycreg_key,
-           int value_index );
-
-PyObject *pycreg_key_get_value(
-           pycreg_key_t *pycreg_key,
-           PyObject *arguments,
-           PyObject *keywords );
-
-PyObject *pycreg_key_get_values(
-           pycreg_key_t *pycreg_key,
-           PyObject *arguments );
-
-PyObject *pycreg_key_get_value_by_name(
            pycreg_key_t *pycreg_key,
            PyObject *arguments,
            PyObject *keywords );

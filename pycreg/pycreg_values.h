@@ -69,23 +69,23 @@ PyObject *pycreg_values_new(
            int number_of_items );
 
 int pycreg_values_init(
-     pycreg_values_t *values_object );
+     pycreg_values_t *sequence_object );
 
 void pycreg_values_free(
-      pycreg_values_t *values_object );
+      pycreg_values_t *sequence_object );
 
 Py_ssize_t pycreg_values_len(
-            pycreg_values_t *values_object );
+            pycreg_values_t *sequence_object );
 
 PyObject *pycreg_values_getitem(
-           pycreg_values_t *values_object,
+           pycreg_values_t *sequence_object,
            Py_ssize_t item_index );
 
 PyObject *pycreg_values_iter(
-           pycreg_values_t *values_object );
+           pycreg_values_t *sequence_object );
 
 PyObject *pycreg_values_iternext(
-           pycreg_values_t *values_object );
+           pycreg_values_t *sequence_object );
 
 #if defined( __cplusplus )
 }

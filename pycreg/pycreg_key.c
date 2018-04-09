@@ -45,33 +45,55 @@ PyMethodDef pycreg_key_object_methods[] = {
 	  METH_NOARGS,
 	  "is_corrupted() -> Boolean\n"
 	  "\n"
-	  "Determines if the key is corrupted." },
+	  "Indicates if the key is corrupted." },
 
 	{ "get_offset",
 	  (PyCFunction) pycreg_key_get_offset,
 	  METH_NOARGS,
-	  "get_offset() -> Integer or None\n"
+	  "get_offset() -> Integer\n"
 	  "\n"
 	  "Retrieves the offset." },
 
 	{ "get_name",
 	  (PyCFunction) pycreg_key_get_name,
 	  METH_NOARGS,
-	  "get_name() -> Unicode string or None\n"
+	  "get_name() -> Unicode string\n"
 	  "\n"
 	  "Retrieves the name." },
+
+	{ "get_number_of_values",
+	  (PyCFunction) pycreg_key_get_number_of_values,
+	  METH_NOARGS,
+	  "get_number_of_values() -> Integer\n"
+	  "\n"
+	  "Retrieves the number of values." },
+
+	{ "get_value",
+	  (PyCFunction) pycreg_key_get_value,
+	  METH_VARARGS | METH_KEYWORDS,
+	  "get_value(value_index) -> Object\n"
+	  "\n"
+	  "Retrieves the value specified by the index." },
+
+	{ "get_value_by_name",
+	  (PyCFunction) pycreg_key_get_value_by_name,
+	  METH_VARARGS | METH_KEYWORDS,
+	  "get_value_by_name(name) -> Object or None\n"
+	  "\n"
+	  "Retrieves the value specified by the name.\n"
+	  "Use an empty string to retrieve the default value." },
 
 	{ "get_number_of_sub_keys",
 	  (PyCFunction) pycreg_key_get_number_of_sub_keys,
 	  METH_NOARGS,
-	  "get_number_of_sub_keys() -> Integer or None\n"
+	  "get_number_of_sub_keys() -> Integer\n"
 	  "\n"
 	  "Retrieves the number of sub keys." },
 
 	{ "get_sub_key",
 	  (PyCFunction) pycreg_key_get_sub_key,
 	  METH_VARARGS | METH_KEYWORDS,
-	  "get_sub_key(sub_key_index) -> Object or None\n"
+	  "get_sub_key(sub_key_index) -> Object\n"
 	  "\n"
 	  "Retrieves the sub key specified by the index." },
 
@@ -88,27 +110,6 @@ PyMethodDef pycreg_key_object_methods[] = {
 	  "get_sub_key_by_path(path) -> Object or None\n"
 	  "\n"
 	  "Retrieves the sub key specified by the path." },
-
-	{ "get_number_of_values",
-	  (PyCFunction) pycreg_key_get_number_of_values,
-	  METH_NOARGS,
-	  "get_number_of_values() -> Integer or None\n"
-	  "\n"
-	  "Retrieves the number of values." },
-
-	{ "get_value",
-	  (PyCFunction) pycreg_key_get_value,
-	  METH_VARARGS | METH_KEYWORDS,
-	  "get_value(value_index) -> Object or None\n"
-	  "\n"
-	  "Retrieves the value specified by the index." },
-
-	{ "get_value_by_name",
-	  (PyCFunction) pycreg_key_get_value_by_name,
-	  METH_VARARGS | METH_KEYWORDS,
-	  "get_value_by_name(name) -> Object or None\n"
-	  "\n"
-	  "Retrieves the value specified by the name, use an empty string to retrieve the default value." },
 
 	/* Sentinel */
 	{ NULL, NULL, 0, NULL }
@@ -134,18 +135,6 @@ PyGetSetDef pycreg_key_object_get_set_definitions[] = {
 	  "The name.",
 	  NULL },
 
-	{ "number_of_sub_keys",
-	  (getter) pycreg_key_get_number_of_sub_keys,
-	  (setter) 0,
-	  "The number of sub keys.",
-	  NULL },
-
-	{ "sub_keys",
-	  (getter) pycreg_key_get_sub_keys,
-	  (setter) 0,
-	  "The sub keys.",
-	  NULL },
-
 	{ "number_of_values",
 	  (getter) pycreg_key_get_number_of_values,
 	  (setter) 0,
@@ -156,6 +145,18 @@ PyGetSetDef pycreg_key_object_get_set_definitions[] = {
 	  (getter) pycreg_key_get_values,
 	  (setter) 0,
 	  "The values.",
+	  NULL },
+
+	{ "number_of_sub_keys",
+	  (getter) pycreg_key_get_number_of_sub_keys,
+	  (setter) 0,
+	  "The number of sub keys.",
+	  NULL },
+
+	{ "sub_keys",
+	  (getter) pycreg_key_get_sub_keys,
+	  (setter) 0,
+	  "The sub keys.",
 	  NULL },
 
 	/* Sentinel */
@@ -261,7 +262,6 @@ PyTypeObject pycreg_key_type_object = {
  * Returns a Python object if successful or NULL on error
  */
 PyObject *pycreg_key_new(
-           PyTypeObject *type_object,
            libcreg_key_t *key,
            PyObject *parent_object )
 {
@@ -277,21 +277,13 @@ PyObject *pycreg_key_new(
 
 		return( NULL );
 	}
+	/* PyObject_New does not invoke tp_init
+	 */
 	pycreg_key = PyObject_New(
 	              struct pycreg_key,
-	              type_object );
+	              &pycreg_key_type_object );
 
 	if( pycreg_key == NULL )
-	{
-		PyErr_Format(
-		 PyExc_MemoryError,
-		 "%s: unable to initialize key.",
-		 function );
-
-		goto on_error;
-	}
-	if( pycreg_key_init(
-	     pycreg_key ) != 0 )
 	{
 		PyErr_Format(
 		 PyExc_MemoryError,
@@ -303,9 +295,11 @@ PyObject *pycreg_key_new(
 	pycreg_key->key           = key;
 	pycreg_key->parent_object = parent_object;
 
-	Py_IncRef(
-	 (PyObject *) pycreg_key->parent_object );
-
+	if( pycreg_key->parent_object != NULL )
+	{
+		Py_IncRef(
+		 pycreg_key->parent_object );
+	}
 	return( (PyObject *) pycreg_key );
 
 on_error:
@@ -338,7 +332,12 @@ int pycreg_key_init(
 	 */
 	pycreg_key->key = NULL;
 
-	return( 0 );
+	PyErr_Format(
+	 PyExc_NotImplementedError,
+	 "%s: initialize of key not supported.",
+	 function );
+
+	return( -1 );
 }
 
 /* Frees a key object
@@ -356,15 +355,6 @@ void pycreg_key_free(
 		PyErr_Format(
 		 PyExc_ValueError,
 		 "%s: invalid key.",
-		 function );
-
-		return;
-	}
-	if( pycreg_key->key == NULL )
-	{
-		PyErr_Format(
-		 PyExc_ValueError,
-		 "%s: invalid key - missing libcreg key.",
 		 function );
 
 		return;
@@ -390,29 +380,32 @@ void pycreg_key_free(
 
 		return;
 	}
-	Py_BEGIN_ALLOW_THREADS
-
-	result = libcreg_key_free(
-	          &( pycreg_key->key ),
-	          &error );
-
-	Py_END_ALLOW_THREADS
-
-	if( result != 1 )
+	if( pycreg_key->key != NULL )
 	{
-		pycreg_error_raise(
-		 error,
-		 PyExc_IOError,
-		 "%s: unable to free libcreg key.",
-		 function );
+		Py_BEGIN_ALLOW_THREADS
 
-		libcerror_error_free(
-		 &error );
+		result = libcreg_key_free(
+		          &( pycreg_key->key ),
+		          &error );
+
+		Py_END_ALLOW_THREADS
+
+		if( result != 1 )
+		{
+			pycreg_error_raise(
+			 error,
+			 PyExc_MemoryError,
+			 "%s: unable to free libcreg key.",
+			 function );
+
+			libcerror_error_free(
+			 &error );
+		}
 	}
 	if( pycreg_key->parent_object != NULL )
 	{
 		Py_DecRef(
-		 (PyObject *) pycreg_key->parent_object );
+		 pycreg_key->parent_object );
 	}
 	ob_type->tp_free(
 	 (PyObject*) pycreg_key );
@@ -540,12 +533,12 @@ PyObject *pycreg_key_get_name(
            pycreg_key_t *pycreg_key,
            PyObject *arguments PYCREG_ATTRIBUTE_UNUSED )
 {
-	libcerror_error_t *error = NULL;
 	PyObject *string_object  = NULL;
+	libcerror_error_t *error = NULL;
 	const char *errors       = NULL;
-	uint8_t *name            = NULL;
 	static char *function    = "pycreg_key_get_name";
-	size_t name_size         = 0;
+	char *utf8_string        = NULL;
+	size_t utf8_string_size  = 0;
 	int result               = 0;
 
 	PYCREG_UNREFERENCED_PARAMETER( arguments )
@@ -553,7 +546,7 @@ PyObject *pycreg_key_get_name(
 	if( pycreg_key == NULL )
 	{
 		PyErr_Format(
-		 PyExc_TypeError,
+		 PyExc_ValueError,
 		 "%s: invalid key.",
 		 function );
 
@@ -563,7 +556,7 @@ PyObject *pycreg_key_get_name(
 
 	result = libcreg_key_get_utf8_name_size(
 	          pycreg_key->key,
-	          &name_size,
+	          &utf8_string_size,
 	          &error );
 
 	Py_END_ALLOW_THREADS
@@ -573,7 +566,7 @@ PyObject *pycreg_key_get_name(
 		pycreg_error_raise(
 		 error,
 		 PyExc_IOError,
-		 "%s: unable to retrieve name size.",
+		 "%s: unable to determine size of name as UTF-8 string.",
 		 function );
 
 		libcerror_error_free(
@@ -582,21 +575,21 @@ PyObject *pycreg_key_get_name(
 		goto on_error;
 	}
 	else if( ( result == 0 )
-	      || ( name_size == 0 ) )
+	      || ( utf8_string_size == 0 ) )
 	{
 		Py_IncRef(
 		 Py_None );
 
 		return( Py_None );
 	}
-	name = (uint8_t *) PyMem_Malloc(
-	                    sizeof( uint8_t ) * name_size );
+	utf8_string = (char *) PyMem_Malloc(
+	                        sizeof( char ) * utf8_string_size );
 
-	if( name == NULL )
+	if( utf8_string == NULL )
 	{
 		PyErr_Format(
-		 PyExc_IOError,
-		 "%s: unable to create name.",
+		 PyExc_MemoryError,
+		 "%s: unable to create UTF-8 string.",
 		 function );
 
 		goto on_error;
@@ -604,10 +597,10 @@ PyObject *pycreg_key_get_name(
 	Py_BEGIN_ALLOW_THREADS
 
 	result = libcreg_key_get_utf8_name(
-		  pycreg_key->key,
-		  name,
-		  name_size,
-		  &error );
+	          pycreg_key->key,
+	          (uint8_t *) utf8_string,
+	          utf8_string_size,
+	          &error );
 
 	Py_END_ALLOW_THREADS
 
@@ -616,7 +609,7 @@ PyObject *pycreg_key_get_name(
 		pycreg_error_raise(
 		 error,
 		 PyExc_IOError,
-		 "%s: unable to retrieve name.",
+		 "%s: unable to retrieve name as UTF-8 string.",
 		 function );
 
 		libcerror_error_free(
@@ -624,435 +617,33 @@ PyObject *pycreg_key_get_name(
 
 		goto on_error;
 	}
-	/* Pass the string length to PyUnicode_DecodeUTF8
-	 * otherwise it makes the end of string character is part
-	 * of the string
+	/* Pass the string length to PyUnicode_DecodeUTF8 otherwise it makes
+	 * the end of string character is part of the string.
 	 */
 	string_object = PyUnicode_DecodeUTF8(
-			 (char *) name,
-			 (Py_ssize_t) name_size - 1,
-			 errors );
+	                 utf8_string,
+	                 (Py_ssize_t) utf8_string_size - 1,
+	                 errors );
 
+	if( string_object == NULL )
+	{
+		PyErr_Format(
+		 PyExc_IOError,
+		 "%s: unable to convert UTF-8 string into Unicode object.",
+		 function );
+
+		goto on_error;
+	}
 	PyMem_Free(
-	 name );
+	 utf8_string );
 
 	return( string_object );
 
 on_error:
-	if( name != NULL )
+	if( utf8_string != NULL )
 	{
 		PyMem_Free(
-		 name );
-	}
-	return( NULL );
-}
-
-/* Retrieves the number of sub keys
- * Returns a Python object if successful or NULL on error
- */
-PyObject *pycreg_key_get_number_of_sub_keys(
-           pycreg_key_t *pycreg_key,
-           PyObject *arguments PYCREG_ATTRIBUTE_UNUSED )
-{
-	PyObject *integer_object = NULL;
-	libcerror_error_t *error = NULL;
-	static char *function    = "pycreg_key_get_number_of_sub_keys";
-	int number_of_sub_keys   = 0;
-	int result               = 0;
-
-	PYCREG_UNREFERENCED_PARAMETER( arguments )
-
-	if( pycreg_key == NULL )
-	{
-		PyErr_Format(
-		 PyExc_ValueError,
-		 "%s: invalid key.",
-		 function );
-
-		return( NULL );
-	}
-	Py_BEGIN_ALLOW_THREADS
-
-	result = libcreg_key_get_number_of_sub_keys(
-	          pycreg_key->key,
-	          &number_of_sub_keys,
-	          &error );
-
-	Py_END_ALLOW_THREADS
-
-	if( result != 1 )
-	{
-		pycreg_error_raise(
-		 error,
-		 PyExc_IOError,
-		 "%s: unable to retrieve number of sub keys.",
-		 function );
-
-		libcerror_error_free(
-		 &error );
-
-		return( NULL );
-	}
-#if PY_MAJOR_VERSION >= 3
-	integer_object = PyLong_FromLong(
-	                  (long) number_of_sub_keys );
-#else
-	integer_object = PyInt_FromLong(
-	                  (long) number_of_sub_keys );
-#endif
-	return( integer_object );
-}
-
-/* Retrieves a specific sub key by index
- * Returns a Python object if successful or NULL on error
- */
-PyObject *pycreg_key_get_sub_key_by_index(
-           PyObject *pycreg_key,
-           int sub_key_index )
-{
-	PyObject *key_object     = NULL;
-	libcerror_error_t *error = NULL;
-	libcreg_key_t *sub_key   = NULL;
-	static char *function    = "pycreg_key_get_sub_key_by_index";
-	int result               = 0;
-
-	if( pycreg_key == NULL )
-	{
-		PyErr_Format(
-		 PyExc_ValueError,
-		 "%s: invalid key.",
-		 function );
-
-		return( NULL );
-	}
-	Py_BEGIN_ALLOW_THREADS
-
-	result = libcreg_key_get_sub_key(
-	          ( (pycreg_key_t *) pycreg_key )->key,
-	          sub_key_index,
-	          &sub_key,
-	          &error );
-
-	Py_END_ALLOW_THREADS
-
-	if( result != 1 )
-	{
-		pycreg_error_raise(
-		 error,
-		 PyExc_IOError,
-		 "%s: unable to retrieve sub key: %d.",
-		 function,
-		 sub_key_index );
-
-		libcerror_error_free(
-		 &error );
-
-		goto on_error;
-	}
-	key_object = pycreg_key_new(
-	              &pycreg_key_type_object,
-	              sub_key,
-	              ( (pycreg_key_t *) pycreg_key )->parent_object );
-
-	if( key_object == NULL )
-	{
-		PyErr_Format(
-		 PyExc_MemoryError,
-		 "%s: unable to create sub key object.",
-		 function );
-
-		goto on_error;
-	}
-	return( key_object );
-
-on_error:
-	if( sub_key != NULL )
-	{
-		libcreg_key_free(
-		 &sub_key,
-		 NULL );
-	}
-	return( NULL );
-}
-
-/* Retrieves a specific sub key
- * Returns a Python object if successful or NULL on error
- */
-PyObject *pycreg_key_get_sub_key(
-           pycreg_key_t *pycreg_key,
-           PyObject *arguments,
-           PyObject *keywords )
-{
-	PyObject *key_object        = NULL;
-	static char *keyword_list[] = { "sub_key_index", NULL };
-	int sub_key_index           = 0;
-
-	if( PyArg_ParseTupleAndKeywords(
-	     arguments,
-	     keywords,
-	     "i",
-	     keyword_list,
-	     &sub_key_index ) == 0 )
-	{
-		return( NULL );
-	}
-	key_object = pycreg_key_get_sub_key_by_index(
-	              (PyObject *) pycreg_key,
-	              sub_key_index );
-
-	return( key_object );
-}
-
-/* Retrieves a sequence and iterator object for the sub keys
- * Returns a Python object if successful or NULL on error
- */
-PyObject *pycreg_key_get_sub_keys(
-           pycreg_key_t *pycreg_key,
-           PyObject *arguments PYCREG_ATTRIBUTE_UNUSED )
-{
-	PyObject *sequence_object = NULL;
-	libcerror_error_t *error  = NULL;
-	static char *function     = "pycreg_key_get_sub_keys";
-	int number_of_sub_keys    = 0;
-	int result                = 0;
-
-	PYCREG_UNREFERENCED_PARAMETER( arguments )
-
-	if( pycreg_key == NULL )
-	{
-		PyErr_Format(
-		 PyExc_ValueError,
-		 "%s: invalid key.",
-		 function );
-
-		return( NULL );
-	}
-	Py_BEGIN_ALLOW_THREADS
-
-	result = libcreg_key_get_number_of_sub_keys(
-	          pycreg_key->key,
-	          &number_of_sub_keys,
-	          &error );
-
-	Py_END_ALLOW_THREADS
-
-	if( result != 1 )
-	{
-		pycreg_error_raise(
-		 error,
-		 PyExc_IOError,
-		 "%s: unable to retrieve number of sub keys.",
-		 function );
-
-		libcerror_error_free(
-		 &error );
-
-		return( NULL );
-	}
-	sequence_object = pycreg_keys_new(
-	                   (PyObject *) pycreg_key,
-	                   &pycreg_key_get_sub_key_by_index,
-	                   number_of_sub_keys );
-
-	if( sequence_object == NULL )
-	{
-		pycreg_error_raise(
-		 error,
-		 PyExc_MemoryError,
-		 "%s: unable to create sequence object.",
-		 function );
-
-		return( NULL );
-	}
-	return( sequence_object );
-}
-
-/* Retrieves the sub key specified by the name
- * Returns a Python object if successful or NULL on error
- */
-PyObject *pycreg_key_get_sub_key_by_name(
-           pycreg_key_t *pycreg_key,
-           PyObject *arguments,
-           PyObject *keywords )
-{
-	PyObject *key_object        = NULL;
-	libcerror_error_t *error    = NULL;
-	libcreg_key_t *sub_key      = NULL;
-	static char *function       = "pycreg_key_get_sub_key_by_name";
-	static char *keyword_list[] = { "name", NULL };
-	char *utf8_name             = NULL;
-	size_t utf8_name_length     = 0;
-	int result                  = 0;
-
-	if( pycreg_key == NULL )
-	{
-		PyErr_Format(
-		 PyExc_ValueError,
-		 "%s: invalid key.",
-		 function );
-
-		return( NULL );
-	}
-	if( PyArg_ParseTupleAndKeywords(
-	     arguments,
-	     keywords,
-	     "s",
-	     keyword_list,
-	     &utf8_name ) == 0 )
-	{
-		goto on_error;
-	}
-	utf8_name_length = narrow_string_length(
-	                    utf8_name );
-
-	Py_BEGIN_ALLOW_THREADS
-
-	result = libcreg_key_get_sub_key_by_utf8_name(
-	          pycreg_key->key,
-	          (uint8_t *) utf8_name,
-	          utf8_name_length,
-	          &sub_key,
-	          &error );
-
-	Py_END_ALLOW_THREADS
-
-	if( result == -1 )
-	{
-		pycreg_error_raise(
-		 error,
-		 PyExc_IOError,
-		 "%s: unable to retrieve sub key.",
-		 function );
-
-		libcerror_error_free(
-		 &error );
-
-		goto on_error;
-	}
-	else if( result == 0 )
-	{
-		Py_IncRef(
-		 Py_None );
-
-		return( Py_None );
-	}
-	key_object = pycreg_key_new(
-	              &pycreg_key_type_object,
-	              sub_key,
-	              pycreg_key->parent_object );
-
-	if( key_object == NULL )
-	{
-		PyErr_Format(
-		 PyExc_MemoryError,
-		 "%s: unable to create sub key object.",
-		 function );
-
-		goto on_error;
-	}
-	return( key_object );
-
-on_error:
-	if( sub_key != NULL )
-	{
-		libcreg_key_free(
-		 &sub_key,
-		 NULL );
-	}
-	return( NULL );
-}
-
-/* Retrieves the sub key specified by the path
- * Returns a Python object if successful or NULL on error
- */
-PyObject *pycreg_key_get_sub_key_by_path(
-           pycreg_key_t *pycreg_key,
-           PyObject *arguments,
-           PyObject *keywords )
-{
-	PyObject *key_object        = NULL;
-	libcerror_error_t *error    = NULL;
-	libcreg_key_t *sub_key      = NULL;
-	static char *function       = "pycreg_key_get_sub_key_by_path";
-	static char *keyword_list[] = { "path", NULL };
-	char *utf8_path             = NULL;
-	size_t utf8_path_length     = 0;
-	int result                  = 0;
-
-	if( pycreg_key == NULL )
-	{
-		PyErr_Format(
-		 PyExc_ValueError,
-		 "%s: invalid key.",
-		 function );
-
-		return( NULL );
-	}
-	if( PyArg_ParseTupleAndKeywords(
-	     arguments,
-	     keywords,
-	     "s",
-	     keyword_list,
-	     &utf8_path ) == 0 )
-	{
-		goto on_error;
-	}
-	utf8_path_length = narrow_string_length(
-	                    utf8_path );
-
-	Py_BEGIN_ALLOW_THREADS
-
-	result = libcreg_key_get_sub_key_by_utf8_path(
-	          pycreg_key->key,
-	          (uint8_t *) utf8_path,
-	          utf8_path_length,
-	          &sub_key,
-	          &error );
-
-	Py_END_ALLOW_THREADS
-
-	if( result == -1 )
-	{
-		pycreg_error_raise(
-		 error,
-		 PyExc_IOError,
-		 "%s: unable to retrieve sub key.",
-		 function );
-
-		libcerror_error_free(
-		 &error );
-
-		goto on_error;
-	}
-	else if( result == 0 )
-	{
-		Py_IncRef(
-		 Py_None );
-
-		return( Py_None );
-	}
-	key_object = pycreg_key_new(
-	              &pycreg_key_type_object,
-	              sub_key,
-	              pycreg_key->parent_object );
-
-	if( key_object == NULL )
-	{
-		PyErr_Format(
-		 PyExc_MemoryError,
-		 "%s: unable to create sub key object.",
-		 function );
-
-		goto on_error;
-	}
-	return( key_object );
-
-on_error:
-	if( sub_key != NULL )
-	{
-		libcreg_key_free(
-		 &sub_key,
-		 NULL );
+		 utf8_string );
 	}
 	return( NULL );
 }
@@ -1137,7 +728,7 @@ PyObject *pycreg_key_get_value_by_index(
 	}
 	Py_BEGIN_ALLOW_THREADS
 
-	result = libcreg_key_get_value(
+	result = libcreg_key_get_value_by_index(
 	          ( (pycreg_key_t *) pycreg_key )->key,
 	          value_index,
 	          &value,
@@ -1160,9 +751,8 @@ PyObject *pycreg_key_get_value_by_index(
 		goto on_error;
 	}
 	value_object = pycreg_value_new(
-	                &pycreg_value_type_object,
 	                value,
-	                (PyObject *) pycreg_key );
+	                pycreg_key );
 
 	if( value_object == NULL )
 	{
@@ -1353,7 +943,6 @@ PyObject *pycreg_key_get_value_by_name(
 		return( Py_None );
 	}
 	value_object = pycreg_value_new(
-	                &pycreg_value_type_object,
 	                value,
 	                (PyObject *) pycreg_key );
 
@@ -1373,6 +962,413 @@ on_error:
 	{
 		libcreg_value_free(
 		 &value,
+		 NULL );
+	}
+	return( NULL );
+}
+
+/* Retrieves the number of sub keys
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pycreg_key_get_number_of_sub_keys(
+           pycreg_key_t *pycreg_key,
+           PyObject *arguments PYCREG_ATTRIBUTE_UNUSED )
+{
+	PyObject *integer_object = NULL;
+	libcerror_error_t *error = NULL;
+	static char *function    = "pycreg_key_get_number_of_sub_keys";
+	int number_of_sub_keys   = 0;
+	int result               = 0;
+
+	PYCREG_UNREFERENCED_PARAMETER( arguments )
+
+	if( pycreg_key == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid key.",
+		 function );
+
+		return( NULL );
+	}
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libcreg_key_get_number_of_sub_keys(
+	          pycreg_key->key,
+	          &number_of_sub_keys,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result != 1 )
+	{
+		pycreg_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve number of sub keys.",
+		 function );
+
+		libcerror_error_free(
+		 &error );
+
+		return( NULL );
+	}
+#if PY_MAJOR_VERSION >= 3
+	integer_object = PyLong_FromLong(
+	                  (long) number_of_sub_keys );
+#else
+	integer_object = PyInt_FromLong(
+	                  (long) number_of_sub_keys );
+#endif
+	return( integer_object );
+}
+
+/* Retrieves a specific sub key by index
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pycreg_key_get_sub_key_by_index(
+           PyObject *pycreg_key,
+           int sub_key_index )
+{
+	PyObject *key_object     = NULL;
+	libcerror_error_t *error = NULL;
+	libcreg_key_t *sub_key   = NULL;
+	static char *function    = "pycreg_key_get_sub_key_by_index";
+	int result               = 0;
+
+	if( pycreg_key == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid key.",
+		 function );
+
+		return( NULL );
+	}
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libcreg_key_get_sub_key_by_index(
+	          ( (pycreg_key_t *) pycreg_key )->key,
+	          sub_key_index,
+	          &sub_key,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result != 1 )
+	{
+		pycreg_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve sub key: %d.",
+		 function,
+		 sub_key_index );
+
+		libcerror_error_free(
+		 &error );
+
+		goto on_error;
+	}
+	key_object = pycreg_key_new(
+	              sub_key,
+	              ( (pycreg_key_t *) pycreg_key )->parent_object );
+
+	if( key_object == NULL )
+	{
+		PyErr_Format(
+		 PyExc_MemoryError,
+		 "%s: unable to create sub key object.",
+		 function );
+
+		goto on_error;
+	}
+	return( key_object );
+
+on_error:
+	if( sub_key != NULL )
+	{
+		libcreg_key_free(
+		 &sub_key,
+		 NULL );
+	}
+	return( NULL );
+}
+
+/* Retrieves a specific sub key
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pycreg_key_get_sub_key(
+           pycreg_key_t *pycreg_key,
+           PyObject *arguments,
+           PyObject *keywords )
+{
+	PyObject *key_object        = NULL;
+	static char *keyword_list[] = { "sub_key_index", NULL };
+	int sub_key_index           = 0;
+
+	if( PyArg_ParseTupleAndKeywords(
+	     arguments,
+	     keywords,
+	     "i",
+	     keyword_list,
+	     &sub_key_index ) == 0 )
+	{
+		return( NULL );
+	}
+	key_object = pycreg_key_get_sub_key_by_index(
+	              (PyObject *) pycreg_key,
+	              sub_key_index );
+
+	return( key_object );
+}
+
+/* Retrieves a sequence and iterator object for the sub keys
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pycreg_key_get_sub_keys(
+           pycreg_key_t *pycreg_key,
+           PyObject *arguments PYCREG_ATTRIBUTE_UNUSED )
+{
+	PyObject *sequence_object = NULL;
+	libcerror_error_t *error  = NULL;
+	static char *function     = "pycreg_key_get_sub_keys";
+	int number_of_sub_keys    = 0;
+	int result                = 0;
+
+	PYCREG_UNREFERENCED_PARAMETER( arguments )
+
+	if( pycreg_key == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid key.",
+		 function );
+
+		return( NULL );
+	}
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libcreg_key_get_number_of_sub_keys(
+	          pycreg_key->key,
+	          &number_of_sub_keys,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result != 1 )
+	{
+		pycreg_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve number of sub keys.",
+		 function );
+
+		libcerror_error_free(
+		 &error );
+
+		return( NULL );
+	}
+	sequence_object = pycreg_keys_new(
+	                   (PyObject *) pycreg_key,
+	                   &pycreg_key_get_sub_key_by_index,
+	                   number_of_sub_keys );
+
+	if( sequence_object == NULL )
+	{
+		pycreg_error_raise(
+		 error,
+		 PyExc_MemoryError,
+		 "%s: unable to create sequence object.",
+		 function );
+
+		return( NULL );
+	}
+	return( sequence_object );
+}
+
+/* Retrieves the sub key specified by the name
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pycreg_key_get_sub_key_by_name(
+           pycreg_key_t *pycreg_key,
+           PyObject *arguments,
+           PyObject *keywords )
+{
+	PyObject *key_object        = NULL;
+	libcerror_error_t *error    = NULL;
+	libcreg_key_t *sub_key      = NULL;
+	static char *function       = "pycreg_key_get_sub_key_by_name";
+	static char *keyword_list[] = { "name", NULL };
+	char *utf8_name             = NULL;
+	size_t utf8_name_length     = 0;
+	int result                  = 0;
+
+	if( pycreg_key == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid key.",
+		 function );
+
+		return( NULL );
+	}
+	if( PyArg_ParseTupleAndKeywords(
+	     arguments,
+	     keywords,
+	     "s",
+	     keyword_list,
+	     &utf8_name ) == 0 )
+	{
+		goto on_error;
+	}
+	utf8_name_length = narrow_string_length(
+	                    utf8_name );
+
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libcreg_key_get_sub_key_by_utf8_name(
+	          pycreg_key->key,
+	          (uint8_t *) utf8_name,
+	          utf8_name_length,
+	          &sub_key,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result == -1 )
+	{
+		pycreg_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve sub key.",
+		 function );
+
+		libcerror_error_free(
+		 &error );
+
+		goto on_error;
+	}
+	else if( result == 0 )
+	{
+		Py_IncRef(
+		 Py_None );
+
+		return( Py_None );
+	}
+	key_object = pycreg_key_new(
+	              sub_key,
+	              pycreg_key->parent_object );
+
+	if( key_object == NULL )
+	{
+		PyErr_Format(
+		 PyExc_MemoryError,
+		 "%s: unable to create sub key object.",
+		 function );
+
+		goto on_error;
+	}
+	return( key_object );
+
+on_error:
+	if( sub_key != NULL )
+	{
+		libcreg_key_free(
+		 &sub_key,
+		 NULL );
+	}
+	return( NULL );
+}
+
+/* Retrieves the sub key specified by the path
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pycreg_key_get_sub_key_by_path(
+           pycreg_key_t *pycreg_key,
+           PyObject *arguments,
+           PyObject *keywords )
+{
+	PyObject *key_object        = NULL;
+	libcerror_error_t *error    = NULL;
+	libcreg_key_t *sub_key      = NULL;
+	static char *function       = "pycreg_key_get_sub_key_by_path";
+	static char *keyword_list[] = { "path", NULL };
+	char *utf8_path             = NULL;
+	size_t utf8_path_length     = 0;
+	int result                  = 0;
+
+	if( pycreg_key == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid key.",
+		 function );
+
+		return( NULL );
+	}
+	if( PyArg_ParseTupleAndKeywords(
+	     arguments,
+	     keywords,
+	     "s",
+	     keyword_list,
+	     &utf8_path ) == 0 )
+	{
+		goto on_error;
+	}
+	utf8_path_length = narrow_string_length(
+	                    utf8_path );
+
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libcreg_key_get_sub_key_by_utf8_path(
+	          pycreg_key->key,
+	          (uint8_t *) utf8_path,
+	          utf8_path_length,
+	          &sub_key,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result == -1 )
+	{
+		pycreg_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve sub key.",
+		 function );
+
+		libcerror_error_free(
+		 &error );
+
+		goto on_error;
+	}
+	else if( result == 0 )
+	{
+		Py_IncRef(
+		 Py_None );
+
+		return( Py_None );
+	}
+	key_object = pycreg_key_new(
+	              sub_key,
+	              pycreg_key->parent_object );
+
+	if( key_object == NULL )
+	{
+		PyErr_Format(
+		 PyExc_MemoryError,
+		 "%s: unable to create sub key object.",
+		 function );
+
+		goto on_error;
+	}
+	return( key_object );
+
+on_error:
+	if( sub_key != NULL )
+	{
+		libcreg_key_free(
+		 &sub_key,
 		 NULL );
 	}
 	return( NULL );

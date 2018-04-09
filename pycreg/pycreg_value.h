@@ -53,7 +53,6 @@ extern PyMethodDef pycreg_value_object_methods[];
 extern PyTypeObject pycreg_value_type_object;
 
 PyObject *pycreg_value_new(
-           PyTypeObject *type_object,
            libcreg_value_t *value,
            PyObject *parent_object );
 
