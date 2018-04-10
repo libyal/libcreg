@@ -439,20 +439,6 @@ int libcreg_key_get_number_of_values(
      libcreg_error_t **error );
 
 /* Retrieves the value
- *
- * This function deprecated use libcreg_key_get_value_by_index instead
- *
- * Returns 1 if successful or -1 on error
- */
-LIBCREG_DEPRECATED \
-LIBCREG_EXTERN \
-int libcreg_key_get_value(
-     libcreg_key_t *key,
-     int value_index,
-     libcreg_value_t **value,
-     libcreg_error_t **error );
-
-/* Retrieves the value
  * Returns 1 if successful or -1 on error
  */
 LIBCREG_EXTERN \
@@ -495,20 +481,6 @@ LIBCREG_EXTERN \
 int libcreg_key_get_number_of_sub_keys(
      libcreg_key_t *key,
      int *number_of_sub_keys,
-     libcreg_error_t **error );
-
-/* Retrieves the sub key for the specific index
- *
- * This function deprecated use libcreg_key_get_sub_key_by_index instead
- *
- * Returns 1 if successful or -1 on error
- */
-LIBCREG_DEPRECATED \
-LIBCREG_EXTERN \
-int libcreg_key_get_sub_key(
-     libcreg_key_t *key,
-     int sub_key_index,
-     libcreg_key_t **sub_key,
      libcreg_error_t **error );
 
 /* Retrieves the sub key for the specific index
@@ -564,6 +536,38 @@ int libcreg_key_get_sub_key_by_utf16_path(
      libcreg_key_t *key,
      const uint16_t *utf16_string,
      size_t utf16_string_length,
+     libcreg_key_t **sub_key,
+     libcreg_error_t **error );
+
+/* -------------------------------------------------------------------------
+ * Key functions - deprecated
+ * ------------------------------------------------------------------------- */
+
+/* Retrieves the value
+ *
+ * This function deprecated use libcreg_key_get_value_by_index instead
+ *
+ * Returns 1 if successful or -1 on error
+ */
+LIBCREG_DEPRECATED \
+LIBCREG_EXTERN \
+int libcreg_key_get_value(
+     libcreg_key_t *key,
+     int value_index,
+     libcreg_value_t **value,
+     libcreg_error_t **error );
+
+/* Retrieves the sub key for the specific index
+ *
+ * This function deprecated use libcreg_key_get_sub_key_by_index instead
+ *
+ * Returns 1 if successful or -1 on error
+ */
+LIBCREG_DEPRECATED \
+LIBCREG_EXTERN \
+int libcreg_key_get_sub_key(
+     libcreg_key_t *key,
+     int sub_key_index,
      libcreg_key_t **sub_key,
      libcreg_error_t **error );
 
