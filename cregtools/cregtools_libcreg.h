@@ -1,5 +1,5 @@
 /*
- * The internal libcreg header
+ * The libcreg header wrapper
  *
  * Copyright (C) 2013-2018, Joachim Metz <joachim.metz@gmail.com>
  *

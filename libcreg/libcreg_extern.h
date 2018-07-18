@@ -37,8 +37,11 @@
 
 #include <libcreg/extern.h>
 
+#define LIBCREG_EXTERN_VARIABLE	LIBCREG_EXTERN
+
 #else
-#define LIBCREG_EXTERN	/* extern */
+#define LIBCREG_EXTERN		/* extern */
+#define LIBCREG_EXTERN_VARIABLE	extern
 
 #endif /* !defined( HAVE_LOCAL_LIBCREG ) */
 

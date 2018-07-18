@@ -553,7 +553,7 @@ PyMODINIT_FUNC initpycreg(
 		goto on_error;
 	}
 	Py_IncRef(
-	 (PyObject * ) &pycreg_file_type_object );
+	 (PyObject *) &pycreg_file_type_object );
 
 	PyModule_AddObject(
 	 module,
@@ -570,7 +570,7 @@ PyMODINIT_FUNC initpycreg(
 		goto on_error;
 	}
 	Py_IncRef(
-	 (PyObject * ) &pycreg_key_type_object );
+	 (PyObject *) &pycreg_key_type_object );
 
 	PyModule_AddObject(
 	 module,
@@ -587,7 +587,7 @@ PyMODINIT_FUNC initpycreg(
 		goto on_error;
 	}
 	Py_IncRef(
-	 (PyObject * ) &pycreg_keys_type_object );
+	 (PyObject *) &pycreg_keys_type_object );
 
 	PyModule_AddObject(
 	 module,
@@ -604,7 +604,7 @@ PyMODINIT_FUNC initpycreg(
 		goto on_error;
 	}
 	Py_IncRef(
-	 (PyObject * ) &pycreg_value_type_object );
+	 (PyObject *) &pycreg_value_type_object );
 
 	PyModule_AddObject(
 	 module,
@@ -621,7 +621,7 @@ PyMODINIT_FUNC initpycreg(
 		goto on_error;
 	}
 	Py_IncRef(
-	 (PyObject * ) &pycreg_value_types_type_object );
+	 (PyObject *) &pycreg_value_types_type_object );
 
 	PyModule_AddObject(
 	 module,
@@ -638,7 +638,7 @@ PyMODINIT_FUNC initpycreg(
 		goto on_error;
 	}
 	Py_IncRef(
-	 (PyObject * ) &pycreg_values_type_object );
+	 (PyObject *) &pycreg_values_type_object );
 
 	PyModule_AddObject(
 	 module,
