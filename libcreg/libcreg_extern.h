@@ -28,13 +28,6 @@
  */
 #if !defined( HAVE_LOCAL_LIBCREG )
 
-/* If libtool DLL support is enabled set LIBCREG_DLL_EXPORT
- * before including libcreg/extern.h
- */
-#if defined( _WIN32 ) && defined( DLL_EXPORT )
-#define LIBCREG_DLL_EXPORT
-#endif
-
 #include <libcreg/extern.h>
 
 #define LIBCREG_EXTERN_VARIABLE	LIBCREG_EXTERN
