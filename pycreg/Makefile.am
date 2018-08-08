@@ -35,13 +35,14 @@ pycreg_la_SOURCES = \
 
 pycreg_la_LIBADD = \
 	@LIBCERROR_LIBADD@ \
-	../libcreg/libcreg.la
-	@LIBBFIO_LIBADD@ \
-	@LIBCPATH_LIBADD@ \
-	@LIBCFILE_LIBADD@ \
-	@LIBCSPLIT_LIBADD@ \
+	../libcreg/libcreg.la \
+	@LIBCDATA_LIBADD@ \
 	@LIBCLOCALE_LIBADD@ \
-	@LIBCDATA_LIBADD@
+	@LIBCSPLIT_LIBADD@ \
+	@LIBUNA_LIBADD@ \
+	@LIBCFILE_LIBADD@ \
+	@LIBCPATH_LIBADD@ \
+	@LIBBFIO_LIBADD@
 
 pycreg_la_CPPFLAGS = $(PYTHON_CPPFLAGS)
 pycreg_la_LDFLAGS  = -module -avoid-version $(PYTHON_LDFLAGS)
