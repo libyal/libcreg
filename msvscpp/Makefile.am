@@ -16,7 +16,6 @@ MSVSCPP_FILES = \
 	cregexport/cregexport.vcproj \
 	creginfo/creginfo.vcproj \
 	cregmount/cregmount.vcproj \
-	dokan/dokan.vcproj \
 	libbfio/libbfio.vcproj \
 	libcdata/libcdata.vcproj \
 	libcerror/libcerror.vcproj \

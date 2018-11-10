@@ -1,4 +1,4 @@
-.Dd July 10, 2017
+.Dd November 10, 2018
 .Dt libcreg 3
 .Os libcreg
 .Sh NAME
@@ -107,9 +107,17 @@ Key functions
 .Ft int
 .Fn libcreg_key_get_utf16_name "libcreg_key_t *key, uint16_t *utf16_string, size_t utf16_string_size, libcreg_error_t **error"
 .Ft int
+.Fn libcreg_key_get_number_of_values "libcreg_key_t *key, int *number_of_values, libcreg_error_t **error"
+.Ft int
+.Fn libcreg_key_get_value_by_index "libcreg_key_t *key, int value_index, libcreg_value_t **value, libcreg_error_t **error"
+.Ft int
+.Fn libcreg_key_get_value_by_utf8_name "libcreg_key_t *key, const uint8_t *utf8_string, size_t utf8_string_length, libcreg_value_t **value, libcreg_error_t **error"
+.Ft int
+.Fn libcreg_key_get_value_by_utf16_name "libcreg_key_t *key, const uint16_t *utf16_string, size_t utf16_string_length, libcreg_value_t **value, libcreg_error_t **error"
+.Ft int
 .Fn libcreg_key_get_number_of_sub_keys "libcreg_key_t *key, int *number_of_sub_keys, libcreg_error_t **error"
 .Ft int
-.Fn libcreg_key_get_sub_key "libcreg_key_t *key, int sub_key_index, libcreg_key_t **sub_key, libcreg_error_t **error"
+.Fn libcreg_key_get_sub_key_by_index "libcreg_key_t *key, int sub_key_index, libcreg_key_t **sub_key, libcreg_error_t **error"
 .Ft int
 .Fn libcreg_key_get_sub_key_by_utf8_name "libcreg_key_t *key, const uint8_t *utf8_string, size_t utf8_string_length, libcreg_key_t **sub_key, libcreg_error_t **error"
 .Ft int
@@ -118,14 +126,6 @@ Key functions
 .Fn libcreg_key_get_sub_key_by_utf16_name "libcreg_key_t *key, const uint16_t *utf16_string, size_t utf16_string_length, libcreg_key_t **sub_key, libcreg_error_t **error"
 .Ft int
 .Fn libcreg_key_get_sub_key_by_utf16_path "libcreg_key_t *key, const uint16_t *utf16_string, size_t utf16_string_length, libcreg_key_t **sub_key, libcreg_error_t **error"
-.Ft int
-.Fn libcreg_key_get_number_of_values "libcreg_key_t *key, int *number_of_values, libcreg_error_t **error"
-.Ft int
-.Fn libcreg_key_get_value "libcreg_key_t *key, int value_index, libcreg_value_t **value, libcreg_error_t **error"
-.Ft int
-.Fn libcreg_key_get_value_by_utf8_name "libcreg_key_t *key, const uint8_t *utf8_string, size_t utf8_string_length, libcreg_value_t **value, libcreg_error_t **error"
-.Ft int
-.Fn libcreg_key_get_value_by_utf16_name "libcreg_key_t *key, const uint16_t *utf16_string, size_t utf16_string_length, libcreg_value_t **value, libcreg_error_t **error"
 .Pp
 Value functions
 .Ft int
