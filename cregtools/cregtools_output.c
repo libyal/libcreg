@@ -1,7 +1,7 @@
 /*
  * Common output functions for the cregtools
  *
- * Copyright (C) 2013-2018, Joachim Metz <joachim.metz@gmail.com>
+ * Copyright (C) 2013-2019, Joachim Metz <joachim.metz@gmail.com>
  *
  * Refer to AUTHORS for acknowledgements.
  *
@@ -95,7 +95,7 @@ int cregtools_output_initialize(
 
 /* Prints the copyright information
  */
-void cregoutput_copyright_fprint(
+void cregtools_output_copyright_fprint(
       FILE *stream )
 {
 	if( stream == NULL )
@@ -106,7 +106,7 @@ void cregoutput_copyright_fprint(
 	 */
 	fprintf(
 	 stream,
-	 _( "Copyright (C) 2013-2018, %s.\n" ),
+	 _( "Copyright (C) 2013-2019, %s.\n" ),
 	 _( "Joachim Metz" ) );
 
 	fprintf(
@@ -127,7 +127,7 @@ void cregoutput_copyright_fprint(
 
 /* Prints the version information
  */
-void cregoutput_version_fprint(
+void cregtools_output_version_fprint(
       FILE *stream,
       const char *program )
 {
@@ -148,7 +148,7 @@ void cregoutput_version_fprint(
 
 /* Prints the detailed version information
  */
-void cregoutput_version_detailed_fprint(
+void cregtools_output_version_detailed_fprint(
       FILE *stream,
       const char *program )
 {

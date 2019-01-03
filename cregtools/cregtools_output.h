@@ -1,7 +1,7 @@
 /*
  * Common output functions for the cregtools
  *
- * Copyright (C) 2013-2018, Joachim Metz <joachim.metz@gmail.com>
+ * Copyright (C) 2013-2019, Joachim Metz <joachim.metz@gmail.com>
  *
  * Refer to AUTHORS for acknowledgements.
  *
@@ -19,8 +19,8 @@
  * along with this software.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#if !defined( _CREGOUTPUT_H )
-#define _CREGOUTPUT_H
+#if !defined( _CREGTOOLS_OUTPUT_H )
+#define _CREGTOOLS_OUTPUT_H
 
 #include <common.h>
 #include <file_stream.h>
@@ -34,14 +34,14 @@ int cregtools_output_initialize(
      int stdio_mode,
      libcerror_error_t **error );
 
-void cregoutput_copyright_fprint(
+void cregtools_output_copyright_fprint(
       FILE *stream );
 
-void cregoutput_version_fprint(
+void cregtools_output_version_fprint(
       FILE *stream,
       const char *program );
 
-void cregoutput_version_detailed_fprint(
+void cregtools_output_version_detailed_fprint(
       FILE *stream,
       const char *program );
 
@@ -49,5 +49,5 @@ void cregoutput_version_detailed_fprint(
 }
 #endif
 
-#endif /* !defined( _CREGOUTPUT_H ) */
+#endif /* !defined( _CREGTOOLS_OUTPUT_H ) */
 

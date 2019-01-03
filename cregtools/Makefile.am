@@ -22,8 +22,6 @@ bin_PROGRAMS = \
 	cregmount
 
 cregexport_SOURCES = \
-	export_handle.c export_handle.h \
-	log_handle.c log_handle.h \
 	cregexport.c \
 	cregtools_getopt.c cregtools_getopt.h \
 	cregtools_i18n.h \
@@ -37,7 +35,9 @@ cregexport_SOURCES = \
 	cregtools_libuna.h \
 	cregtools_output.c cregtools_output.h \
 	cregtools_signal.c cregtools_signal.h \
-	cregtools_unused.h
+	cregtools_unused.h \
+	export_handle.c export_handle.h \
+	log_handle.c log_handle.h
 
 cregexport_LDADD = \
 	@LIBCNOTIFY_LIBADD@ \
@@ -47,7 +47,6 @@ cregexport_LDADD = \
 	@LIBINTL@
 
 creginfo_SOURCES = \
-	info_handle.c info_handle.h \
 	creginfo.c \
 	cregtools_getopt.c cregtools_getopt.h \
 	cregtools_i18n.h \
@@ -61,7 +60,8 @@ creginfo_SOURCES = \
 	cregtools_libuna.h \
 	cregtools_output.c cregtools_output.h \
 	cregtools_signal.c cregtools_signal.h \
-	cregtools_unused.h
+	cregtools_unused.h \
+	info_handle.c info_handle.h
 
 creginfo_LDADD = \
 	@LIBCNOTIFY_LIBADD@ \
@@ -71,7 +71,6 @@ creginfo_LDADD = \
 	@LIBINTL@
 
 cregmount_SOURCES = \
-	mount_handle.c mount_handle.h \
 	cregmount.c \
 	cregtools_getopt.c cregtools_getopt.h \
 	cregtools_i18n.h \
@@ -79,16 +78,25 @@ cregmount_SOURCES = \
 	cregtools_libcerror.h \
 	cregtools_libclocale.h \
 	cregtools_libcnotify.h \
+	cregtools_libcpath.h \
 	cregtools_libcreg.h \
 	cregtools_libfcache.h \
 	cregtools_libfdata.h \
 	cregtools_libuna.h \
 	cregtools_output.c cregtools_output.h \
 	cregtools_signal.c cregtools_signal.h \
-	cregtools_unused.h
+	cregtools_unused.h \
+	mount_dokan.c mount_dokan.h \
+	mount_file_entry.c mount_file_entry.h \
+	mount_file_system.c mount_file_system.h \
+	mount_fuse.c mount_fuse.h \
+	mount_handle.c mount_handle.h
 
 cregmount_LDADD = \
 	@LIBFUSE_LIBADD@ \
+	@LIBCPATH_LIBADD@ \
+	@LIBCSPLIT_LIBADD@ \
+	@LIBUNA_LIBADD@ \
 	@LIBCNOTIFY_LIBADD@ \
 	@LIBCLOCALE_LIBADD@ \
 	../libcreg/libcreg.la \

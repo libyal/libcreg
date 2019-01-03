@@ -9,6 +9,8 @@ Homepage: https://github.com/libyal/libcreg
 Package: libcreg
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
+Conflicts: libcreg1
+Replaces: libcreg1
 Suggests: libcreg-dbg
 Description: Library to access the Windows 9x/Me Registry File (CREG) format
  libcreg is a library to access the Windows 9x/Me Registry File (CREG) format.
@@ -31,6 +33,8 @@ Package: libcreg-tools
 Section: utils
 Architecture: any
 Depends: libcreg (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
+Conflicts: libcreg-utils
+Replaces: libcreg-utils
 Description: Several tools for reading Windows 9x/Me Registry Files (CREG)
  Several tools for reading Windows 9x/Me Registry Files (CREG).
 
@@ -45,6 +49,8 @@ Package: libcreg-python
 Section: python
 Architecture: any
 Depends: libcreg (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
+Conflicts: python-libcreg
+Replaces: python-libcreg
 Suggests: libcreg-python-dbg
 Description: Python 2 bindings for libcreg
  Python 2 bindings for libcreg.
@@ -60,6 +66,8 @@ Package: libcreg-python3
 Section: python
 Architecture: any
 Depends: libcreg (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
+Conflicts: python3-libcreg
+Replaces: python3-libcreg
 Suggests: libcreg-python3-dbg
 Description: Python 3 bindings for libcreg
  Python 3 bindings for libcreg.
