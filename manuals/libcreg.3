@@ -1,11 +1,9 @@
-.Dd November 10, 2018
+.Dd April 10, 2019
 .Dt libcreg 3
 .Os libcreg
 .Sh NAME
 .Nm libcreg.h
 .Nd Library to access the Windows 9x/Me Registry File (CREG) format
-.Sh LIBRARY
-.Lb libcreg
 .Sh SYNOPSIS
 .In libcreg.h
 .Pp
@@ -15,27 +13,27 @@ Support functions
 .Ft int
 .Fn libcreg_get_access_flags_read "void"
 .Ft int
-.Fn libcreg_get_codepage "int *codepage, libcreg_error_t **error"
+.Fn libcreg_get_codepage "int *codepage" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_set_codepage "int codepage, libcreg_error_t **error"
+.Fn libcreg_set_codepage "int codepage" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_check_file_signature "const char *filename, libcreg_error_t **error"
+.Fn libcreg_check_file_signature "const char *filename" "libcreg_error_t **error"
 .Pp
 Available when compiled with wide character string support:
 .Ft int
-.Fn libcreg_check_file_signature_wide "const wchar_t *filename, libcreg_error_t **error"
+.Fn libcreg_check_file_signature_wide "const wchar_t *filename" "libcreg_error_t **error"
 .Pp
 Available when compiled with libbfio support:
 .Ft int
-.Fn libcreg_check_file_signature_file_io_handle "libbfio_handle_t *bfio_handle, libcreg_error_t **error"
+.Fn libcreg_check_file_signature_file_io_handle "libbfio_handle_t *bfio_handle" "libcreg_error_t **error"
 .Pp
 Notify functions
 .Ft void
 .Fn libcreg_notify_set_verbose "int verbose"
 .Ft int
-.Fn libcreg_notify_set_stream "FILE *stream, libcreg_error_t **error"
+.Fn libcreg_notify_set_stream "FILE *stream" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_notify_stream_open "const char *filename, libcreg_error_t **error"
+.Fn libcreg_notify_stream_open "const char *filename" "libcreg_error_t **error"
 .Ft int
 .Fn libcreg_notify_stream_close "libcreg_error_t **error"
 .Pp
@@ -43,131 +41,131 @@ Error functions
 .Ft void
 .Fn libcreg_error_free "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_error_fprint "libcreg_error_t *error, FILE *stream"
+.Fn libcreg_error_fprint "libcreg_error_t *error" "FILE *stream"
 .Ft int
-.Fn libcreg_error_sprint "libcreg_error_t *error, char *string, size_t size"
+.Fn libcreg_error_sprint "libcreg_error_t *error" "char *string" "size_t size"
 .Ft int
-.Fn libcreg_error_backtrace_fprint "libcreg_error_t *error, FILE *stream"
+.Fn libcreg_error_backtrace_fprint "libcreg_error_t *error" "FILE *stream"
 .Ft int
-.Fn libcreg_error_backtrace_sprint "libcreg_error_t *error, char *string, size_t size"
+.Fn libcreg_error_backtrace_sprint "libcreg_error_t *error" "char *string" "size_t size"
 .Pp
 File functions
 .Ft int
-.Fn libcreg_file_initialize "libcreg_file_t **file, libcreg_error_t **error"
+.Fn libcreg_file_initialize "libcreg_file_t **file" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_file_free "libcreg_file_t **file, libcreg_error_t **error"
+.Fn libcreg_file_free "libcreg_file_t **file" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_file_signal_abort "libcreg_file_t *file, libcreg_error_t **error"
+.Fn libcreg_file_signal_abort "libcreg_file_t *file" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_file_open "libcreg_file_t *file, const char *filename, int access_flags, libcreg_error_t **error"
+.Fn libcreg_file_open "libcreg_file_t *file" "const char *filename" "int access_flags" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_file_close "libcreg_file_t *file, libcreg_error_t **error"
+.Fn libcreg_file_close "libcreg_file_t *file" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_file_is_corrupted "libcreg_file_t *file, libcreg_error_t **error"
+.Fn libcreg_file_is_corrupted "libcreg_file_t *file" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_file_get_ascii_codepage "libcreg_file_t *file, int *ascii_codepage, libcreg_error_t **error"
+.Fn libcreg_file_get_ascii_codepage "libcreg_file_t *file" "int *ascii_codepage" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_file_set_ascii_codepage "libcreg_file_t *file, int ascii_codepage, libcreg_error_t **error"
+.Fn libcreg_file_set_ascii_codepage "libcreg_file_t *file" "int ascii_codepage" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_file_get_format_version "libcreg_file_t *file, uint16_t *major_version, uint16_t *minor_version, libcreg_error_t **error"
+.Fn libcreg_file_get_format_version "libcreg_file_t *file" "uint16_t *major_version" "uint16_t *minor_version" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_file_get_type "libcreg_file_t *file, uint32_t *file_type, libcreg_error_t **error"
+.Fn libcreg_file_get_type "libcreg_file_t *file" "uint32_t *file_type" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_file_get_root_key "libcreg_file_t *file, libcreg_key_t **root_key, libcreg_error_t **error"
+.Fn libcreg_file_get_root_key "libcreg_file_t *file" "libcreg_key_t **root_key" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_file_get_key_by_utf8_path "libcreg_file_t *file, const uint8_t *utf8_string, size_t utf8_string_length, libcreg_key_t **key, libcreg_error_t **error"
+.Fn libcreg_file_get_key_by_utf8_path "libcreg_file_t *file" "const uint8_t *utf8_string" "size_t utf8_string_length" "libcreg_key_t **key" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_file_get_key_by_utf16_path "libcreg_file_t *file, const uint16_t *utf16_string, size_t utf16_string_length, libcreg_key_t **key, libcreg_error_t **error"
+.Fn libcreg_file_get_key_by_utf16_path "libcreg_file_t *file" "const uint16_t *utf16_string" "size_t utf16_string_length" "libcreg_key_t **key" "libcreg_error_t **error"
 .Pp
 Available when compiled with wide character string support:
 .Ft int
-.Fn libcreg_file_open_wide "libcreg_file_t *file, const wchar_t *filename, int access_flags, libcreg_error_t **error"
+.Fn libcreg_file_open_wide "libcreg_file_t *file" "const wchar_t *filename" "int access_flags" "libcreg_error_t **error"
 .Pp
 Available when compiled with libbfio support:
 .Ft int
-.Fn libcreg_file_open_file_io_handle "libcreg_file_t *file, libbfio_handle_t *file_io_handle, int access_flags, libcreg_error_t **error"
+.Fn libcreg_file_open_file_io_handle "libcreg_file_t *file" "libbfio_handle_t *file_io_handle" "int access_flags" "libcreg_error_t **error"
 .Pp
 Key functions
 .Ft int
-.Fn libcreg_key_free "libcreg_key_t **key, libcreg_error_t **error"
+.Fn libcreg_key_free "libcreg_key_t **key" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_key_is_corrupted "libcreg_key_t *key, libcreg_error_t **error"
+.Fn libcreg_key_is_corrupted "libcreg_key_t *key" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_key_get_offset "libcreg_key_t *key, off64_t *offset, libcreg_error_t **error"
+.Fn libcreg_key_get_offset "libcreg_key_t *key" "off64_t *offset" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_key_get_name_size "libcreg_key_t *key, size_t *string_size, libcreg_error_t **error"
+.Fn libcreg_key_get_name_size "libcreg_key_t *key" "size_t *string_size" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_key_get_name "libcreg_key_t *key, uint8_t *string, size_t string_size, libcreg_error_t **error"
+.Fn libcreg_key_get_name "libcreg_key_t *key" "uint8_t *string" "size_t string_size" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_key_get_utf8_name_size "libcreg_key_t *key, size_t *utf8_string_size, libcreg_error_t **error"
+.Fn libcreg_key_get_utf8_name_size "libcreg_key_t *key" "size_t *utf8_string_size" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_key_get_utf8_name "libcreg_key_t *key, uint8_t *utf8_string, size_t utf8_string_size, libcreg_error_t **error"
+.Fn libcreg_key_get_utf8_name "libcreg_key_t *key" "uint8_t *utf8_string" "size_t utf8_string_size" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_key_get_utf16_name_size "libcreg_key_t *key, size_t *utf16_string_size, libcreg_error_t **error"
+.Fn libcreg_key_get_utf16_name_size "libcreg_key_t *key" "size_t *utf16_string_size" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_key_get_utf16_name "libcreg_key_t *key, uint16_t *utf16_string, size_t utf16_string_size, libcreg_error_t **error"
+.Fn libcreg_key_get_utf16_name "libcreg_key_t *key" "uint16_t *utf16_string" "size_t utf16_string_size" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_key_get_number_of_values "libcreg_key_t *key, int *number_of_values, libcreg_error_t **error"
+.Fn libcreg_key_get_number_of_values "libcreg_key_t *key" "int *number_of_values" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_key_get_value_by_index "libcreg_key_t *key, int value_index, libcreg_value_t **value, libcreg_error_t **error"
+.Fn libcreg_key_get_value_by_index "libcreg_key_t *key" "int value_index" "libcreg_value_t **value" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_key_get_value_by_utf8_name "libcreg_key_t *key, const uint8_t *utf8_string, size_t utf8_string_length, libcreg_value_t **value, libcreg_error_t **error"
+.Fn libcreg_key_get_value_by_utf8_name "libcreg_key_t *key" "const uint8_t *utf8_string" "size_t utf8_string_length" "libcreg_value_t **value" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_key_get_value_by_utf16_name "libcreg_key_t *key, const uint16_t *utf16_string, size_t utf16_string_length, libcreg_value_t **value, libcreg_error_t **error"
+.Fn libcreg_key_get_value_by_utf16_name "libcreg_key_t *key" "const uint16_t *utf16_string" "size_t utf16_string_length" "libcreg_value_t **value" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_key_get_number_of_sub_keys "libcreg_key_t *key, int *number_of_sub_keys, libcreg_error_t **error"
+.Fn libcreg_key_get_number_of_sub_keys "libcreg_key_t *key" "int *number_of_sub_keys" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_key_get_sub_key_by_index "libcreg_key_t *key, int sub_key_index, libcreg_key_t **sub_key, libcreg_error_t **error"
+.Fn libcreg_key_get_sub_key_by_index "libcreg_key_t *key" "int sub_key_index" "libcreg_key_t **sub_key" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_key_get_sub_key_by_utf8_name "libcreg_key_t *key, const uint8_t *utf8_string, size_t utf8_string_length, libcreg_key_t **sub_key, libcreg_error_t **error"
+.Fn libcreg_key_get_sub_key_by_utf8_name "libcreg_key_t *key" "const uint8_t *utf8_string" "size_t utf8_string_length" "libcreg_key_t **sub_key" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_key_get_sub_key_by_utf8_path "libcreg_key_t *key, const uint8_t *utf8_string, size_t utf8_string_length, libcreg_key_t **sub_key, libcreg_error_t **error"
+.Fn libcreg_key_get_sub_key_by_utf8_path "libcreg_key_t *key" "const uint8_t *utf8_string" "size_t utf8_string_length" "libcreg_key_t **sub_key" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_key_get_sub_key_by_utf16_name "libcreg_key_t *key, const uint16_t *utf16_string, size_t utf16_string_length, libcreg_key_t **sub_key, libcreg_error_t **error"
+.Fn libcreg_key_get_sub_key_by_utf16_name "libcreg_key_t *key" "const uint16_t *utf16_string" "size_t utf16_string_length" "libcreg_key_t **sub_key" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_key_get_sub_key_by_utf16_path "libcreg_key_t *key, const uint16_t *utf16_string, size_t utf16_string_length, libcreg_key_t **sub_key, libcreg_error_t **error"
+.Fn libcreg_key_get_sub_key_by_utf16_path "libcreg_key_t *key" "const uint16_t *utf16_string" "size_t utf16_string_length" "libcreg_key_t **sub_key" "libcreg_error_t **error"
 .Pp
 Value functions
 .Ft int
-.Fn libcreg_value_free "libcreg_value_t **value, libcreg_error_t **error"
+.Fn libcreg_value_free "libcreg_value_t **value" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_value_is_corrupted "libcreg_value_t *value, libcreg_error_t **error"
+.Fn libcreg_value_is_corrupted "libcreg_value_t *value" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_value_get_offset "libcreg_value_t *value, off64_t *offset, libcreg_error_t **error"
+.Fn libcreg_value_get_offset "libcreg_value_t *value" "off64_t *offset" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_value_get_name_size "libcreg_value_t *value, size_t *string_size, libcreg_error_t **error"
+.Fn libcreg_value_get_name_size "libcreg_value_t *value" "size_t *string_size" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_value_get_name "libcreg_value_t *value, uint8_t *string, size_t string_size, libcreg_error_t **error"
+.Fn libcreg_value_get_name "libcreg_value_t *value" "uint8_t *string" "size_t string_size" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_value_get_utf8_name_size "libcreg_value_t *value, size_t *utf8_string_size, libcreg_error_t **error"
+.Fn libcreg_value_get_utf8_name_size "libcreg_value_t *value" "size_t *utf8_string_size" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_value_get_utf8_name "libcreg_value_t *value, uint8_t *utf8_string, size_t utf8_string_size, libcreg_error_t **error"
+.Fn libcreg_value_get_utf8_name "libcreg_value_t *value" "uint8_t *utf8_string" "size_t utf8_string_size" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_value_get_utf16_name_size "libcreg_value_t *value, size_t *utf16_string_size, libcreg_error_t **error"
+.Fn libcreg_value_get_utf16_name_size "libcreg_value_t *value" "size_t *utf16_string_size" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_value_get_utf16_name "libcreg_value_t *value, uint16_t *utf16_string, size_t utf16_string_size, libcreg_error_t **error"
+.Fn libcreg_value_get_utf16_name "libcreg_value_t *value" "uint16_t *utf16_string" "size_t utf16_string_size" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_value_get_value_type "libcreg_value_t *value, uint32_t *value_type, libcreg_error_t **error"
+.Fn libcreg_value_get_value_type "libcreg_value_t *value" "uint32_t *value_type" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_value_get_value_data_size "libcreg_value_t *value, size_t *value_data_size, libcreg_error_t **error"
+.Fn libcreg_value_get_value_data_size "libcreg_value_t *value" "size_t *value_data_size" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_value_get_value_data "libcreg_value_t *value, uint8_t *value_data, size_t value_data_size, libcreg_error_t **error"
+.Fn libcreg_value_get_value_data "libcreg_value_t *value" "uint8_t *value_data" "size_t value_data_size" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_value_get_value_32bit "libcreg_value_t *value, uint32_t *value_32bit, libcreg_error_t **error"
+.Fn libcreg_value_get_value_32bit "libcreg_value_t *value" "uint32_t *value_32bit" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_value_get_value_64bit "libcreg_value_t *value, uint64_t *value_64bit, libcreg_error_t **error"
+.Fn libcreg_value_get_value_64bit "libcreg_value_t *value" "uint64_t *value_64bit" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_value_get_value_utf8_string_size "libcreg_value_t *value, size_t *utf8_string_size, libcreg_error_t **error"
+.Fn libcreg_value_get_value_utf8_string_size "libcreg_value_t *value" "size_t *utf8_string_size" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_value_get_value_utf8_string "libcreg_value_t *value, uint8_t *utf8_string, size_t utf8_string_size, libcreg_error_t **error"
+.Fn libcreg_value_get_value_utf8_string "libcreg_value_t *value" "uint8_t *utf8_string" "size_t utf8_string_size" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_value_get_value_utf16_string_size "libcreg_value_t *value, size_t *utf16_string_size, libcreg_error_t **error"
+.Fn libcreg_value_get_value_utf16_string_size "libcreg_value_t *value" "size_t *utf16_string_size" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_value_get_value_utf16_string "libcreg_value_t *value, uint16_t *utf16_string, size_t utf16_string_size, libcreg_error_t **error"
+.Fn libcreg_value_get_value_utf16_string "libcreg_value_t *value" "uint16_t *utf16_string" "size_t utf16_string_size" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_value_get_value_binary_data_size "libcreg_value_t *value, size_t *size, libcreg_error_t **error"
+.Fn libcreg_value_get_value_binary_data_size "libcreg_value_t *value" "size_t *size" "libcreg_error_t **error"
 .Ft int
-.Fn libcreg_value_get_value_binary_data "libcreg_value_t *value, uint8_t *binary_data, size_t size, libcreg_error_t **error"
+.Fn libcreg_value_get_value_binary_data "libcreg_value_t *value" "uint8_t *binary_data" "size_t size" "libcreg_error_t **error"
 .Sh DESCRIPTION
 The
 .Fn libcreg_get_version
@@ -180,8 +178,8 @@ None
 .Sh FILES
 None
 .Sh NOTES
-libcreg allows to be compiled with wide character support (wchar_t).
-
+libcreg can be compiled with wide character support (wchar_t).
+.sp
 To compile libcreg with wide character support use:
 .Ar ./configure --enable-wide-character-type=yes
  or define:
@@ -189,7 +187,7 @@ To compile libcreg with wide character support use:
  or
 .Ar UNICODE
  during compilation.
-
+.sp
 .Ar LIBCREG_WIDE_CHARACTER_TYPE
  in libcreg/features.h can be used to determine if libcreg was compiled with wide character support.
 .Sh BUGS
@@ -198,7 +196,7 @@ Please report bugs of any kind on the project issue tracker: https://github.com/
 These man pages are generated from "libcreg.h".
 .Sh COPYRIGHT
 Copyright (C) 2013-2019, Joachim Metz <joachim.metz@gmail.com>.
-
+.sp
 This is free software; see the source for copying conditions.
 There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 .Sh SEE ALSO
