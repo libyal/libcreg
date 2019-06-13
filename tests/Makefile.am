@@ -31,6 +31,7 @@ check_SCRIPTS = \
 	test_cregexport.sh \
 	test_creginfo.sh \
 	test_library.sh \
+	test_manpage.sh \
 	test_python_module.sh \
 	test_runner.sh
 
