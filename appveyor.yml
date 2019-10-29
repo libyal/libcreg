@@ -1,4 +1,6 @@
 environment:
+  pypi_token:
+    secure: VHuZiUWgTqTciKE2nsv/Lm6aKQU/ci3QClu+/jWvxtmkaYoz1JQfc7MbYFTIwQpe6DmCh0rl/iG6HlNKwo9yOS2+l/V45Ger3WeV0S0C1ZrftR5BVd1MLXfMs+MM6wn808uKhhWIhZWhcl2PtO6TLreuBzZmLHmjXwBRStGnUpmkGhyhzlZJss4sna11EzW7hZUbn2JA2GsSO1qNDYrvIjaqQZ5v4tu1DfNUi6OBTwm5nQ1YRvnQ2NU4eBV4r/aRRP23s4HqtKGLrJUQq+lAVQ==
   matrix:
   - TARGET: vs2008
     BUILD_ENVIRONMENT: msbuild
@@ -146,10 +148,6 @@ environment:
     CFLAGS: "--coverage"
     LDFLAGS: "--coverage"
 
-matrix:
-  allow_failures:
-  - TARGET: python27-x64
-
 install:
 - cmd: git clone https://github.com/codecov/codecov-bash.git ..\codecov-bash
 - cmd: if [%BUILD_ENVIRONMENT%]==[msbuild] (
@@ -198,6 +196,8 @@ install:
     Else {
       .\builddokan.ps1 -UseLegacyVersion }
     }
+- cmd: if [%BUILD_ENVIRONMENT%]==[python] (
+    "%PYTHON%\\python.exe" -m pip install -U pip setuptools twine wheel )
 - cmd: if [%BUILD_ENVIRONMENT%]==[cygwin] (
     C:\cygwin\setup-x86.exe -qgnNdO -l C:\cygwin\var\cache\setup -R c:\cygwin -s http://cygwin.mirror.constant.com -P python2-devel -P python3-devel )
 - cmd: if [%BUILD_ENVIRONMENT%]==[cygwin64] (
@@ -231,7 +231,7 @@ build_script:
     msbuild /verbosity:quiet vs2017\libcreg.sln /property:Platform=Win32 /property:PlatformToolset=v141 /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" &&
     msbuild /verbosity:quiet vs2017\libcreg.sln /property:Platform=x64 /property:PlatformToolset=v141 /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" )
 - cmd: if [%BUILD_ENVIRONMENT%]==[python] (
-    "%PYTHON%\\python.exe" setup.py bdist_msi )
+    "%PYTHON%\\python.exe" setup.py bdist_msi bdist_wheel )
 - cmd: if [%BUILD_ENVIRONMENT%]==[cygwin] (
     xcopy /i /q /s C:\projects\libcreg C:\cygwin\home\appveyor\libcreg &&
     C:\cygwin\bin\bash -e -l -c "cd libcreg && ./synclibs.sh --use-head && ./autogen.sh" )
@@ -262,4 +262,11 @@ after_test:
 - cmd: if [%TARGET%]==[mingw-gcc-no-optimization] (
     copy C:\projects\codecov-bash\codecov C:\MinGW\msys\1.0\home\appveyor\libcreg\codecov.sh &&
     C:\MinGW\msys\1.0\bin\bash -e -l -c "cd libcreg && chmod a+x ./codecov.sh && sed -i 's/-execdir /-exec /' ./codecov.sh && ./codecov.sh -n ${TARGET} -y .codecov.yml" )
+
+artifacts:
+- path: dist\*.whl
+
+deploy_script:
+- ps: If ($env:APPVEYOR_REPO_TAG -eq "true") {
+    Invoke-Expression "${env:PYTHON}\\python.exe -m twine upload dist/*.whl --username __token__ --password ${env:PYPI_TOKEN} --skip-existing" }
 
