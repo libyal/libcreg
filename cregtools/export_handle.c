@@ -562,17 +562,21 @@ int export_handle_close_input(
  */
 int export_handle_export_key(
      export_handle_t *export_handle,
+     const system_character_t *key_path,
+     size_t key_path_length,
      libcreg_key_t *key,
      log_handle_t *log_handle,
      libcerror_error_t **error )
 {
 	libcreg_key_t *sub_key           = NULL;
 	libcreg_value_t *value           = NULL;
+	system_character_t *sub_key_path = NULL;
 	system_character_t *value_string = NULL;
 	uint8_t *data                    = NULL;
 	static char *function            = "export_handle_export_key";
 	size_t data_size                 = 0;
 	size_t expected_data_size        = 0;
+	size_t sub_key_path_length       = 0;
 	size_t value_string_size         = 0;
 	ssize_t print_count              = 0;
 	uint64_t value_64bit             = 0;
@@ -591,6 +595,28 @@ int export_handle_export_key(
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
 		 "%s: invalid export handle.",
+		 function );
+
+		return( -1 );
+	}
+	if( key_path == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid key path.",
+		 function );
+
+		return( -1 );
+	}
+	if( key_path_length > ( (size_t) SSIZE_MAX - 1 ) )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_VALUE_EXCEEDS_MAXIMUM,
+		 "%s: invalid key path length value exceeds maximum.",
 		 function );
 
 		return( -1 );
@@ -617,20 +643,89 @@ int export_handle_export_key(
 
 		goto on_error;
 	}
+	if( value_string_size > ( (size_t) SSIZE_MAX / sizeof( system_character_t ) ) )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_VALUE_EXCEEDS_MAXIMUM,
+		 "%s: invalid name size value exceeds maximum.",
+		 function );
+
+		goto on_error;
+	}
+	sub_key_path_length = key_path_length;
+
 	if( value_string_size > 0 )
 	{
-		if( ( value_string_size > (size_t) SSIZE_MAX )
-		 || ( ( sizeof( system_character_t ) * value_string_size ) > (size_t) SSIZE_MAX ) )
+		if( key_path_length > 0 )
 		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_VALUE_EXCEEDS_MAXIMUM,
-			 "%s: invalid name size value exceeds maximum.",
-			 function );
-
-			goto on_error;
+			sub_key_path_length += 1;
 		}
+		sub_key_path_length += value_string_size - 1;
+	}
+	if( sub_key_path_length > ( (size_t) SSIZE_MAX / sizeof( system_character_t ) ) )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_VALUE_EXCEEDS_MAXIMUM,
+		 "%s: invalid sub key path length value exceeds maximum.",
+		 function );
+
+		goto on_error;
+	}
+	sub_key_path = system_string_allocate(
+	                sub_key_path_length + 1 );
+
+	if( sub_key_path == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_MEMORY,
+		 LIBCERROR_MEMORY_ERROR_INSUFFICIENT,
+		 "%s: unable to create sub key path.",
+		 function );
+
+		goto on_error;
+	}
+	if( sub_key_path == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_MEMORY,
+		 LIBCERROR_MEMORY_ERROR_INSUFFICIENT,
+		 "%s: unable to create sub key path.",
+		 function );
+
+		goto on_error;
+	}
+	if( system_string_copy(
+	     sub_key_path,
+	     key_path,
+	     key_path_length ) == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_MEMORY,
+		 LIBCERROR_MEMORY_ERROR_COPY_FAILED,
+		 "%s: unable to copy key path to sub key path.",
+		 function );
+
+		goto on_error;
+	}
+	if( key_path_length > 0 )
+	{
+		sub_key_path[ key_path_length ] = '\\';
+
+		key_path_length += 1;
+	}
+	if( value_string_size == 0 )
+	{
+		sub_key_path[ key_path_length ] = 0;
+	}
+	else
+	{
 		value_string = system_string_allocate(
 		                value_string_size );
 
@@ -648,13 +743,13 @@ int export_handle_export_key(
 #if defined( HAVE_WIDE_SYSTEM_CHARACTER )
 		result = libcreg_key_get_utf16_name(
 		          key,
-		          (uint16_t *) value_string,
+		          (uint16_t *) &( sub_key_path[ key_path_length ] ),
 		          value_string_size,
 		          error );
 #else
 		result = libcreg_key_get_utf8_name(
 		          key,
-		          (uint8_t *) value_string,
+		          (uint8_t *) &( sub_key_path[ key_path_length ] ),
 		          value_string_size,
 		          error );
 #endif
@@ -669,17 +764,17 @@ int export_handle_export_key(
 
 			goto on_error;
 		}
-/* TODO print full key path */
-		fprintf(
-		 export_handle->notify_stream,
-		 "Key: %" PRIs_SYSTEM "\n",
-		 value_string );
-
-		memory_free(
-		 value_string );
-
-		value_string = NULL;
 	}
+	fprintf(
+	 export_handle->notify_stream,
+	 "Key path: %" PRIs_SYSTEM "\n",
+	 sub_key_path );
+
+	fprintf(
+	 export_handle->notify_stream,
+	 "Key: %" PRIs_SYSTEM "\n",
+	 &( sub_key_path[ key_path_length ] ) );
+
 	if( libcreg_key_get_number_of_values(
 	     key,
 	     &number_of_values,
@@ -738,8 +833,7 @@ int export_handle_export_key(
 		}
 		if( value_string_size > 0 )
 		{
-			if( ( value_string_size > (size_t) SSIZE_MAX )
-			 || ( ( sizeof( system_character_t ) * value_string_size ) > (size_t) SSIZE_MAX ) )
+			if( value_string_size > ( (size_t) SSIZE_MAX / sizeof( system_character_t ) ) )
 			{
 				libcerror_error_set(
 				 error,
@@ -947,8 +1041,7 @@ int export_handle_export_key(
 				}
 				if( value_string_size > 0 )
 				{
-					if( ( value_string_size > (size_t) SSIZE_MAX )
-					 || ( ( sizeof( system_character_t ) * value_string_size ) > (size_t) SSIZE_MAX ) )
+					if( value_string_size > ( (size_t) SSIZE_MAX / sizeof( system_character_t ) ) )
 					{
 						libcerror_error_set(
 						 error,
@@ -1235,6 +1328,8 @@ int export_handle_export_key(
 		}
 		if( export_handle_export_key(
 		     export_handle,
+		     sub_key_path,
+		     sub_key_path_length,
 		     sub_key,
 		     log_handle,
 		     error ) != 1 )
@@ -1264,6 +1359,9 @@ int export_handle_export_key(
 			goto on_error;
 		}
 	}
+	memory_free(
+	 sub_key_path );
+
 	return( 1 );
 
 on_error:
@@ -1289,10 +1387,136 @@ on_error:
 		memory_free(
 		 value_string );
 	}
+	if( sub_key_path != NULL )
+	{
+		memory_free(
+		 sub_key_path );
+	}
 	return( -1 );
 }
 
-/* Exports the keys and values from the file
+/* Exports keys and values from the file for a specific key path
+ * Returns the 1 if succesful or -1 on error
+ */
+int export_handle_export_key_path(
+     export_handle_t *export_handle,
+     const system_character_t *key_path,
+     log_handle_t *log_handle,
+     libcerror_error_t **error )
+{
+	libcreg_key_t *key      = NULL;
+	static char *function   = "export_handle_export_key_path";
+	size_t key_path_length  = 0;
+	int result              = 0;
+
+	if( export_handle == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid export handle.",
+		 function );
+
+		return( -1 );
+	}
+	if( key_path == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid key path.",
+		 function );
+
+		return( -1 );
+	}
+	key_path_length = system_string_length(
+	                   key_path );
+
+#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
+	result = libcreg_file_get_key_by_utf16_path(
+	          export_handle->input_file,
+	          (uint16_t *) key_path,
+	          key_path_length,
+	          &key,
+	          error );
+#else
+	result = libcreg_file_get_key_by_utf8_path(
+	          export_handle->input_file,
+	          (uint8_t *) key_path,
+	          key_path_length,
+	          &key,
+	          error );
+#endif
+	if( result == -1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve key by path.",
+		 function );
+
+		goto on_error;
+	}
+	else if( result == 0 )
+	{
+		fprintf(
+		 export_handle->notify_stream,
+		 "No key with path: %" PRIs_SYSTEM "\n",
+		 key_path );
+	}
+	else
+	{
+		if( export_handle_export_key(
+		     export_handle,
+		     key_path,
+		     key_path_length,
+		     key,
+		     log_handle,
+		     error ) != 1 )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_GENERIC,
+			 "%s: unable to export key.",
+			 function );
+
+			goto on_error;
+		}
+		if( libcreg_key_free(
+		     &key,
+		     error ) != 1 )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
+			 "%s: unable to free key.",
+			 function );
+
+			goto on_error;
+		}
+	}
+	fprintf(
+	 export_handle->notify_stream,
+	 "\n" );
+
+	return( 1 );
+
+on_error:
+	if( key != NULL )
+	{
+		libcreg_key_free(
+		 &key,
+		 NULL );
+	}
+	return( -1 );
+}
+
+/* Exports keys and values from the file
  * Returns the 1 if succesful or -1 on error
  */
 int export_handle_export_file(
@@ -1331,10 +1555,18 @@ int export_handle_export_file(
 
 		goto on_error;
 	}
-	else if( result != 0 )
+	else if( result == 0 )
+	{
+		fprintf(
+		 export_handle->notify_stream,
+		 "No root key\n" );
+	}
+	else
 	{
 		if( export_handle_export_key(
 		     export_handle,
+		     _SYSTEM_STRING( "" ),
+		     0,
 		     root_key,
 		     log_handle,
 		     error ) != 1 )
@@ -1361,10 +1593,11 @@ int export_handle_export_file(
 
 			goto on_error;
 		}
-		fprintf(
-		 export_handle->notify_stream,
-		 "\n" );
 	}
+	fprintf(
+	 export_handle->notify_stream,
+	 "\n" );
+
 	return( 1 );
 
 on_error:

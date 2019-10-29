@@ -26,9 +26,9 @@
 #include <file_stream.h>
 #include <types.h>
 
-#include "log_handle.h"
 #include "cregtools_libcerror.h"
 #include "cregtools_libcreg.h"
+#include "log_handle.h"
 
 #if defined( __cplusplus )
 extern "C" {
@@ -88,14 +88,17 @@ int export_handle_close_input(
      export_handle_t *export_handle,
      libcerror_error_t **error );
 
-/* Key specific export functions
- */
-
-/* File export functions
- */
-int export_handle_export_keyes(
+int export_handle_export_key(
      export_handle_t *export_handle,
+     const system_character_t *key_path,
+     size_t key_path_length,
      libcreg_key_t *key,
+     log_handle_t *log_handle,
+     libcerror_error_t **error );
+
+int export_handle_export_key_path(
+     export_handle_t *export_handle,
+     const system_character_t *key_path,
      log_handle_t *log_handle,
      libcerror_error_t **error );
 
