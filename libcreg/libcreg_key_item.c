@@ -38,7 +38,6 @@
 #include "libcreg_libbfio.h"
 #include "libcreg_libcerror.h"
 #include "libcreg_libcnotify.h"
-#include "libcreg_libfcache.h"
 #include "libcreg_libfdata.h"
 #include "libcreg_libuna.h"
 #include "libcreg_unused.h"
@@ -50,7 +49,7 @@ int libcreg_key_item_read_node_data(
      libcreg_key_navigation_t *key_navigation,
      libbfio_handle_t *file_io_handle,
      libfdata_tree_node_t *node,
-     libfcache_cache_t *cache,
+     libfdata_cache_t *cache,
      int node_data_file_index LIBCREG_ATTRIBUTE_UNUSED,
      off64_t node_data_offset,
      size64_t node_data_size LIBCREG_ATTRIBUTE_UNUSED,
@@ -246,7 +245,7 @@ int libcreg_key_item_read_sub_nodes(
      libcreg_key_navigation_t *key_navigation,
      libbfio_handle_t *file_io_handle,
      libfdata_tree_node_t *node,
-     libfcache_cache_t *cache LIBCREG_ATTRIBUTE_UNUSED,
+     libfdata_cache_t *cache LIBCREG_ATTRIBUTE_UNUSED,
      int sub_nodes_data_file_index LIBCREG_ATTRIBUTE_UNUSED,
      off64_t sub_nodes_data_offset,
      size64_t sub_nodes_data_size LIBCREG_ATTRIBUTE_UNUSED,

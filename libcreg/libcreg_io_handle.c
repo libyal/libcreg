@@ -385,7 +385,7 @@ int libcreg_io_handle_read_key_hierarchy_entry(
      intptr_t *data_handle LIBCREG_ATTRIBUTE_UNUSED,
      libbfio_handle_t *file_io_handle,
      libfdata_area_t *area,
-     libfcache_cache_t *cache,
+     libfdata_cache_t *cache,
      off64_t element_value_offset,
      int element_data_file_index LIBCREG_ATTRIBUTE_UNUSED,
      off64_t element_data_offset,

@@ -200,7 +200,7 @@ int libcreg_key_is_corrupted(
 	if( libfdata_tree_node_get_node_value(
 	     internal_key->key_tree_node,
 	     (intptr_t *) internal_key->file_io_handle,
-	     internal_key->key_cache,
+	     (libfdata_cache_t *) internal_key->key_cache,
 	     (intptr_t **) &key_name_entry,
 	     0,
 	     error ) != 1 )
@@ -345,7 +345,7 @@ int libcreg_key_get_name_size(
 	if( libfdata_tree_node_get_node_value(
 	     internal_key->key_tree_node,
 	     (intptr_t *) internal_key->file_io_handle,
-	     internal_key->key_cache,
+	     (libfdata_cache_t *) internal_key->key_cache,
 	     (intptr_t **) &key_name_entry,
 	     0,
 	     error ) != 1 )
@@ -421,7 +421,7 @@ int libcreg_key_get_name(
 	if( libfdata_tree_node_get_node_value(
 	     internal_key->key_tree_node,
 	     (intptr_t *) internal_key->file_io_handle,
-	     internal_key->key_cache,
+	     (libfdata_cache_t *) internal_key->key_cache,
 	     (intptr_t **) &key_name_entry,
 	     0,
 	     error ) != 1 )
@@ -521,7 +521,7 @@ int libcreg_key_get_utf8_name_size(
 	if( libfdata_tree_node_get_node_value(
 	     internal_key->key_tree_node,
 	     (intptr_t *) internal_key->file_io_handle,
-	     internal_key->key_cache,
+	     (libfdata_cache_t *) internal_key->key_cache,
 	     (intptr_t **) &key_name_entry,
 	     0,
 	     error ) != 1 )
@@ -625,7 +625,7 @@ int libcreg_key_get_utf8_name(
 	if( libfdata_tree_node_get_node_value(
 	     internal_key->key_tree_node,
 	     (intptr_t *) internal_key->file_io_handle,
-	     internal_key->key_cache,
+	     (libfdata_cache_t *) internal_key->key_cache,
 	     (intptr_t **) &key_name_entry,
 	     0,
 	     error ) != 1 )
@@ -728,7 +728,7 @@ int libcreg_key_get_utf16_name_size(
 	if( libfdata_tree_node_get_node_value(
 	     internal_key->key_tree_node,
 	     (intptr_t *) internal_key->file_io_handle,
-	     internal_key->key_cache,
+	     (libfdata_cache_t *) internal_key->key_cache,
 	     (intptr_t **) &key_name_entry,
 	     0,
 	     error ) != 1 )
@@ -832,7 +832,7 @@ int libcreg_key_get_utf16_name(
 	if( libfdata_tree_node_get_node_value(
 	     internal_key->key_tree_node,
 	     (intptr_t *) internal_key->file_io_handle,
-	     internal_key->key_cache,
+	     (libfdata_cache_t *) internal_key->key_cache,
 	     (intptr_t **) &key_name_entry,
 	     0,
 	     error ) != 1 )
@@ -924,7 +924,7 @@ int libcreg_key_get_number_of_values(
 	if( libfdata_tree_node_get_node_value(
 	     internal_key->key_tree_node,
 	     (intptr_t *) internal_key->file_io_handle,
-	     internal_key->key_cache,
+	     (libfdata_cache_t *) internal_key->key_cache,
 	     (intptr_t **) &key_name_entry,
 	     0,
 	     error ) != 1 )
@@ -1025,7 +1025,7 @@ int libcreg_key_get_value(
 	if( libfdata_tree_node_get_node_value(
 	     internal_key->key_tree_node,
 	     (intptr_t *) internal_key->file_io_handle,
-	     internal_key->key_cache,
+	     (libfdata_cache_t *) internal_key->key_cache,
 	     (intptr_t **) &key_name_entry,
 	     0,
 	     error ) != 1 )
@@ -1136,7 +1136,7 @@ int libcreg_key_get_value_by_index(
 	if( libfdata_tree_node_get_node_value(
 	     internal_key->key_tree_node,
 	     (intptr_t *) internal_key->file_io_handle,
-	     internal_key->key_cache,
+	     (libfdata_cache_t *) internal_key->key_cache,
 	     (intptr_t **) &key_name_entry,
 	     0,
 	     error ) != 1 )
@@ -1290,7 +1290,7 @@ int libcreg_key_get_value_by_utf8_name(
 	if( libfdata_tree_node_get_node_value(
 	     internal_key->key_tree_node,
 	     (intptr_t *) internal_key->file_io_handle,
-	     internal_key->key_cache,
+	     (libfdata_cache_t *) internal_key->key_cache,
 	     (intptr_t **) &key_name_entry,
 	     0,
 	     error ) != 1 )
@@ -1542,7 +1542,7 @@ int libcreg_key_get_value_by_utf16_name(
 	if( libfdata_tree_node_get_node_value(
 	     internal_key->key_tree_node,
 	     (intptr_t *) internal_key->file_io_handle,
-	     internal_key->key_cache,
+	     (libfdata_cache_t *) internal_key->key_cache,
 	     (intptr_t **) &key_name_entry,
 	     0,
 	     error ) != 1 )
@@ -1726,7 +1726,7 @@ int libcreg_key_get_number_of_sub_keys(
 	if( libfdata_tree_node_get_number_of_sub_nodes(
 	     internal_key->key_tree_node,
 	     (intptr_t *) internal_key->file_io_handle,
-	     internal_key->key_cache,
+	     (libfdata_cache_t *) internal_key->key_cache,
 	     number_of_sub_keys,
 	     0,
 	     error ) != 1 )
@@ -1794,7 +1794,7 @@ int libcreg_key_get_sub_key(
 	if( libfdata_tree_node_get_sub_node_by_index(
 	     internal_key->key_tree_node,
 	     (intptr_t *) internal_key->file_io_handle,
-	     internal_key->key_cache,
+	     (libfdata_cache_t *) internal_key->key_cache,
              sub_key_index,
 	     &key_tree_sub_node,
 	     0,
@@ -1892,7 +1892,7 @@ int libcreg_key_get_sub_key_by_index(
 	if( libfdata_tree_node_get_sub_node_by_index(
 	     internal_key->key_tree_node,
 	     (intptr_t *) internal_key->file_io_handle,
-	     internal_key->key_cache,
+	     (libfdata_cache_t *) internal_key->key_cache,
              sub_key_index,
 	     &key_tree_sub_node,
 	     0,
@@ -2199,7 +2199,7 @@ int libcreg_key_get_sub_key_by_utf8_path(
 	if( libfdata_tree_node_get_node_value(
 	     key_tree_node,
 	     (intptr_t *) internal_key->file_io_handle,
-	     internal_key->key_cache,
+	     (libfdata_cache_t *) internal_key->key_cache,
 	     (intptr_t **) &key_name_entry,
 	     0,
 	     error ) != 1 )
@@ -2584,7 +2584,7 @@ int libcreg_key_get_sub_key_by_utf16_path(
 	if( libfdata_tree_node_get_node_value(
 	     key_tree_node,
 	     (intptr_t *) internal_key->file_io_handle,
-	     internal_key->key_cache,
+	     (libfdata_cache_t *) internal_key->key_cache,
 	     (intptr_t **) &key_name_entry,
 	     0,
 	     error ) != 1 )

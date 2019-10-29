@@ -27,7 +27,6 @@
 
 #include "libcreg_libbfio.h"
 #include "libcreg_libcerror.h"
-#include "libcreg_libfcache.h"
 #include "libcreg_libfdata.h"
 
 #if defined( __cplusplus )
@@ -87,7 +86,7 @@ int libcreg_io_handle_read_key_hierarchy_entry(
      intptr_t *data_handle,
      libbfio_handle_t *file_io_handle,
      libfdata_area_t *area,
-     libfcache_cache_t *cache,
+     libfdata_cache_t *cache,
      off64_t element_value_offset,
      int element_data_file_index,
      off64_t element_data_offset,

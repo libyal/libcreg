@@ -979,8 +979,8 @@ int libcreg_file_open_read(
 			     (intptr_t *) internal_file->key_navigation,
 			     NULL,
 			     NULL,
-			     (int (*)(intptr_t *, intptr_t *, libfdata_tree_node_t *, libfcache_cache_t *, int, off64_t, size64_t, uint32_t, uint8_t, libcerror_error_t **)) &libcreg_key_item_read_node_data,
-			     (int (*)(intptr_t *, intptr_t *, libfdata_tree_node_t *, libfcache_cache_t *, int, off64_t, size64_t, uint32_t, uint8_t, libcerror_error_t **)) &libcreg_key_item_read_sub_nodes,
+			     (int (*)(intptr_t *, intptr_t *, libfdata_tree_node_t *, libfdata_cache_t *, int, off64_t, size64_t, uint32_t, uint8_t, libcerror_error_t **)) &libcreg_key_item_read_node_data,
+			     (int (*)(intptr_t *, intptr_t *, libfdata_tree_node_t *, libfdata_cache_t *, int, off64_t, size64_t, uint32_t, uint8_t, libcerror_error_t **)) &libcreg_key_item_read_sub_nodes,
 			     LIBFDATA_DATA_HANDLE_FLAG_NON_MANAGED,
 			     error ) != 1 )
 			{
@@ -1525,7 +1525,7 @@ int libcreg_file_get_key_by_utf8_path(
 	if( libfdata_tree_node_get_node_value(
 	     key_tree_node,
 	     (intptr_t *) internal_file->file_io_handle,
-	     internal_file->key_cache,
+	     (libfdata_cache_t *) internal_file->key_cache,
 	     (intptr_t **) &key_name_entry,
 	     0,
 	     error ) != 1 )
@@ -1767,7 +1767,7 @@ int libcreg_file_get_key_by_utf16_path(
 	if( libfdata_tree_node_get_node_value(
 	     key_tree_node,
 	     (intptr_t *) internal_file->file_io_handle,
-	     internal_file->key_cache,
+	     (libfdata_cache_t *) internal_file->key_cache,
 	     (intptr_t **) &key_name_entry,
 	     0,
 	     error ) != 1 )

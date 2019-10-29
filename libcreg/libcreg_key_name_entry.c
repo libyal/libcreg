@@ -28,6 +28,7 @@
 #include <wctype.h>
 #endif
 
+#include "libcreg_debug.h"
 #include "libcreg_key_name_entry.h"
 #include "libcreg_libcdata.h"
 #include "libcreg_libcerror.h"

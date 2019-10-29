@@ -440,7 +440,7 @@ int libcreg_key_navigation_read(
 	     NULL,
 	     NULL,
 	     NULL,
-	     (int (*)(intptr_t *, intptr_t *, libfdata_area_t *, libfcache_cache_t *, off64_t, int, off64_t, size64_t, uint32_t, uint8_t, libcerror_error_t **)) &libcreg_io_handle_read_key_hierarchy_entry,
+	     (int (*)(intptr_t *, intptr_t *, libfdata_area_t *, libfdata_cache_t *, off64_t, int, off64_t, size64_t, uint32_t, uint8_t, libcerror_error_t **)) &libcreg_io_handle_read_key_hierarchy_entry,
 	     NULL,
 	     LIBFDATA_DATA_HANDLE_FLAG_NON_MANAGED,
 	     error ) != 1 )
@@ -579,7 +579,7 @@ int libcreg_key_navigation_read_data_blocks(
 	     (intptr_t *) key_navigation->io_handle,
 	     NULL,
 	     NULL,
-	     (int (*)(intptr_t *, intptr_t *, libfdata_list_element_t *, libfcache_cache_t *, int, off64_t, size64_t, uint32_t, uint8_t, libcerror_error_t **)) &libcreg_key_navigation_read_data_block_element_data,
+	     (int (*)(intptr_t *, intptr_t *, libfdata_list_element_t *, libfdata_cache_t *, int, off64_t, size64_t, uint32_t, uint8_t, libcerror_error_t **)) &libcreg_key_navigation_read_data_block_element_data,
 	     NULL,
 	     0,
 	     error ) != 1 )
@@ -791,7 +791,7 @@ int libcreg_key_navigation_get_key_hierarchy_entry_at_offset(
 	if( libfdata_area_get_element_value_at_offset(
 	     key_navigation->key_hierarchy_area,
 	     (intptr_t *) file_io_handle,
-	     key_navigation->key_hierarchy_cache,
+	     (libfdata_cache_t *) key_navigation->key_hierarchy_cache,
 	     key_hierarchy_entry_offset,
 	     (intptr_t **) key_hierarchy_entry,
 	     0,
@@ -874,7 +874,7 @@ int libcreg_key_navigation_get_data_block_at_index(
 	if( libfdata_list_get_element_value_by_index(
 	     key_navigation->data_blocks_list,
 	     (intptr_t *) file_io_handle,
-	     key_navigation->data_blocks_cache,
+	     (libfdata_cache_t *) key_navigation->data_blocks_cache,
 	     data_block_index,
 	     (intptr_t **) data_block,
 	     0,
@@ -901,7 +901,7 @@ int libcreg_key_navigation_read_data_block_element_data(
      libcreg_io_handle_t *io_handle,
      libbfio_handle_t *file_io_handle,
      libfdata_list_element_t *list_element,
-     libfcache_cache_t *cache,
+     libfdata_cache_t *cache,
      int data_range_file_index LIBCREG_ATTRIBUTE_UNUSED,
      off64_t data_range_offset,
      size64_t data_range_size,

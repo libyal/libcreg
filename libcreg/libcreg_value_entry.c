@@ -29,6 +29,7 @@
 #endif
 
 #include "libcreg_data_type.h"
+#include "libcreg_debug.h"
 #include "libcreg_libcerror.h"
 #include "libcreg_libcnotify.h"
 #include "libcreg_libuna.h"
