@@ -352,13 +352,13 @@ int libcreg_key_name_entry_read_data(
 
 		goto on_error;
 	}
-	if( data_size < key_name_entry->size )
+	if( (size_t) key_name_entry->size > data_size )
 	{
 		libcerror_error_set(
 		 error,
-		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
-		 LIBCERROR_ARGUMENT_ERROR_VALUE_TOO_SMALL,
-		 "%s: invalid data size value too small.",
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
+		 "%s: invalid entry data size value out of bounds.",
 		 function );
 
 		goto on_error;
@@ -407,22 +407,22 @@ int libcreg_key_name_entry_read_data(
 		 ( (creg_key_name_entry_t *) data )->unknown1,
 		 value_16bit );
 		libcnotify_printf(
-		 "%s: unknown1\t\t\t\t\t: 0x%04" PRIx16 "\n",
+		 "%s: unknown1\t\t\t\t: 0x%04" PRIx16 "\n",
 		 function,
 		 value_16bit );
 
 		libcnotify_printf(
-		 "%s: used size\t\t\t\t\t: %" PRIu32 "\n",
+		 "%s: used size\t\t\t\t: %" PRIu32 "\n",
 		 function,
 		 used_size );
 
 		libcnotify_printf(
-		 "%s: name size\t\t\t\t\t: %" PRIu16 "\n",
+		 "%s: name size\t\t\t\t: %" PRIu16 "\n",
 		 function,
 		 key_name_entry->name_size );
 
 		libcnotify_printf(
-		 "%s: number of values\t\t\t\t: %" PRIu16 "\n",
+		 "%s: number of values\t\t\t: %" PRIu16 "\n",
 		 function,
 		 number_of_values );
 
@@ -430,11 +430,12 @@ int libcreg_key_name_entry_read_data(
 		 ( (creg_key_name_entry_t *) data )->unknown2,
 		 value_32bit );
 		libcnotify_printf(
-		 "%s: unknown2\t\t\t\t\t: 0x%08" PRIx32 "\n",
+		 "%s: unknown2\t\t\t\t: 0x%08" PRIx32 "\n",
 		 function,
 		 value_32bit );
 	}
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
 #if SIZEOF_SIZE_T <= 4
 	if( ( used_size < sizeof( creg_key_name_entry_t ) )
 	 || ( used_size > (size_t) SSIZE_MAX ) )
@@ -448,17 +449,6 @@ int libcreg_key_name_entry_read_data(
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 		 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
 		 "%s: invalid used size value out of bounds.",
-		 function );
-
-		goto on_error;
-	}
-	if( data_size < used_size )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
-		 LIBCERROR_ARGUMENT_ERROR_VALUE_TOO_SMALL,
-		 "%s: invalid data size value too small.",
 		 function );
 
 		goto on_error;
@@ -529,12 +519,21 @@ int libcreg_key_name_entry_read_data(
 				goto on_error;
 			}
 		}
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
 		data_offset += key_name_entry->name_size;
 	}
 #if defined( HAVE_DEBUG_OUTPUT )
 	if( libcnotify_verbose != 0 )
 	{
+		if( used_size > data_size )
+		{
+			libcnotify_printf(
+			 "%s: invalid used size value out of bounds.",
+			 function );
+
+			used_size = (uint32_t) data_size;
+		}
 		value_entries_data_size = (size_t) used_size - data_offset;
 
 		libcnotify_printf(

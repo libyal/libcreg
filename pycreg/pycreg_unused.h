@@ -1,5 +1,5 @@
 /*
- * The internal unused definition
+ * Definitions to silence compiler warnings about unused function attributes/parameters.
  *
  * Copyright (C) 2013-2020, Joachim Metz <joachim.metz@gmail.com>
  *
@@ -19,8 +19,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#if !defined( _PYCREG_INTERNAL_UNUSED_H )
-#define _PYCREG_INTERNAL_UNUSED_H
+#if !defined( _PYCREG_UNUSED_H )
+#define _PYCREG_UNUSED_H
 
 #include <common.h>
 
@@ -40,5 +40,5 @@
 	/* parameter */
 #endif
 
-#endif /* !defined( _PYCREG_INTERNAL_UNUSED_H ) */
+#endif /* !defined( _PYCREG_UNUSED_H ) */
 

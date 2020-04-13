@@ -33,6 +33,7 @@
 #include "pycreg_file_object_io_handle.h"
 #include "pycreg_key.h"
 #include "pycreg_keys.h"
+#include "pycreg_libbfio.h"
 #include "pycreg_libcerror.h"
 #include "pycreg_libcreg.h"
 #include "pycreg_python.h"
@@ -89,10 +90,7 @@ PyMethodDef pycreg_module_methods[] = {
 	  "Opens a file using a file-like object." },
 
 	/* Sentinel */
-	{ NULL,
-	  NULL,
-	  0,
-	  NULL}
+	{ NULL, NULL, 0, NULL }
 };
 
 /* Retrieves the pycreg/libcreg version
@@ -159,7 +157,7 @@ PyObject *pycreg_check_file_signature(
 	if( PyArg_ParseTupleAndKeywords(
 	     arguments,
 	     keywords,
-	     "|O",
+	     "O|",
 	     keyword_list,
 	     &string_object ) == 0 )
 	{
@@ -175,7 +173,7 @@ PyObject *pycreg_check_file_signature(
 	{
 		pycreg_error_fetch_and_raise(
 	         PyExc_RuntimeError,
-		 "%s: unable to determine if string object is of type unicode.",
+		 "%s: unable to determine if string object is of type Unicode.",
 		 function );
 
 		return( NULL );
@@ -202,7 +200,7 @@ PyObject *pycreg_check_file_signature(
 		{
 			pycreg_error_fetch_and_raise(
 			 PyExc_RuntimeError,
-			 "%s: unable to convert unicode string to UTF-8.",
+			 "%s: unable to convert Unicode string to UTF-8.",
 			 function );
 
 			return( NULL );
@@ -225,7 +223,7 @@ PyObject *pycreg_check_file_signature(
 		Py_DecRef(
 		 utf8_string_object );
 
-#endif /* #if defined( HAVE_WIDE_SYSTEM_CHARACTER ) */
+#endif /* defined( HAVE_WIDE_SYSTEM_CHARACTER ) */
 
 		if( result == -1 )
 		{
@@ -615,6 +613,11 @@ PyMODINIT_FUNC initpycreg(
 	 */
 	pycreg_value_types_type_object.tp_new = PyType_GenericNew;
 
+	if( pycreg_value_types_init_type(
+	     &pycreg_value_types_type_object ) != 1 )
+	{
+		goto on_error;
+	}
 	if( PyType_Ready(
 	     &pycreg_value_types_type_object ) < 0 )
 	{

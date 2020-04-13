@@ -184,6 +184,8 @@ int libcreg_io_handle_clear(
 
 		return( -1 );
 	}
+	io_handle->ascii_codepage = LIBCREG_CODEPAGE_WINDOWS_1252;
+
 	return( 1 );
 }
 

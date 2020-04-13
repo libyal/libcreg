@@ -675,8 +675,8 @@ int libcreg_key_navigation_read_data_blocks(
 			     data_block,
 			     file_io_handle,
 			     (int (*)(const uint8_t *, size_t, size_t *, libcerror_error_t **)) &libcreg_key_name_entry_read_entry_size,
-			     1,
 			     key_navigation->io_handle->ascii_codepage,
+			     1,
 			     error ) != 1 )
 			{
 				libcerror_error_set(
@@ -997,8 +997,8 @@ int libcreg_key_navigation_read_data_block_element_data(
 	     data_block,
 	     file_io_handle,
 	     (int (*)(const uint8_t *, size_t, size_t *, libcerror_error_t **)) &libcreg_key_name_entry_read_entry_size,
-	     0,
 	     io_handle->ascii_codepage,
+	     0,
 	     error ) != 1 )
 	{
 		libcerror_error_set(

@@ -270,7 +270,7 @@ int libcreg_value_entry_read_data(
 	if( libcnotify_verbose != 0 )
 	{
 		libcnotify_printf(
-		 "%s: data type\t\t\t\t\t: 0x%08" PRIx32 " (%s) %s\n",
+		 "%s: data type\t\t\t\t: 0x%08" PRIx32 " (%s) %s\n",
 		 function,
 		 value_entry->type,
 		 libcreg_data_type_get_identifier(
@@ -287,16 +287,17 @@ int libcreg_value_entry_read_data(
 		 value_32bit );
 
 		libcnotify_printf(
-		 "%s: name size\t\t\t\t\t: %" PRIu16 "\n",
+		 "%s: name size\t\t\t\t: %" PRIu16 "\n",
 		 function,
 		 value_entry->name_size );
 
 		libcnotify_printf(
-		 "%s: data size\t\t\t\t\t: %" PRIu16 "\n",
+		 "%s: data size\t\t\t\t: %" PRIu16 "\n",
 		 function,
 		 value_entry->data_size );
 	}
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
 	value_data_offset = sizeof( creg_value_entry_t );
 
 	if( value_entry->name_size > 0 )
@@ -347,7 +348,7 @@ int libcreg_value_entry_read_data(
 		{
 			if( libcreg_debug_print_string_value(
 			     function,
-			     "name\t\t\t\t\t\t",
+			     "name\t\t\t\t\t",
 			     &( data[ value_data_offset ] ),
 			     (size_t) value_entry->name_size,
 			     ascii_codepage,

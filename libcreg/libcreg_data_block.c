@@ -570,7 +570,8 @@ int libcreg_data_block_read_entries(
 				goto on_error;
 			}
 		}
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
 		data_block_entry_offset += (size_t) data_block_entry->size;
 
 		if( libcdata_array_append_entry(

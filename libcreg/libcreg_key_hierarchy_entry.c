@@ -249,7 +249,7 @@ int libcreg_key_hierarchy_entry_read_data(
 		 value_32bit );
 
 		libcnotify_printf(
-		 "%s: name hash\t\t\t\t: 0x%08" PRIx32 "\n",
+		 "%s: name hash\t\t\t: 0x%08" PRIx32 "\n",
 		 function,
 		 key_hierarchy_entry->name_hash );
 
@@ -262,7 +262,7 @@ int libcreg_key_hierarchy_entry_read_data(
 		 value_32bit );
 
 		libcnotify_printf(
-		 "%s: parent key offset\t\t\t: 0x%08" PRIx32 "\n",
+		 "%s: parent key offset\t\t: 0x%08" PRIx32 "\n",
 		 function,
 		 key_hierarchy_entry->parent_key_offset );
 
@@ -277,19 +277,20 @@ int libcreg_key_hierarchy_entry_read_data(
 		 key_hierarchy_entry->next_key_offset );
 
 		libcnotify_printf(
-		 "%s: key name entry number\t\t\t: %" PRIi16 "\n",
+		 "%s: key name entry number\t\t: %" PRIi16 "\n",
 		 function,
 		 (int16_t) key_hierarchy_entry->key_name_entry_number );
 
 		libcnotify_printf(
-		 "%s: data block number\t\t\t: %" PRIi16 "\n",
+		 "%s: data block number\t\t: %" PRIi16 "\n",
 		 function,
 		 (int16_t) key_hierarchy_entry->data_block_number );
 
 		libcnotify_printf(
 		 "\n" );
 	}
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
 	return( 1 );
 }
 
