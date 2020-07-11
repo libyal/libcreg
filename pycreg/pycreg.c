@@ -430,19 +430,47 @@ PyObject *pycreg_open_new_file(
            PyObject *arguments,
            PyObject *keywords )
 {
-	PyObject *pycreg_file = NULL;
+	pycreg_file_t *pycreg_file = NULL;
+	static char *function      = "pycreg_open_new_file";
 
 	PYCREG_UNREFERENCED_PARAMETER( self )
 
-	pycreg_file_init(
-	 (pycreg_file_t *) pycreg_file );
+	/* PyObject_New does not invoke tp_init
+	 */
+	pycreg_file = PyObject_New(
+	               struct pycreg_file,
+	               &pycreg_file_type_object );
 
-	pycreg_file_open(
-	 (pycreg_file_t *) pycreg_file,
-	 arguments,
-	 keywords );
+	if( pycreg_file == NULL )
+	{
+		PyErr_Format(
+		 PyExc_MemoryError,
+		 "%s: unable to create file.",
+		 function );
 
-	return( pycreg_file );
+		goto on_error;
+	}
+	if( pycreg_file_init(
+	     pycreg_file ) != 0 )
+	{
+		goto on_error;
+	}
+	if( pycreg_file_open(
+	     pycreg_file,
+	     arguments,
+	     keywords ) == NULL )
+	{
+		goto on_error;
+	}
+	return( (PyObject *) pycreg_file );
+
+on_error:
+	if( pycreg_file != NULL )
+	{
+		Py_DecRef(
+		 (PyObject *) pycreg_file );
+	}
+	return( NULL );
 }
 
 /* Creates a new file object and opens it using a file-like object
@@ -453,19 +481,47 @@ PyObject *pycreg_open_new_file_with_file_object(
            PyObject *arguments,
            PyObject *keywords )
 {
-	PyObject *pycreg_file = NULL;
+	pycreg_file_t *pycreg_file = NULL;
+	static char *function      = "pycreg_open_new_file_with_file_object";
 
 	PYCREG_UNREFERENCED_PARAMETER( self )
 
-	pycreg_file_init(
-	 (pycreg_file_t *) pycreg_file );
+	/* PyObject_New does not invoke tp_init
+	 */
+	pycreg_file = PyObject_New(
+	               struct pycreg_file,
+	               &pycreg_file_type_object );
 
-	pycreg_file_open_file_object(
-	 (pycreg_file_t *) pycreg_file,
-	 arguments,
-	 keywords );
+	if( pycreg_file == NULL )
+	{
+		PyErr_Format(
+		 PyExc_MemoryError,
+		 "%s: unable to create file.",
+		 function );
 
-	return( pycreg_file );
+		goto on_error;
+	}
+	if( pycreg_file_init(
+	     pycreg_file ) != 0 )
+	{
+		goto on_error;
+	}
+	if( pycreg_file_open_file_object(
+	     pycreg_file,
+	     arguments,
+	     keywords ) == NULL )
+	{
+		goto on_error;
+	}
+	return( (PyObject *) pycreg_file );
+
+on_error:
+	if( pycreg_file != NULL )
+	{
+		Py_DecRef(
+		 (PyObject *) pycreg_file );
+	}
+	return( NULL );
 }
 
 #if PY_MAJOR_VERSION >= 3

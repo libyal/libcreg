@@ -364,7 +364,8 @@ int libcreg_value_entry_read_data(
 				goto on_error;
 			}
 		}
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
 		value_data_offset += value_entry->name_size;
 	}
 	if( value_entry->data_size > 0 )

@@ -405,17 +405,14 @@ int libcreg_data_block_read_entries(
 
 		return( -1 );
 	}
-#if SIZEOF_SIZE_T <= 4
-	if( data_block->size > (size_t) SSIZE_MAX )
-#else
-	if( data_block->size > (uint32_t) SSIZE_MAX )
-#endif
+	if( ( data_block->size == 0 )
+	 || ( data_block->size > (uint32_t) MEMORY_MAXIMUM_ALLOCATION_SIZE ) )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_VALUE_EXCEEDS_MAXIMUM,
-		 "%s: invalid data block - size value exceeds maximum.",
+		 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
+		 "%s: invalid data block - size value out of bounds.",
 		 function );
 
 		return( -1 );

@@ -105,21 +105,21 @@ PyMethodDef pycreg_file_object_methods[] = {
 	{ "get_format_version",
 	  (PyCFunction) pycreg_file_get_format_version,
 	  METH_NOARGS,
-	  "get_format_version() -> Unicode string or None\n"
+	  "get_format_version() -> Unicode string\n"
 	  "\n"
 	  "Retrieves the format version." },
 
 	{ "get_type",
 	  (PyCFunction) pycreg_file_get_type,
 	  METH_NOARGS,
-	  "get_type() -> Integer or None\n"
+	  "get_type() -> Integer\n"
 	  "\n"
 	  "Retrieves the type." },
 
 	{ "get_root_key",
 	  (PyCFunction) pycreg_file_get_root_key,
 	  METH_NOARGS,
-	  "get_root_key() -> Object or None\n"
+	  "get_root_key() -> Object\n"
 	  "\n"
 	  "Retrieves the root key." },
 
@@ -283,6 +283,8 @@ int pycreg_file_init(
 
 		return( -1 );
 	}
+	/* Make sure libcreg file is set to NULL
+	 */
 	pycreg_file->file           = NULL;
 	pycreg_file->file_io_handle = NULL;
 
@@ -323,15 +325,6 @@ void pycreg_file_free(
 
 		return;
 	}
-	if( pycreg_file->file == NULL )
-	{
-		PyErr_Format(
-		 PyExc_ValueError,
-		 "%s: invalid file - missing libcreg file.",
-		 function );
-
-		return;
-	}
 	ob_type = Py_TYPE(
 	           pycreg_file );
 
@@ -353,24 +346,27 @@ void pycreg_file_free(
 
 		return;
 	}
-	Py_BEGIN_ALLOW_THREADS
-
-	result = libcreg_file_free(
-	          &( pycreg_file->file ),
-	          &error );
-
-	Py_END_ALLOW_THREADS
-
-	if( result != 1 )
+	if( pycreg_file->file != NULL )
 	{
-		pycreg_error_raise(
-		 error,
-		 PyExc_MemoryError,
-		 "%s: unable to free libcreg file.",
-		 function );
+		Py_BEGIN_ALLOW_THREADS
 
-		libcerror_error_free(
-		 &error );
+		result = libcreg_file_free(
+		          &( pycreg_file->file ),
+		          &error );
+
+		Py_END_ALLOW_THREADS
+
+		if( result != 1 )
+		{
+			pycreg_error_raise(
+			 error,
+			 PyExc_MemoryError,
+			 "%s: unable to free libcreg file.",
+			 function );
+
+			libcerror_error_free(
+			 &error );
+		}
 	}
 	ob_type->tp_free(
 	 (PyObject*) pycreg_file );
@@ -492,7 +488,7 @@ PyObject *pycreg_file_open(
 	{
 		pycreg_error_fetch_and_raise(
 		 PyExc_RuntimeError,
-		 "%s: unable to determine if string object is of type unicode.",
+		 "%s: unable to determine if string object is of type Unicode.",
 		 function );
 
 		return( NULL );
@@ -521,7 +517,7 @@ PyObject *pycreg_file_open(
 		{
 			pycreg_error_fetch_and_raise(
 			 PyExc_RuntimeError,
-			 "%s: unable to convert unicode string to UTF-8.",
+			 "%s: unable to convert Unicode string to UTF-8.",
 			 function );
 
 			return( NULL );
@@ -676,6 +672,36 @@ PyObject *pycreg_file_open_file_object(
 
 		return( NULL );
 	}
+	PyErr_Clear();
+
+	result = PyObject_HasAttrString(
+	          file_object,
+	          "read" );
+
+	if( result != 1 )
+	{
+		PyErr_Format(
+		 PyExc_TypeError,
+		 "%s: unsupported file object - missing read attribute.",
+		 function );
+
+		return( NULL );
+	}
+	PyErr_Clear();
+
+	result = PyObject_HasAttrString(
+	          file_object,
+	          "seek" );
+
+	if( result != 1 )
+	{
+		PyErr_Format(
+		 PyExc_TypeError,
+		 "%s: unsupported file object - missing seek attribute.",
+		 function );
+
+		return( NULL );
+	}
 	if( pycreg_file->file_io_handle != NULL )
 	{
 		pycreg_error_raise(
@@ -797,7 +823,7 @@ PyObject *pycreg_file_close(
 		{
 			pycreg_error_raise(
 			 error,
-			 PyExc_IOError,
+			 PyExc_MemoryError,
 			 "%s: unable to free libbfio file IO handle.",
 			 function );
 
@@ -1088,7 +1114,7 @@ int pycreg_file_set_ascii_codepage_setter(
 	{
 		pycreg_error_fetch_and_raise(
 		 PyExc_RuntimeError,
-		 "%s: unable to determine if string object is of type unicode.",
+		 "%s: unable to determine if string object is of type Unicode.",
 		 function );
 
 		return( -1 );
@@ -1104,7 +1130,7 @@ int pycreg_file_set_ascii_codepage_setter(
 		{
 			pycreg_error_fetch_and_raise(
 			 PyExc_RuntimeError,
-			 "%s: unable to convert unicode string to UTF-8.",
+			 "%s: unable to convert Unicode string to UTF-8.",
 			 function );
 
 			return( -1 );
@@ -1256,7 +1282,7 @@ PyObject *pycreg_file_get_format_version(
 	utf8_string[ 3 ] = 0;
 
 	/* Pass the string length to PyUnicode_DecodeUTF8 otherwise it makes
-	 * the end of string character is part of the string
+	 * the end of string character is part of the string.
 	 */
 	string_object = PyUnicode_DecodeUTF8(
 	                 utf8_string,
@@ -1308,7 +1334,7 @@ PyObject *pycreg_file_get_type(
 
 	Py_END_ALLOW_THREADS
 
-	if( result == -1 )
+	if( result != 1 )
 	{
 		pycreg_error_raise(
 		 error,
@@ -1320,13 +1346,6 @@ PyObject *pycreg_file_get_type(
 		 &error );
 
 		return( NULL );
-	}
-	else if( result == 0 )
-	{
-		Py_IncRef(
-		 Py_None );
-
-		return( Py_None );
 	}
 	integer_object = PyLong_FromUnsignedLong(
 	                  (unsigned long) value_32bit );
@@ -1395,7 +1414,7 @@ PyObject *pycreg_file_get_root_key(
 	{
 		PyErr_Format(
 		 PyExc_MemoryError,
-		 "%s: unable to create key object.",
+		 "%s: unable to create root key object.",
 		 function );
 
 		goto on_error;
