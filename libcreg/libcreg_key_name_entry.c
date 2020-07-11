@@ -375,6 +375,10 @@ int libcreg_key_name_entry_read_data(
 		 LIBCNOTIFY_PRINT_DATA_FLAG_GROUP_DATA );
 	}
 #endif
+	byte_stream_copy_to_uint16_little_endian(
+	 ( (creg_key_name_entry_t *) data )->index,
+	 key_name_entry->index );
+
 	byte_stream_copy_to_uint32_little_endian(
 	 ( (creg_key_name_entry_t *) data )->used_size,
 	 used_size );
@@ -395,13 +399,10 @@ int libcreg_key_name_entry_read_data(
 		 function,
 		 key_name_entry->size );
 
-		byte_stream_copy_to_uint16_little_endian(
-		 ( (creg_key_name_entry_t *) data )->index,
-		 value_16bit );
 		libcnotify_printf(
 		 "%s: index\t\t\t\t\t: %" PRIu16 "\n",
 		 function,
-		 value_16bit );
+		 key_name_entry->index );
 
 		byte_stream_copy_to_uint16_little_endian(
 		 ( (creg_key_name_entry_t *) data )->unknown1,

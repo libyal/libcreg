@@ -141,7 +141,7 @@ int libcreg_key_hierarchy_entry_read_data(
      libcreg_key_hierarchy_entry_t *key_hierarchy_entry,
      const uint8_t *data,
      size_t data_size,
-     size_t data_offset LIBCREG_ATTRIBUTE_UNUSED,
+     size_t data_offset,
      libcerror_error_t **error )
 {
 	static char *function = "libcreg_key_hierarchy_entry_read_data";
@@ -290,6 +290,8 @@ int libcreg_key_hierarchy_entry_read_data(
 		 "\n" );
 	}
 #endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
+	key_hierarchy_entry->data_offset = data_offset;
 
 	return( 1 );
 }

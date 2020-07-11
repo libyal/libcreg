@@ -139,9 +139,33 @@ int libcreg_key_item_read_node_data(
 
 			goto on_error;
 		}
-		if( libcreg_data_block_get_entry_by_index(
+
+#if defined( HAVE_DEBUG_OUTPUT )
+		if( libcnotify_verbose != 0 )
+		{
+			libcnotify_printf(
+			 "%s: offset\t\t\t\t\t: 0x%08" PRIzx "\n",
+			 function,
+			 key_hierarchy_entry->data_offset );
+
+			libcnotify_printf(
+			 "%s: key name entry number\t\t\t: %" PRIi16 "\n",
+			 function,
+			 (int16_t) key_hierarchy_entry->key_name_entry_number );
+
+			libcnotify_printf(
+			 "%s: data block number\t\t\t: %" PRIi16 "\n",
+			 function,
+			 (int16_t) key_hierarchy_entry->data_block_number );
+
+			libcnotify_printf(
+			 "\n" );
+		}
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
+		if( libcreg_data_block_get_entry_by_identifier(
 		     data_block,
-		     (int) key_hierarchy_entry->key_name_entry_number,
+		     key_hierarchy_entry->key_name_entry_number,
 		     &key_name_entry,
 		     key_navigation->io_handle->ascii_codepage,
 		     error ) != 1 )

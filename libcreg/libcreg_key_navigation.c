@@ -227,7 +227,6 @@ int libcreg_key_navigation_read(
 	static char *function                      = "libcreg_key_navigation_read";
 	ssize_t read_count                         = 0;
 	uint32_t data_size                         = 0;
-	uint32_t key_hierarchy_entries_data_size   = 0;
 	uint32_t key_hierarchy_entries_data_offset = 0;
 	int entry_index                            = 0;
 
@@ -322,10 +321,6 @@ int libcreg_key_navigation_read(
 	 key_navigation_header.key_hierarchy_entries_data_offset,
 	 key_hierarchy_entries_data_offset );
 
-	byte_stream_copy_to_uint32_little_endian(
-	 key_navigation_header.key_hierarchy_entries_data_size,
-	 key_hierarchy_entries_data_size );
-
 #if defined( HAVE_DEBUG_OUTPUT )
 	if( libcnotify_verbose != 0 )
 	{
@@ -347,10 +342,13 @@ int libcreg_key_navigation_read(
 		 function,
 		 key_hierarchy_entries_data_offset );
 
+		byte_stream_copy_to_uint32_little_endian(
+		 key_navigation_header.unknown2,
+		 value_32bit );
 		libcnotify_printf(
-		 "%s: key hierarchy entries data size\t\t: %" PRIu32 "\n",
+		 "%s: unknown2\t\t\t\t\t: 0x%08" PRIx32 "\n",
 		 function,
-		 key_hierarchy_entries_data_size );
+		 value_32bit );
 
 		byte_stream_copy_to_uint32_little_endian(
 		 key_navigation_header.unknown3,
@@ -405,34 +403,6 @@ int libcreg_key_navigation_read(
 	}
 	data_size -= sizeof( creg_key_navigation_header_t );
 
-#if SIZEOF_SIZE_T <= 4
-	if( key_hierarchy_entries_data_size > (size_t) ( SSIZE_MAX - sizeof( creg_key_hierarchy_entry_t ) ) )
-#else
-	if( key_hierarchy_entries_data_size > (uint32_t) ( SSIZE_MAX - sizeof( creg_key_hierarchy_entry_t ) ) )
-#endif
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_VALUE_EXCEEDS_MAXIMUM,
-		 "%s: invalid key hierarchy entries data size value exceeds maximum.",
-		 function );
-
-		goto on_error;
-	}
-	key_hierarchy_entries_data_size += sizeof( creg_key_hierarchy_entry_t );
-
-	if( key_hierarchy_entries_data_size > data_size )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
-		 "%s: invalid key hierarhcy entries data size value out of bounds.",
-		 function );
-
-		goto on_error;
-	}
 /* TODO clone function ? */
 	if( libfdata_area_initialize(
 	     &( key_navigation->key_hierarchy_area ),
@@ -459,7 +429,7 @@ int libcreg_key_navigation_read(
 	     &entry_index,
 	     0,
 	     (off64_t) key_hierarchy_entries_data_offset,
-	     (size64_t) key_hierarchy_entries_data_size,
+	     (size64_t) data_size,
 	     0,
 	     error ) != 1 )
 	{
@@ -666,53 +636,64 @@ int libcreg_key_navigation_read_data_blocks(
 
 				goto on_error;
 			}
-			break;
 		}
-#if defined( HAVE_DEBUG_OUTPUT )
-		if( libcnotify_verbose != 0 )
+		else
 		{
-			if( libcreg_data_block_read_entries(
-			     data_block,
-			     file_io_handle,
-			     (int (*)(const uint8_t *, size_t, size_t *, libcerror_error_t **)) &libcreg_key_name_entry_read_entry_size,
-			     key_navigation->io_handle->ascii_codepage,
-			     1,
-			     error ) != 1 )
+			if( data_block->size == 0 )
 			{
 				libcerror_error_set(
 				 error,
 				 LIBCERROR_ERROR_DOMAIN_IO,
 				 LIBCERROR_IO_ERROR_READ_FAILED,
-				 "%s: unable to read data block entries.",
-				 function );
+				 "%s: invalid data block: %d size.",
+				 function,
+				 data_block_index );
 
 				goto on_error;
 			}
+#if defined( HAVE_DEBUG_OUTPUT )
+			if( libcnotify_verbose != 0 )
+			{
+				if( libcreg_data_block_read_entries(
+				     data_block,
+				     file_io_handle,
+				     (int (*)(const uint8_t *, size_t, size_t *, libcerror_error_t **)) &libcreg_key_name_entry_read_entry_size,
+				     key_navigation->io_handle->ascii_codepage,
+				     error ) != 1 )
+				{
+					libcerror_error_set(
+					 error,
+					 LIBCERROR_ERROR_DOMAIN_IO,
+					 LIBCERROR_IO_ERROR_READ_FAILED,
+					 "%s: unable to read data block entries.",
+					 function );
+
+					goto on_error;
+				}
+			}
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
+			if( libfdata_list_append_element(
+			     key_navigation->data_blocks_list,
+			     &data_block_index,
+			     0,
+			     (off64_t) data_block->offset,
+			     (size64_t) data_block->size,
+			     0,
+			     error ) != 1 )
+			{
+				libcerror_error_set(
+				 error,
+				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+				 LIBCERROR_RUNTIME_ERROR_APPEND_FAILED,
+				 "%s: unable to append data block: %d to data list.",
+				 function,
+				 data_block_index );
+
+				goto on_error;
+			}
+			file_offset += data_block->size;
 		}
-#endif
-		if( libfdata_list_append_element(
-		     key_navigation->data_blocks_list,
-		     &data_block_index,
-		     0,
-		     (off64_t) data_block->offset,
-		     (size64_t) data_block->size,
-		     0,
-		     error ) != 1 )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_APPEND_FAILED,
-			 "%s: unable to append data block: %d to data list.",
-			 function,
-			 data_block_index );
-
-			goto on_error;
-		}
-		file_offset += data_block->size;
-
-		data_block_index++;
-
 		if( libcreg_data_block_free(
 		     &data_block,
 		     error ) != 1 )
@@ -726,7 +707,11 @@ int libcreg_key_navigation_read_data_blocks(
 
 			goto on_error;
 		}
-		data_block = NULL;
+		if( result == 0 )
+		{
+			break;
+		}
+		data_block_index++;
 	}
 	if( libfcache_cache_initialize(
 	     &( key_navigation->data_blocks_cache ),
@@ -998,7 +983,6 @@ int libcreg_key_navigation_read_data_block_element_data(
 	     file_io_handle,
 	     (int (*)(const uint8_t *, size_t, size_t *, libcerror_error_t **)) &libcreg_key_name_entry_read_entry_size,
 	     io_handle->ascii_codepage,
-	     0,
 	     error ) != 1 )
 	{
 		libcerror_error_set(

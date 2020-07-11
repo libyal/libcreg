@@ -35,6 +35,10 @@ typedef struct libcreg_key_hierarchy_entry libcreg_key_hierarchy_entry_t;
 
 struct libcreg_key_hierarchy_entry
 {
+	/* The data offset
+	 */
+	size_t data_offset;
+
 	/* The name hash
 	 */
 	uint32_t name_hash;

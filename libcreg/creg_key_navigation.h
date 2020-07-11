@@ -50,10 +50,10 @@ struct creg_key_navigation_header
 	 */
 	uint8_t key_hierarchy_entries_data_offset[ 4 ];
 
-	/* The key hierarchy entries data size
+	/* Unknown
 	 * Consists of 4 bytes
 	 */
-	uint8_t key_hierarchy_entries_data_size[ 4 ];
+	uint8_t unknown2[ 4 ];
 
 	/* Unknown
 	 * Consists of 4 bytes

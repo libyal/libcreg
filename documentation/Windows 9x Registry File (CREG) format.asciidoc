@@ -51,8 +51,9 @@ in the section entitled "GNU Free Documentation License".
 | 0.0.2 | J.B. Metz | February 2013 | Updated license version and email address.
 | 0.0.3 | J.B. Metz | June 2013 | Minor changes.
 | 0.0.4 | J.B. Metz | November 2015 | Switched to asccidoc format.
-| 0.0.5 | J.B. Metz | January 2016 | Additional changes.
+| 0.0.5 | J.B. Metz | January 2016 | Additional information about format.
 | 0.0.6 | J.B. Metz | January 2020 | Formatting changes.
+| 0.0.7 | J.B. Metz | July 2020 | Additional information about format.
 |===
 
 :numbered:
@@ -151,12 +152,15 @@ The Registry Key Navigation record is 32 bytes of size and consists of:
 The Registry Key Navigation record including the 4 bytes of the signature and 4 bytes of the size itself
 | 8 | 4 | | Key hierarchy entries data offset +
 The offset is relative from the start of the Registry Key Navigation record
-| 12 | 4 | | Key hierarchy entries data size +
+| 12 | 4 | | [yellow-background]*Unknown (Key hierarchy entries data size?)* +
 The size does not contain the size of the root (first) key hierarcy entry
 | 16 | 4 | | [yellow-background]*Unknown*
 | 20 | 4 | | [yellow-background]*Unknown (Checksum?)*
 | 24 | 8 | | [yellow-background]*Unknown (empty values)*
 |===
+
+[NOTE]
+Windows 95 seems to use hierarchy entries data size where Windows 98 seems to no longer use this value.
 
 === Key hierarchy entry
 
@@ -265,6 +269,9 @@ Contains an ASCII string which is not terminated by an end-of-string character
 | ... | ... | | [yellow-background]*Unknown* +
 Can contain remnant data
 |===
+
+[NOTE]
+Windows 95 seems to use the used size where Windows 98 seems to no longer use this value.
 
 === Value entry
 

@@ -45,6 +45,10 @@ struct libcreg_key_name_entry
 	 */
 	uint32_t size;
 
+	/* The index
+	 */
+	uint16_t index;
+
 	/* The name hash
 	 */
 	uint32_t name_hash;
