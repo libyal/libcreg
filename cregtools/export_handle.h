@@ -26,9 +26,9 @@
 #include <file_stream.h>
 #include <types.h>
 
+#include "log_handle.h"
 #include "cregtools_libcerror.h"
 #include "cregtools_libcreg.h"
-#include "log_handle.h"
 
 #if defined( __cplusplus )
 extern "C" {

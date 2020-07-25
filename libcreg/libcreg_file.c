@@ -905,7 +905,7 @@ int libcreg_file_open_read(
 
 			goto on_error;
 		}
-		result = libcreg_key_navigation_read(
+		result = libcreg_key_navigation_read_file_io_handle(
 		          internal_file->key_navigation,
 		          file_io_handle,
 		          error );
@@ -1418,18 +1418,17 @@ int libcreg_file_get_key_by_utf8_path(
      libcreg_key_t **key,
      libcerror_error_t **error )
 {
-	libfdata_tree_node_t *key_tree_node            = NULL;
-	libfdata_tree_node_t *key_tree_sub_node        = NULL;
-	libcreg_internal_file_t *internal_file         = NULL;
-	libcreg_key_name_entry_t *key_name_entry       = NULL;
-	libcreg_key_name_entry_t *sub_key_name_entry   = NULL;
-	uint8_t *utf8_string_segment                   = NULL;
-	static char *function                          = "libcreg_file_get_key_by_utf8_path";
-	libuna_unicode_character_t unicode_character   = 0;
-	size_t utf8_string_index                       = 0;
-	size_t utf8_string_segment_length              = 0;
-	uint32_t name_hash                             = 0;
-	int result                                     = 0;
+	libcreg_internal_file_t *internal_file       = NULL;
+	libcreg_key_name_entry_t *sub_key_name_entry = NULL;
+	libfdata_tree_node_t *key_tree_node          = NULL;
+	libfdata_tree_node_t *key_tree_sub_node      = NULL;
+	uint8_t *utf8_string_segment                 = NULL;
+	static char *function                        = "libcreg_file_get_key_by_utf8_path";
+	libuna_unicode_character_t unicode_character = 0;
+	size_t utf8_string_index                     = 0;
+	size_t utf8_string_segment_length            = 0;
+	uint32_t name_hash                           = 0;
+	int result                                   = 0;
 
 	if( file == NULL )
 	{
@@ -1518,34 +1517,6 @@ int libcreg_file_get_key_by_utf8_path(
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
 		 "%s: unable to retrieve key tree root node.",
-		 function );
-
-		return( -1 );
-	}
-	if( libfdata_tree_node_get_node_value(
-	     key_tree_node,
-	     (intptr_t *) internal_file->file_io_handle,
-	     (libfdata_cache_t *) internal_file->key_cache,
-	     (intptr_t **) &key_name_entry,
-	     0,
-	     error ) != 1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to retrieve root key name entry.",
-		 function );
-
-		return( -1 );
-	}
-	if( key_name_entry == NULL )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_VALUE_MISSING,
-		 "%s: missing root key name entry.",
 		 function );
 
 		return( -1 );
@@ -1660,11 +1631,10 @@ int libcreg_file_get_key_by_utf16_path(
      libcreg_key_t **key,
      libcerror_error_t **error )
 {
+	libcreg_internal_file_t *internal_file       = NULL;
+	libcreg_key_name_entry_t *sub_key_name_entry = NULL;
 	libfdata_tree_node_t *key_tree_node          = NULL;
 	libfdata_tree_node_t *key_tree_sub_node      = NULL;
-	libcreg_internal_file_t *internal_file       = NULL;
-	libcreg_key_name_entry_t *key_name_entry     = NULL;
-	libcreg_key_name_entry_t *sub_key_name_entry = NULL;
 	uint16_t *utf16_string_segment               = NULL;
 	static char *function                        = "libcreg_file_get_key_by_utf16_path";
 	libuna_unicode_character_t unicode_character = 0;
@@ -1760,34 +1730,6 @@ int libcreg_file_get_key_by_utf16_path(
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
 		 "%s: unable to retrieve key tree root node.",
-		 function );
-
-		return( -1 );
-	}
-	if( libfdata_tree_node_get_node_value(
-	     key_tree_node,
-	     (intptr_t *) internal_file->file_io_handle,
-	     (libfdata_cache_t *) internal_file->key_cache,
-	     (intptr_t **) &key_name_entry,
-	     0,
-	     error ) != 1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to retrieve root key name entry.",
-		 function );
-
-		return( -1 );
-	}
-	if( key_name_entry == NULL )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_VALUE_MISSING,
-		 "%s: missing root key name entry.",
 		 function );
 
 		return( -1 );

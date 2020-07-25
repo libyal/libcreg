@@ -48,12 +48,14 @@ int libcreg_value_type_copy_to_64bit(
 int libcreg_value_type_get_utf8_string_size(
      uint8_t *value_data,
      size_t value_data_size,
+     int ascii_codepage,
      size_t *utf8_string_size,
      libcerror_error_t **error );
 
 int libcreg_value_type_copy_to_utf8_string(
      uint8_t *value_data,
      size_t value_data_size,
+     int ascii_codepage,
      uint8_t *utf8_string,
      size_t utf8_string_size,
      libcerror_error_t **error );
@@ -61,12 +63,14 @@ int libcreg_value_type_copy_to_utf8_string(
 int libcreg_value_type_get_utf16_string_size(
      uint8_t *value_data,
      size_t value_data_size,
+     int ascii_codepage,
      size_t *utf16_string_size,
      libcerror_error_t **error );
 
 int libcreg_value_type_copy_to_utf16_string(
      uint8_t *value_data,
      size_t value_data_size,
+     int ascii_codepage,
      uint16_t *utf16_string,
      size_t utf16_string_size,
      libcerror_error_t **error );

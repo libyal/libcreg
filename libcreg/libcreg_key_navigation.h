@@ -71,7 +71,7 @@ int libcreg_key_navigation_free(
      libcreg_key_navigation_t **key_navigation,
      libcerror_error_t **error );
 
-int libcreg_key_navigation_read(
+int libcreg_key_navigation_read_file_io_handle(
      libcreg_key_navigation_t *key_navigation,
      libbfio_handle_t *file_io_handle,
      libcerror_error_t **error );

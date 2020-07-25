@@ -217,14 +217,14 @@ int libcreg_key_navigation_free(
 /* Reads a key navigation record
  * Returns 1 if successful, 0 if no key navigation signature was found or -1 on error
  */
-int libcreg_key_navigation_read(
+int libcreg_key_navigation_read_file_io_handle(
      libcreg_key_navigation_t *key_navigation,
      libbfio_handle_t *file_io_handle,
      libcerror_error_t **error )
 {
 	creg_key_navigation_header_t key_navigation_header;
 
-	static char *function                      = "libcreg_key_navigation_read";
+	static char *function                      = "libcreg_key_navigation_read_file_io_handle";
 	ssize_t read_count                         = 0;
 	uint32_t data_size                         = 0;
 	uint32_t key_hierarchy_entries_data_offset = 0;

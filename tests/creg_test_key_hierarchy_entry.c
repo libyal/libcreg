@@ -113,6 +113,8 @@ int creg_test_key_hierarchy_entry_initialize(
 	          &key_hierarchy_entry,
 	          &error );
 
+	key_hierarchy_entry = NULL;
+
 	CREG_TEST_ASSERT_EQUAL_INT(
 	 "result",
 	 result,
@@ -124,8 +126,6 @@ int creg_test_key_hierarchy_entry_initialize(
 
 	libcerror_error_free(
 	 &error );
-
-	key_hierarchy_entry = NULL;
 
 #if defined( HAVE_CREG_TEST_MEMORY )
 

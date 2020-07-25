@@ -113,6 +113,8 @@ int creg_test_data_block_entry_initialize(
 	          &data_block_entry,
 	          &error );
 
+	data_block_entry = NULL;
+
 	CREG_TEST_ASSERT_EQUAL_INT(
 	 "result",
 	 result,
@@ -124,8 +126,6 @@ int creg_test_data_block_entry_initialize(
 
 	libcerror_error_free(
 	 &error );
-
-	data_block_entry = NULL;
 
 #if defined( HAVE_CREG_TEST_MEMORY )
 

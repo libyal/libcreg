@@ -2107,7 +2107,6 @@ int libcreg_key_get_sub_key_by_utf8_path(
 	libfdata_tree_node_t *key_tree_node          = NULL;
 	libfdata_tree_node_t *key_tree_sub_node      = NULL;
 	libcreg_internal_key_t *internal_key         = NULL;
-	libcreg_key_name_entry_t *key_name_entry     = NULL;
 	libcreg_key_name_entry_t *sub_key_name_entry = NULL;
 	uint8_t *utf8_string_segment                 = NULL;
 	static char *function                        = "libcreg_key_get_sub_key_by_utf8_path";
@@ -2196,34 +2195,6 @@ int libcreg_key_get_sub_key_by_utf8_path(
 	}
 	key_tree_node = internal_key->key_tree_node;
 
-	if( libfdata_tree_node_get_node_value(
-	     key_tree_node,
-	     (intptr_t *) internal_key->file_io_handle,
-	     (libfdata_cache_t *) internal_key->key_cache,
-	     (intptr_t **) &key_name_entry,
-	     0,
-	     error ) != 1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to retrieve key name entry.",
-		 function );
-
-		return( -1 );
-	}
-	if( key_name_entry == NULL )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_VALUE_MISSING,
-		 "%s: missing key name entry.",
-		 function );
-
-		return( -1 );
-	}
 	/* If the string is empty return the current key
 	 */
 	if( utf8_string_length == utf8_string_index )
@@ -2492,7 +2463,6 @@ int libcreg_key_get_sub_key_by_utf16_path(
 	libfdata_tree_node_t *key_tree_node          = NULL;
 	libfdata_tree_node_t *key_tree_sub_node      = NULL;
 	libcreg_internal_key_t *internal_key         = NULL;
-	libcreg_key_name_entry_t *key_name_entry     = NULL;
 	libcreg_key_name_entry_t *sub_key_name_entry = NULL;
 	uint16_t *utf16_string_segment               = NULL;
 	static char *function                        = "libcreg_key_get_sub_key_by_utf16_path";
@@ -2581,34 +2551,6 @@ int libcreg_key_get_sub_key_by_utf16_path(
 	}
 	key_tree_node = internal_key->key_tree_node;
 
-	if( libfdata_tree_node_get_node_value(
-	     key_tree_node,
-	     (intptr_t *) internal_key->file_io_handle,
-	     (libfdata_cache_t *) internal_key->key_cache,
-	     (intptr_t **) &key_name_entry,
-	     0,
-	     error ) != 1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to retrieve key name entry.",
-		 function );
-
-		return( -1 );
-	}
-	if( key_name_entry == NULL )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_VALUE_MISSING,
-		 "%s: missing key name entry.",
-		 function );
-
-		return( -1 );
-	}
 	/* If the string is empty return the current key
 	 */
 	if( utf16_string_length == utf16_string_index )

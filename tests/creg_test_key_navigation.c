@@ -33,6 +33,7 @@
 #include "creg_test_memory.h"
 #include "creg_test_unused.h"
 
+#include "../libcreg/libcreg_io_handle.h"
 #include "../libcreg/libcreg_key_navigation.h"
 
 #if defined( __GNUC__ ) && !defined( LIBCREG_DLL_IMPORT )
@@ -44,14 +45,34 @@ int creg_test_key_navigation_initialize(
      void )
 {
 	libcerror_error_t *error                 = NULL;
+	libcreg_io_handle_t *io_handle           = NULL;
 	libcreg_key_navigation_t *key_navigation = NULL;
 	int result                               = 0;
 
-	/* Test key_navigation initialization
+	/* Initialize test
+	 */
+	result = libcreg_io_handle_initialize(
+	          &io_handle,
+	          &error );
+
+	CREG_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	CREG_TEST_ASSERT_IS_NOT_NULL(
+	 "io_handle",
+	 io_handle );
+
+	CREG_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test regular cases
 	 */
 	result = libcreg_key_navigation_initialize(
 	          &key_navigation,
-	          NULL,
+	          io_handle,
 	          &error );
 
 	CREG_TEST_ASSERT_EQUAL_INT(
@@ -88,7 +109,7 @@ int creg_test_key_navigation_initialize(
 	 */
 	result = libcreg_key_navigation_initialize(
 	          NULL,
-	          NULL,
+	          io_handle,
 	          &error );
 
 	CREG_TEST_ASSERT_EQUAL_INT(
@@ -107,7 +128,7 @@ int creg_test_key_navigation_initialize(
 
 	result = libcreg_key_navigation_initialize(
 	          &key_navigation,
-	          NULL,
+	          io_handle,
 	          &error );
 
 	CREG_TEST_ASSERT_EQUAL_INT(
@@ -132,7 +153,7 @@ int creg_test_key_navigation_initialize(
 
 	result = libcreg_key_navigation_initialize(
 	          &key_navigation,
-	          NULL,
+	          io_handle,
 	          &error );
 
 	if( creg_test_malloc_attempts_before_fail != -1 )
@@ -170,7 +191,7 @@ int creg_test_key_navigation_initialize(
 
 	result = libcreg_key_navigation_initialize(
 	          &key_navigation,
-	          NULL,
+	          io_handle,
 	          &error );
 
 	if( creg_test_memset_attempts_before_fail != -1 )
@@ -204,6 +225,25 @@ int creg_test_key_navigation_initialize(
 	}
 #endif /* defined( HAVE_CREG_TEST_MEMORY ) */
 
+	/* Clean up
+	 */
+	result = libcreg_io_handle_free(
+	          &io_handle,
+	          &error );
+
+	CREG_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	CREG_TEST_ASSERT_IS_NULL(
+	 "io_handle",
+	 io_handle );
+
+	CREG_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
 	return( 1 );
 
 on_error:
@@ -216,6 +256,12 @@ on_error:
 	{
 		libcreg_key_navigation_free(
 		 &key_navigation,
+		 NULL );
+	}
+	if( io_handle != NULL )
+	{
+		libcreg_io_handle_free(
+		 &io_handle,
 		 NULL );
 	}
 	return( 0 );
@@ -259,6 +305,153 @@ on_error:
 	return( 0 );
 }
 
+/* Tests the libcreg_key_navigation_read_file_io_handle function
+ * Returns 1 if successful or 0 if not
+ */
+int creg_test_key_navigation_read_file_io_handle(
+     void )
+{
+	libcerror_error_t *error                 = NULL;
+	libcreg_io_handle_t *io_handle           = NULL;
+	libcreg_key_navigation_t *key_navigation = NULL;
+	int result                               = 0;
+
+	/* Initialize test
+	 */
+	result = libcreg_io_handle_initialize(
+	          &io_handle,
+	          &error );
+
+	CREG_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	CREG_TEST_ASSERT_IS_NOT_NULL(
+	 "io_handle",
+	 io_handle );
+
+	CREG_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	result = libcreg_key_navigation_initialize(
+	          &key_navigation,
+	          io_handle,
+	          &error );
+
+	CREG_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	CREG_TEST_ASSERT_IS_NOT_NULL(
+	 "key_navigation",
+	 key_navigation );
+
+	CREG_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test regular cases
+	 */
+/* TODO implement */
+
+	/* Test error cases
+	 */
+	result = libcreg_key_navigation_read_file_io_handle(
+	          NULL,
+	          NULL,
+	          &error );
+
+	CREG_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	CREG_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libcreg_key_navigation_read_file_io_handle(
+	          key_navigation,
+	          NULL,
+	          &error );
+
+	CREG_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	CREG_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	/* Clean up
+	 */
+	result = libcreg_key_navigation_free(
+	          &key_navigation,
+	          &error );
+
+	CREG_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	CREG_TEST_ASSERT_IS_NULL(
+	 "key_navigation",
+	 key_navigation );
+
+	CREG_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	result = libcreg_io_handle_free(
+	          &io_handle,
+	          &error );
+
+	CREG_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	CREG_TEST_ASSERT_IS_NULL(
+	 "io_handle",
+	 io_handle );
+
+	CREG_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	if( key_navigation != NULL )
+	{
+		libcreg_key_navigation_free(
+		 &key_navigation,
+		 NULL );
+	}
+	if( io_handle != NULL )
+	{
+		libcreg_io_handle_free(
+		 &io_handle,
+		 NULL );
+	}
+	return( 0 );
+}
+
 #endif /* defined( __GNUC__ ) && !defined( LIBCREG_DLL_IMPORT ) */
 
 /* The main program
@@ -273,6 +466,17 @@ int main(
      char * const argv[] CREG_TEST_ATTRIBUTE_UNUSED )
 #endif
 {
+#if defined( __GNUC__ ) && !defined( LIBCREG_DLL_IMPORT )
+#if !defined( __BORLANDC__ ) || ( __BORLANDC__ >= 0x0560 )
+
+	libcerror_error_t *error                 = NULL;
+	libcreg_io_handle_t *io_handle           = NULL;
+	libcreg_key_navigation_t *key_navigation = NULL;
+	int result                               = 0;
+
+#endif /* !defined( __BORLANDC__ ) || ( __BORLANDC__ >= 0x0560 ) */
+#endif /* defined( __GNUC__ ) && !defined( LIBCREG_DLL_IMPORT ) */
+
 	CREG_TEST_UNREFERENCED_PARAMETER( argc )
 	CREG_TEST_UNREFERENCED_PARAMETER( argv )
 
@@ -286,15 +490,96 @@ int main(
 	 "libcreg_key_navigation_free",
 	 creg_test_key_navigation_free );
 
-	/* TODO: add tests for libcreg_key_navigation_read */
+	CREG_TEST_RUN(
+	 "libcreg_key_navigation_read_file_io_handle",
+	 creg_test_key_navigation_read_file_io_handle );
 
 	/* TODO: add tests for libcreg_key_navigation_read_data_blocks */
+
+#if !defined( __BORLANDC__ ) || ( __BORLANDC__ >= 0x0560 )
+
+	/* Initialize test
+	 */
+	result = libcreg_io_handle_initialize(
+	          &io_handle,
+	          &error );
+
+	CREG_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	CREG_TEST_ASSERT_IS_NOT_NULL(
+	 "io_handle",
+	 io_handle );
+
+	CREG_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	result = libcreg_key_navigation_initialize(
+	          &key_navigation,
+	          io_handle,
+	          &error );
+
+	CREG_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	CREG_TEST_ASSERT_IS_NOT_NULL(
+	 "key_navigation",
+	 key_navigation );
+
+	CREG_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+/* TODO read key navigation data */
 
 	/* TODO: add tests for libcreg_key_navigation_get_key_hierarchy_entry_at_offset */
 
 	/* TODO: add tests for libcreg_key_navigation_get_number_of_data_blocks */
 
 	/* TODO: add tests for libcreg_key_navigation_get_data_block_at_index */
+
+	/* Clean up
+	 */
+	result = libcreg_key_navigation_free(
+	          &key_navigation,
+	          &error );
+
+	CREG_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	CREG_TEST_ASSERT_IS_NULL(
+	 "key_navigation",
+	 key_navigation );
+
+	CREG_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	result = libcreg_io_handle_free(
+	          &io_handle,
+	          &error );
+
+	CREG_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	CREG_TEST_ASSERT_IS_NULL(
+	 "io_handle",
+	 io_handle );
+
+	CREG_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+#endif /* !defined( __BORLANDC__ ) || ( __BORLANDC__ >= 0x0560 ) */
 
 	/* TODO: add tests for libcreg_key_navigation_read_data_block_element_data */
 
@@ -303,6 +588,29 @@ int main(
 	return( EXIT_SUCCESS );
 
 on_error:
+#if defined( __GNUC__ ) && !defined( LIBCREG_DLL_IMPORT )
+#if !defined( __BORLANDC__ ) || ( __BORLANDC__ >= 0x0560 )
+
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	if( key_navigation != NULL )
+	{
+		libcreg_key_navigation_free(
+		 &key_navigation,
+		 NULL );
+	}
+	if( io_handle != NULL )
+	{
+		libcreg_io_handle_free(
+		 &io_handle,
+		 NULL );
+	}
+#endif /* !defined( __BORLANDC__ ) || ( __BORLANDC__ >= 0x0560 ) */
+#endif /* defined( __GNUC__ ) && !defined( LIBCREG_DLL_IMPORT ) */
+
 	return( EXIT_FAILURE );
 }
 

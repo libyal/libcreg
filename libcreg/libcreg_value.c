@@ -1209,6 +1209,7 @@ int libcreg_value_get_value_utf8_string_size(
 	if( libcreg_value_type_get_utf8_string_size(
 	     value_data,
 	     value_data_size,
+	     internal_value->io_handle->ascii_codepage,
 	     utf8_string_size,
 	     error ) != 1 )
 	{
@@ -1307,6 +1308,7 @@ int libcreg_value_get_value_utf8_string(
 	if( libcreg_value_type_copy_to_utf8_string(
 	     value_data,
 	     value_data_size,
+	     internal_value->io_handle->ascii_codepage,
 	     utf8_string,
 	     utf8_string_size,
 	     error ) != 1 )
@@ -1404,6 +1406,7 @@ int libcreg_value_get_value_utf16_string_size(
 	if( libcreg_value_type_get_utf16_string_size(
 	     value_data,
 	     value_data_size,
+	     internal_value->io_handle->ascii_codepage,
 	     utf16_string_size,
 	     error ) != 1 )
 	{
@@ -1502,6 +1505,7 @@ int libcreg_value_get_value_utf16_string(
 	if( libcreg_value_type_copy_to_utf16_string(
 	     value_data,
 	     value_data_size,
+	     internal_value->io_handle->ascii_codepage,
 	     utf16_string,
 	     utf16_string_size,
 	     error ) != 1 )

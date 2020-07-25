@@ -113,6 +113,8 @@ int creg_test_data_block_initialize(
 	          &data_block,
 	          &error );
 
+	data_block = NULL;
+
 	CREG_TEST_ASSERT_EQUAL_INT(
 	 "result",
 	 result,
@@ -124,8 +126,6 @@ int creg_test_data_block_initialize(
 
 	libcerror_error_free(
 	 &error );
-
-	data_block = NULL;
 
 #if defined( HAVE_CREG_TEST_MEMORY )
 
@@ -279,7 +279,6 @@ int creg_test_data_block_get_number_of_entries(
 	libcerror_error_t *error         = NULL;
 	libcreg_data_block_t *data_block = NULL;
 	int number_of_entries            = 0;
-	int number_of_entries_is_set     = 0;
 	int result                       = 0;
 
 	/* Initialize test
@@ -308,16 +307,14 @@ int creg_test_data_block_get_number_of_entries(
 	          &number_of_entries,
 	          &error );
 
-	CREG_TEST_ASSERT_NOT_EQUAL_INT(
+	CREG_TEST_ASSERT_EQUAL_INT(
 	 "result",
 	 result,
-	 -1 );
+	 1 );
 
 	CREG_TEST_ASSERT_IS_NULL(
 	 "error",
 	 error );
-
-	number_of_entries_is_set = result;
 
 	/* Test error cases
 	 */
@@ -338,25 +335,23 @@ int creg_test_data_block_get_number_of_entries(
 	libcerror_error_free(
 	 &error );
 
-	if( number_of_entries_is_set != 0 )
-	{
-		result = libcreg_data_block_get_number_of_entries(
-		          data_block,
-		          NULL,
-		          &error );
+	result = libcreg_data_block_get_number_of_entries(
+	          data_block,
+	          NULL,
+	          &error );
 
-		CREG_TEST_ASSERT_EQUAL_INT(
-		 "result",
-		 result,
-		 -1 );
+	CREG_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
 
-		CREG_TEST_ASSERT_IS_NOT_NULL(
-		 "error",
-		 error );
+	CREG_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
 
-		libcerror_error_free(
-		 &error );
-	}
+	libcerror_error_free(
+	 &error );
+
 	/* Clean up
 	 */
 	result = libcreg_data_block_free(
@@ -428,7 +423,7 @@ int main(
 	 "libcreg_data_block_get_number_of_entries",
 	 creg_test_data_block_get_number_of_entries );
 
-	/* TODO: add tests for libcreg_data_block_get_entry_by_index */
+	/* TODO: add tests for libcreg_data_block_get_entry_by_identifier */
 
 #endif /* defined( __GNUC__ ) && !defined( LIBCREG_DLL_IMPORT ) */
 

@@ -276,11 +276,11 @@ int libcreg_key_name_entry_read_data(
 {
 	static char *function          = "libcreg_key_name_entry_read_data";
 	size_t data_offset             = 0;
+	size_t value_entries_data_size = 0;
 	uint32_t used_size             = 0;
 	uint16_t number_of_values      = 0;
 
 #if defined( HAVE_DEBUG_OUTPUT )
-	size_t value_entries_data_size = 0;
 	uint32_t value_32bit           = 0;
 	uint16_t value_16bit           = 0;
 #endif
@@ -524,19 +524,23 @@ int libcreg_key_name_entry_read_data(
 
 		data_offset += key_name_entry->name_size;
 	}
-#if defined( HAVE_DEBUG_OUTPUT )
-	if( libcnotify_verbose != 0 )
+	if( used_size > data_size )
 	{
-		if( used_size > data_size )
+#if defined( HAVE_DEBUG_OUTPUT )
+		if( libcnotify_verbose != 0 )
 		{
 			libcnotify_printf(
 			 "%s: invalid used size value out of bounds.",
 			 function );
-
-			used_size = (uint32_t) data_size;
 		}
-		value_entries_data_size = (size_t) used_size - data_offset;
+#endif
+		used_size = (uint32_t) data_size;
+	}
+	value_entries_data_size = (size_t) used_size - data_offset;
 
+#if defined( HAVE_DEBUG_OUTPUT )
+	if( libcnotify_verbose != 0 )
+	{
 		libcnotify_printf(
 		 "%s: values data:\n",
 		 function );
@@ -544,26 +548,25 @@ int libcreg_key_name_entry_read_data(
 		 &( data[ data_offset ] ),
 		 value_entries_data_size,
 		 0 );
-
-		if( libcreg_key_name_entry_read_values(
-		     key_name_entry,
-		     number_of_values,
-		     &( data[ data_offset ] ),
-		     value_entries_data_size,
-		     ascii_codepage,
-		     error ) != 1 )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_IO,
-			 LIBCERROR_IO_ERROR_READ_FAILED,
-			 "%s: unable to read value entries.",
-			 function );
-
-			return( -1 );
-		}
 	}
 #endif
+	if( libcreg_key_name_entry_read_values(
+	     key_name_entry,
+	     number_of_values,
+	     &( data[ data_offset ] ),
+	     value_entries_data_size,
+	     ascii_codepage,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_IO,
+		 LIBCERROR_IO_ERROR_READ_FAILED,
+		 "%s: unable to read value entries.",
+		 function );
+
+		return( -1 );
+	}
 #if defined( HAVE_DEBUG_OUTPUT )
 	if( libcnotify_verbose != 0 )
 	{
@@ -687,6 +690,8 @@ int libcreg_key_name_entry_read_values(
 			 value_entries_offset );
 		}
 #endif
+		value_entry->offset = key_name_entry->offset + value_entries_offset;
+
 		if( libcreg_value_entry_read_data(
 		     value_entry,
 		     &( value_entries_data[ value_entries_offset ] ),
@@ -704,7 +709,6 @@ int libcreg_key_name_entry_read_values(
 
 			goto on_error;
 		}
-		value_entry->offset   = key_name_entry->offset + value_entries_offset;
 		value_entries_offset += value_entry->size;
 
 		if( libcdata_array_append_entry(

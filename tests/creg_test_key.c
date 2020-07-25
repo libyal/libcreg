@@ -122,6 +122,8 @@ int main(
 
 	/* TODO: add tests for libcreg_key_get_number_of_values */
 
+	/* TODO: add tests for libcreg_key_get_value */
+
 	/* TODO: add tests for libcreg_key_get_value_by_index */
 
 	/* TODO: add tests for libcreg_key_get_value_by_utf8_name */
@@ -129,6 +131,8 @@ int main(
 	/* TODO: add tests for libcreg_key_get_value_by_utf16_name */
 
 	/* TODO: add tests for libcreg_key_get_number_of_sub_keys */
+
+	/* TODO: add tests for libcreg_key_get_sub_key */
 
 	/* TODO: add tests for libcreg_key_get_sub_key_by_index */
 

@@ -186,6 +186,7 @@ int libcreg_value_type_copy_to_64bit(
 int libcreg_value_type_get_utf8_string_size(
      uint8_t *value_data,
      size_t value_data_size,
+     int ascii_codepage,
      size_t *utf8_string_size,
      libcerror_error_t **error )
 {
@@ -210,10 +211,10 @@ int libcreg_value_type_get_utf8_string_size(
 	}
 	else
 	{
-		if( libuna_utf8_string_size_from_utf16_stream(
+		if( libuna_utf8_string_size_from_byte_stream(
 		     value_data,
 		     value_data_size,
-		     LIBUNA_ENDIAN_LITTLE,
+		     ascii_codepage,
 		     utf8_string_size,
 		     error ) != 1 )
 		{
@@ -236,6 +237,7 @@ int libcreg_value_type_get_utf8_string_size(
 int libcreg_value_type_copy_to_utf8_string(
      uint8_t *value_data,
      size_t value_data_size,
+     int ascii_codepage,
      uint8_t *utf8_string,
      size_t utf8_string_size,
      libcerror_error_t **error )
@@ -283,12 +285,12 @@ int libcreg_value_type_copy_to_utf8_string(
 	}
 	else
 	{
-		if( libuna_utf8_string_copy_from_utf16_stream(
+		if( libuna_utf8_string_copy_from_byte_stream(
 		     utf8_string,
 		     utf8_string_size,
 		     value_data,
 		     value_data_size,
-		     LIBUNA_ENDIAN_LITTLE,
+		     ascii_codepage,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
@@ -310,6 +312,7 @@ int libcreg_value_type_copy_to_utf8_string(
 int libcreg_value_type_get_utf16_string_size(
      uint8_t *value_data,
      size_t value_data_size,
+     int ascii_codepage,
      size_t *utf16_string_size,
      libcerror_error_t **error )
 {
@@ -334,10 +337,10 @@ int libcreg_value_type_get_utf16_string_size(
 	}
 	else
 	{
-		if( libuna_utf16_string_size_from_utf16_stream(
+		if( libuna_utf16_string_size_from_byte_stream(
 		     value_data,
 		     value_data_size,
-		     LIBUNA_ENDIAN_LITTLE,
+		     ascii_codepage,
 		     utf16_string_size,
 		     error ) != 1 )
 		{
@@ -360,6 +363,7 @@ int libcreg_value_type_get_utf16_string_size(
 int libcreg_value_type_copy_to_utf16_string(
      uint8_t *value_data,
      size_t value_data_size,
+     int ascii_codepage,
      uint16_t *utf16_string,
      size_t utf16_string_size,
      libcerror_error_t **error )
@@ -407,12 +411,12 @@ int libcreg_value_type_copy_to_utf16_string(
 	}
 	else
 	{
-		if( libuna_utf16_string_copy_from_utf16_stream(
+		if( libuna_utf16_string_copy_from_byte_stream(
 		     utf16_string,
 		     utf16_string_size,
 		     value_data,
 		     value_data_size,
-		     LIBUNA_ENDIAN_LITTLE,
+		     ascii_codepage,
 		     error ) != 1 )
 		{
 			libcerror_error_set(

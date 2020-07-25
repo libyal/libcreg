@@ -49,10 +49,12 @@ AC_DEFUN([AX_CREGTOOLS_CHECK_LOCAL],
   dnl Headers included in cregtools/cregmount.c
   AC_CHECK_HEADERS([errno.h])
 
-  dnl Functions included in cregtools/cregmount.c
+  AC_HEADER_TIME
+
+  dnl Functions included in cregtools/mount_file_system.c and cregtools/mount_file_entry.c
   AS_IF(
     [test "x$ac_cv_enable_winapi" = xno],
-    [AC_CHECK_FUNCS([getegid geteuid])
+    [AC_CHECK_FUNCS([clock_gettime getegid geteuid time])
   ])
 ])
 

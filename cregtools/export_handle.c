@@ -1,7 +1,7 @@
 /*
  * Export handle
  *
- * Copyright (c) 2011-2013, Joachim Metz <joachim.metz@gmail.com>
+ * Copyright (C) 2013-2020, Joachim Metz <joachim.metz@gmail.com>
  *
  * Refer to AUTHORS for acknowledgements.
  *
@@ -26,11 +26,11 @@
 #include <types.h>
 #include <wide_string.h>
 
+#include "export_handle.h"
+#include "log_handle.h"
 #include "cregtools_libcerror.h"
 #include "cregtools_libclocale.h"
 #include "cregtools_libcreg.h"
-#include "export_handle.h"
-#include "log_handle.h"
 
 #define EXPORT_HANDLE_NOTIFY_STREAM	stdout
 
@@ -108,7 +108,7 @@ int export_handle_initialize(
 		goto on_error;
 	}
 	( *export_handle )->ascii_codepage = LIBCREG_CODEPAGE_WINDOWS_1252;
-	( *export_handle )->notify_stream = EXPORT_HANDLE_NOTIFY_STREAM;
+	( *export_handle )->notify_stream  = EXPORT_HANDLE_NOTIFY_STREAM;
 
 	return( 1 );
 
@@ -726,20 +726,6 @@ int export_handle_export_key(
 	}
 	else
 	{
-		value_string = system_string_allocate(
-		                value_string_size );
-
-		if( value_string == NULL )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_MEMORY,
-			 LIBCERROR_MEMORY_ERROR_INSUFFICIENT,
-			 "%s: unable to create name string.",
-			 function );
-
-			goto on_error;
-		}
 #if defined( HAVE_WIDE_SYSTEM_CHARACTER )
 		result = libcreg_key_get_utf16_name(
 		          key,
@@ -919,79 +905,80 @@ int export_handle_export_key(
 			case LIBCREG_VALUE_TYPE_UNDEFINED:
 				fprintf(
 				 export_handle->notify_stream,
-				 "Type: undefined (none)\n" );
+				 "Type: undefined (REG_NONE)\n" );
 				break;
 
 			case LIBCREG_VALUE_TYPE_STRING:
 				fprintf(
 				 export_handle->notify_stream,
-				 "Type: string\n" );
+				 "Type: string (REG_SZ)\n" );
 				break;
 
 			case LIBCREG_VALUE_TYPE_EXPANDABLE_STRING:
 				fprintf(
 				 export_handle->notify_stream,
-				 "Type: expandable string\n" );
+				 "Type: expandable string (REG_EXPAND_SZ)\n" );
 				break;
 
 			case LIBCREG_VALUE_TYPE_BINARY_DATA:
 				fprintf(
 				 export_handle->notify_stream,
-				 "Type: binary data\n" );
+				 "Type: binary data (REG_BINARY)\n" );
 				break;
 
 			case LIBCREG_VALUE_TYPE_INTEGER_32BIT_LITTLE_ENDIAN:
 				fprintf(
 				 export_handle->notify_stream,
-				 "Type: 32-bit integer little-endian\n" );
+				 "Type: 32-bit integer little-endian (REG_DWORD_LITTLE_ENDIAN)\n" );
 				break;
 
 			case LIBCREG_VALUE_TYPE_INTEGER_32BIT_BIG_ENDIAN:
 				fprintf(
 				 export_handle->notify_stream,
-				 "Type: 32-bit integer big-endian\n" );
+				 "Type: 32-bit integer big-endian (REG_DWORD_BIG_ENDIAN)\n" );
 				break;
 
 			case LIBCREG_VALUE_TYPE_SYMBOLIC_LINK:
 				fprintf(
 				 export_handle->notify_stream,
-				 "Type: symbolic link\n" );
+				 "Type: symbolic link (REG_LINK)\n" );
 				break;
 
 			case LIBCREG_VALUE_TYPE_MULTI_VALUE_STRING:
 				fprintf(
 				 export_handle->notify_stream,
-				 "Type: multi-value string.n" );
+				 "Type: multi-value string (REG_MULTI_SZ)\n" );
 				break;
 
 			case LIBCREG_VALUE_TYPE_RESOURCE_LIST:
 				fprintf(
 				 export_handle->notify_stream,
-				 "Type: resource list\n" );
+				 "Type: resource list (REG_RESOURCE_LIST)\n" );
 				break;
 
 			case LIBCREG_VALUE_TYPE_FULL_RESOURCE_DESCRIPTOR:
 				fprintf(
 				 export_handle->notify_stream,
-				 "Type: full resource descriptor\n" );
+				 "Type: full resource descriptor (REG_FULL_RESOURCE_DESCRIPTOR)\n" );
 				break;
 
 			case LIBCREG_VALUE_TYPE_RESOURCE_REQUIREMENTS_LIST:
 				fprintf(
 				 export_handle->notify_stream,
-				 "Type: resource requirements list\n" );
+				 "Type: resource requirements list (REG_RESOURCE_REQUIREMENTS_LIST)\n" );
 				break;
 
 			case LIBCREG_VALUE_TYPE_INTEGER_64BIT_LITTLE_ENDIAN:
 				fprintf(
 				 export_handle->notify_stream,
-				 "Type: 64-bit integer little-endian\n" );
+				 "Type: 64-bit integer little-endian (REG_QWORD_LITTLE_ENDIAN)\n" );
 				break;
 
 			default:
 				fprintf(
 				 export_handle->notify_stream,
-				 "Type: unknown\n" );
+				 "Type: unknown: 0x%08" PRIx32 "\n",
+				 value_type );
 				break;
 		}
 		if( libcreg_value_get_value_data_size(
@@ -1030,103 +1017,104 @@ int export_handle_export_key(
 #endif
 				if( result != 1 )
 				{
-					libcerror_error_set(
-					 error,
-					 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-					 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-					 "%s: unable to retrieve value string size.",
-					 function );
-
-					goto on_error;
+					libcerror_error_free(
+					 error );
 				}
-				if( value_string_size > 0 )
+				else
 				{
-					if( value_string_size > ( (size_t) SSIZE_MAX / sizeof( system_character_t ) ) )
+					fprintf(
+					 export_handle->notify_stream,
+					 "Data:" );
+
+					if( value_string_size > 0 )
 					{
-						libcerror_error_set(
-						 error,
-						 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-						 LIBCERROR_RUNTIME_ERROR_VALUE_EXCEEDS_MAXIMUM,
-						 "%s: invalid value string size value exceeds maximum.",
-						 function );
+						if( value_string_size > ( (size_t) SSIZE_MAX / sizeof( system_character_t ) ) )
+						{
+							libcerror_error_set(
+							 error,
+							 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+							 LIBCERROR_RUNTIME_ERROR_VALUE_EXCEEDS_MAXIMUM,
+							 "%s: invalid value string size value exceeds maximum.",
+							 function );
 
-						goto on_error;
-					}
-					value_string = system_string_allocate(
-							value_string_size );
+							goto on_error;
+						}
+						value_string = system_string_allocate(
+								value_string_size );
 
-					if( value_string == NULL )
-					{
-						libcerror_error_set(
-						 error,
-						 LIBCERROR_ERROR_DOMAIN_MEMORY,
-						 LIBCERROR_MEMORY_ERROR_INSUFFICIENT,
-						 "%s: unable to create value string.",
-						 function );
+						if( value_string == NULL )
+						{
+							libcerror_error_set(
+							 error,
+							 LIBCERROR_ERROR_DOMAIN_MEMORY,
+							 LIBCERROR_MEMORY_ERROR_INSUFFICIENT,
+							 "%s: unable to create value string.",
+							 function );
 
-						goto on_error;
-					}
+							goto on_error;
+						}
 #if defined( HAVE_WIDE_SYSTEM_CHARACTER )
-					result = libcreg_value_get_value_utf16_string(
-						  value,
-						  (uint16_t *) value_string,
-						  value_string_size,
-						  error );
+						result = libcreg_value_get_value_utf16_string(
+							  value,
+							  (uint16_t *) value_string,
+							  value_string_size,
+							  error );
 #else
-					result = libcreg_value_get_value_utf8_string(
-						  value,
-						  (uint8_t *) value_string,
-						  value_string_size,
-						  error );
+						result = libcreg_value_get_value_utf8_string(
+							  value,
+							  (uint8_t *) value_string,
+							  value_string_size,
+							  error );
 #endif
+						if( result != 1 )
+						{
+							libcerror_error_set(
+							 error,
+							 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+							 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+							 "%s: unable to retrieve value string.",
+							 function );
+
+							goto on_error;
+						}
+						fprintf(
+						 export_handle->notify_stream,
+						 " %" PRIs_SYSTEM "",
+						 value_string );
+
+						memory_free(
+						 value_string );
+
+						value_string = NULL;
+					}
+					fprintf(
+					 export_handle->notify_stream,
+					 "\n" );
+
+					expected_data_size = 0;
+
+/* TODO implement
+					result = libcreg_value_get_name_size(
+						  value,
+						  &expected_data_size,
+						  error );
+
 					if( result != 1 )
 					{
 						libcerror_error_set(
 						 error,
 						 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 						 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-						 "%s: unable to retrieve value string.",
+						 "%s: unable to retrieve value string size.",
 						 function );
 
 						goto on_error;
 					}
-					fprintf(
-					 export_handle->notify_stream,
-					 "Data: %" PRIs_SYSTEM "\n",
-					 value_string );
-
-					memory_free(
-					 value_string );
-
-					value_string = NULL;
-				}
-				else
-				{
-					fprintf(
-					 export_handle->notify_stream,
-					 "Data:\n" );
-				}
-				result = libcreg_value_get_value_utf16_string_size(
-					  value,
-					  &expected_data_size,
-					  error );
-
-				if( result != 1 )
-				{
-					libcerror_error_set(
-					 error,
-					 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-					 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-					 "%s: unable to retrieve value UTF-16 string size.",
-					 function );
-
-					goto on_error;
-				}
-				expected_data_size *= 2;
-
-				if( expected_data_size == ( data_size + 2 ) )
-				{
-					expected_data_size -= 2;
+					if( expected_data_size == ( data_size + 1 ) )
+					{
+						expected_data_size -= 1;
+					}
+*/
 				}
 				break;
 

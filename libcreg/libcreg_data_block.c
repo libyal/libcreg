@@ -362,7 +362,7 @@ int libcreg_data_block_read_entries(
             size_t data_size,
             size_t *entry_size,
             libcerror_error_t **error ),
-     int ascii_codepage,
+     int ascii_codepage LIBCREG_ATTRIBUTE_UNUSED,
      libcerror_error_t **error )
 {
 	libcreg_data_block_entry_t *data_block_entry = NULL;
@@ -373,6 +373,8 @@ int libcreg_data_block_read_entries(
 	ssize_t read_count                           = 0;
 	int entry_index                              = 0;
 	int data_block_entry_index                   = 0;
+
+	LIBCREG_UNREFERENCED_PARAMETER( ascii_codepage )
 
 	if( data_block == NULL )
 	{
@@ -762,6 +764,8 @@ int libcreg_data_block_get_entry_by_identifier(
 
 			goto on_error;
 		}
+		safe_key_name_entry->offset = data_block->offset;
+
 		if( libcreg_key_name_entry_read_data(
 		     safe_key_name_entry,
 		     &( ( data_block->data )[ data_block_entry->offset ] ),
