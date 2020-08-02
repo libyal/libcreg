@@ -418,6 +418,18 @@ int info_handle_key_fprint(
 
 		goto on_error;
 	}
+	for( indentation_level_iterator = 0;
+	     indentation_level_iterator < indentation_level;
+	     indentation_level_iterator++ )
+	{
+		fprintf(
+		 info_handle->notify_stream,
+		 " " );
+	}
+	fprintf(
+	 info_handle->notify_stream,
+	 "(key:)" );
+
 	if( name_size > 0 )
 	{
 		if( ( name_size > (size_t) SSIZE_MAX )
@@ -470,17 +482,9 @@ int info_handle_key_fprint(
 
 			goto on_error;
 		}
-		for( indentation_level_iterator = 0;
-		     indentation_level_iterator < indentation_level;
-		     indentation_level_iterator++ )
-		{
-			fprintf(
-			 info_handle->notify_stream,
-			 " " );
-		}
 		fprintf(
 		 info_handle->notify_stream,
-		 "(key:) %" PRIs_SYSTEM "\n",
+		 " %" PRIs_SYSTEM "",
 		 name );
 
 		memory_free(
@@ -488,6 +492,10 @@ int info_handle_key_fprint(
 
 		name = NULL;
 	}
+	fprintf(
+	 info_handle->notify_stream,
+	 "\n" );
+
 	if( libcreg_key_get_number_of_values(
 	     key,
 	     &number_of_values,
