@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>libcreg</id>
+    <version>20200814</version>
+    <authors>Joachim Metz</authors>
+    <owners>joachimmetz</owners>
+    <licenseUrl>https://raw.githubusercontent.com/libyal/libcreg/master/COPYING.LESSER</licenseUrl>
+    <projectUrl>https://github.com/libyal/libcreg</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <title>libcreg</title>
+    <description>Library to access the Windows 9x/Me Registry File (CREG) format</description>
+    <releaseNotes>Release of libcreg 20200814</releaseNotes>
+    <copyright>Copyright (C) 2013-2020</copyright>
+    <tags>native</tags>
+  </metadata>
+  <files>
+    <file src="include\*.h" target="lib\native\include\" />
+    <file src="include\libcreg\*.h" target="lib\native\include\libcreg\" />
+    <file src="msvscpp\Release\Win32\libcreg.dll" target="lib\native\lib\Win32\" />
+    <file src="msvscpp\Release\Win32\libcreg.lib" target="lib\native\lib\Win32\" />
+    <file src="msvscpp\Release\Win32\libcreg.pdb" target="lib\native\lib\Win32\" />
+    <file src="msvscpp\Release\x64\libcreg.dll" target="lib\native\lib\x64\" />
+    <file src="msvscpp\Release\x64\libcreg.lib" target="lib\native\lib\x64\" />
+    <file src="msvscpp\Release\x64\libcreg.pdb" target="lib\native\lib\x64\" />
+  </files>
+</package>
