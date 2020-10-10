@@ -258,6 +258,7 @@ deploy:
   on:
     branch: master
     APPVEYOR_REPO_TAG: true
+    TARGET: vs2017
 
 deploy_script:
 - ps: If ($env:APPVEYOR_REPO_TAG -eq "true" -and $isWindows -and $env:BUILD_ENVIRONMENT -eq "python") {

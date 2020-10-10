@@ -7,7 +7,7 @@ EXIT_SUCCESS=0;
 EXIT_FAILURE=1;
 EXIT_IGNORE=77;
 
-LIBRARY_TESTS="data_block data_block_entry data_type error io_handle key key_hierarchy_entry key_name_entry key_navigation notify value value_entry";
+LIBRARY_TESTS="data_block data_type error io_handle key key_hierarchy_entry key_name_entry key_navigation notify value value_entry";
 LIBRARY_TESTS_WITH_INPUT="file support";
 OPTION_SETS="";
 

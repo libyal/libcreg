@@ -83,11 +83,6 @@ int libcreg_data_block_read_header(
 int libcreg_data_block_read_entries(
      libcreg_data_block_t *data_block,
      libbfio_handle_t *file_io_handle,
-     int (*read_entry_size_function)(
-            const uint8_t *data,
-            size_t data_size,
-            size_t *entry_size,
-            libcerror_error_t **error ),
      int ascii_codepage,
      libcerror_error_t **error );
 

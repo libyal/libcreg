@@ -6,7 +6,7 @@ $ExitSuccess = 0
 $ExitFailure = 1
 $ExitIgnore = 77
 
-$LibraryTests = "data_block data_block_entry data_type error io_handle key key_hierarchy_entry key_name_entry key_navigation notify value value_entry"
+$LibraryTests = "data_block data_type error io_handle key key_hierarchy_entry key_name_entry key_navigation notify value value_entry"
 $LibraryTestsWithInput = "file support"
 $OptionSets = ""
 

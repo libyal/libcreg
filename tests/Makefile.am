@@ -2,6 +2,7 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/include \
 	-I$(top_srcdir)/common \
 	@LIBCERROR_CPPFLAGS@ \
+	@LIBCTHREADS_CPPFLAGS@ \
 	@LIBCDATA_CPPFLAGS@ \
 	@LIBCLOCALE_CPPFLAGS@ \
 	@LIBCNOTIFY_CPPFLAGS@ \
@@ -12,6 +13,7 @@ AM_CPPFLAGS = \
 	@LIBBFIO_CPPFLAGS@ \
 	@LIBFCACHE_CPPFLAGS@ \
 	@LIBFDATA_CPPFLAGS@ \
+	@PTHREAD_CPPFLAGS@ \
 	@LIBCREG_DLL_IMPORT@
 
 if HAVE_PYTHON_TESTS
@@ -40,7 +42,6 @@ EXTRA_DIST = \
 
 check_PROGRAMS = \
 	creg_test_data_block \
-	creg_test_data_block_entry \
 	creg_test_data_type \
 	creg_test_error \
 	creg_test_file \
@@ -63,18 +64,6 @@ creg_test_data_block_SOURCES = \
 	creg_test_unused.h
 
 creg_test_data_block_LDADD = \
-	../libcreg/libcreg.la \
-	@LIBCERROR_LIBADD@
-
-creg_test_data_block_entry_SOURCES = \
-	creg_test_data_block_entry.c \
-	creg_test_libcerror.h \
-	creg_test_libcreg.h \
-	creg_test_macros.h \
-	creg_test_memory.c creg_test_memory.h \
-	creg_test_unused.h
-
-creg_test_data_block_entry_LDADD = \
 	../libcreg/libcreg.la \
 	@LIBCERROR_LIBADD@
 

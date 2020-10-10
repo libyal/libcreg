@@ -25,7 +25,6 @@
 #include <types.h>
 
 #include "libcreg_data_block.h"
-#include "libcreg_data_block_entry.h"
 #include "libcreg_key_name_entry.h"
 #include "libcreg_libbfio.h"
 #include "libcreg_libcdata.h"
@@ -154,7 +153,7 @@ int libcreg_data_block_free(
 	{
 		if( libcdata_array_free(
 		     &( ( *data_block )->entries_array ),
-		     (int (*)(intptr_t **, libcerror_error_t **)) &libcreg_data_block_entry_free,
+		     (int (*)(intptr_t **, libcerror_error_t **)) &libcreg_key_name_entry_free,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
@@ -357,24 +356,16 @@ int libcreg_data_block_read_header(
 int libcreg_data_block_read_entries(
      libcreg_data_block_t *data_block,
      libbfio_handle_t *file_io_handle,
-     int (*read_entry_size_function)(
-            const uint8_t *data,
-            size_t data_size,
-            size_t *entry_size,
-            libcerror_error_t **error ),
-     int ascii_codepage LIBCREG_ATTRIBUTE_UNUSED,
+     int ascii_codepage,
      libcerror_error_t **error )
 {
-	libcreg_data_block_entry_t *data_block_entry = NULL;
-	uint8_t *data_block_entry_data               = NULL;
-	static char *function                        = "libcreg_data_block_read_entries";
-	size_t data_block_data_size                  = 0;
-	size_t data_block_entry_offset               = 0;
-	ssize_t read_count                           = 0;
-	int entry_index                              = 0;
-	int data_block_entry_index                   = 0;
-
-	LIBCREG_UNREFERENCED_PARAMETER( ascii_codepage )
+	libcreg_key_name_entry_t *key_name_entry = NULL;
+	static char *function                    = "libcreg_data_block_read_entries";
+	size_t data_offset                       = 0;
+	size_t key_name_entry_size               = 0;
+	ssize_t read_count                       = 0;
+	int entry_index                          = 0;
+	int result                               = 0;
 
 	if( data_block == NULL )
 	{
@@ -406,17 +397,6 @@ int libcreg_data_block_read_entries(
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 		 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
 		 "%s: invalid data block - size value out of bounds.",
-		 function );
-
-		return( -1 );
-	}
-	if( read_entry_size_function == NULL )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
-		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid read entry size function.",
 		 function );
 
 		return( -1 );
@@ -454,117 +434,113 @@ int libcreg_data_block_read_entries(
 
 		goto on_error;
 	}
-	data_block_entry_data = data_block->data;
-	data_block_data_size = data_block->data_size;
-
-/* TODO
-	if( (int32_t) data_block->used_size < 0 )
+	while( data_offset < data_block->data_size )
 	{
-		data_block_data_size = data_block->data_size;
-	}
-	else
-	{
-		data_block_data_size = (size_t) data_block->used_size - sizeof( creg_data_block_header_t );
-	}
-*/
-	while( data_block_entry_offset < data_block_data_size )
-	{
-		if( libcreg_data_block_entry_initialize(
-		     &data_block_entry,
+		if( libcreg_key_name_entry_initialize(
+		     &key_name_entry,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 			 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
-			 "%s: unable to create data block entry.",
+			 "%s: unable to create key name entry.",
 			 function );
 
 			goto on_error;
 		}
-		if( read_entry_size_function(
-		     &( data_block_entry_data[ data_block_entry_offset ] ),
-		     data_block->data_size - data_block_entry_offset,
-		     &( data_block_entry->size ),
-		     error ) != 1 )
+		key_name_entry->offset = data_block->offset + sizeof( creg_data_block_header_t ) + data_offset;
+
+#if defined( HAVE_DEBUG_OUTPUT )
+		if( libcnotify_verbose != 0 )
+		{
+			libcnotify_printf(
+			 "%s: reading key name entry at offset: %" PRIu32 " (0x%08" PRIx32 ")\n",
+			 function,
+			 key_name_entry->offset,
+			 key_name_entry->offset );
+		}
+#endif
+		result = libcreg_key_name_entry_read_data(
+		          key_name_entry,
+		          &( ( data_block->data )[ data_offset ] ),
+		          data_block->data_size - data_offset,
+		          ascii_codepage,
+		          error );
+
+		if( result == -1 )
 		{
 			libcerror_error_set(
 			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-			 "%s: unable to retrieve data block entry size.",
-			 function );
+			 LIBCERROR_ERROR_DOMAIN_IO,
+			 LIBCERROR_IO_ERROR_READ_FAILED,
+			 "%s: unable to read key name entry at offset: %" PRIu32 " (0x%08" PRIx32 ").",
+			 function,
+			 key_name_entry->offset,
+			 key_name_entry->offset );
 
 			goto on_error;
 		}
-#if defined( HAVE_DEBUG_OUTPUT )
-		if( libcnotify_verbose != 0 )
-		{
-			libcnotify_printf(
-			 "%s: data block entry: %03d data:\n",
-			 function,
-			 data_block_entry_index );
-			libcnotify_print_data(
-			 &( data_block_entry_data[ data_block_entry_offset ] ),
-			 data_block_entry->size,
-			 LIBCNOTIFY_PRINT_DATA_FLAG_GROUP_DATA );
-		}
-#endif
-#if defined( HAVE_DEBUG_OUTPUT )
-		if( libcnotify_verbose != 0 )
-		{
-			libcnotify_printf(
-			 "%s: data block entry: %03d offset\t\t: %" PRIzd "\n",
-			 function,
-			 data_block_entry_index,
-			 data_block_entry_offset );
+		key_name_entry_size = key_name_entry->size;
 
-			libcnotify_printf(
-			 "%s: data block entry: %03d size\t\t: %" PRIzd "\n",
-			 function,
-			 data_block_entry_index,
-			 data_block_entry->size );
+		if( result == 0 )
+		{
+			if( key_name_entry_size <= ( data_block->data_size - data_offset ) )
+			{
+				result = 1;
+			}
+			if( libcreg_key_name_entry_free(
+			     &key_name_entry,
+			     error ) != 1 )
+			{
+				libcerror_error_set(
+				 error,
+				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+				 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
+				 "%s: unable to free key name entry.",
+				 function );
+
+				goto on_error;
+			}
 		}
-#endif
-		if( data_block_entry->size > ( data_block_data_size - data_block_entry_offset ) )
+		if( result == 0 )
 		{
 			break;
 		}
-		data_block_entry->offset = data_block_entry_offset;
+		data_offset += key_name_entry_size;
 
-		data_block_entry_offset += (size_t) data_block_entry->size;
-
-		if( libcdata_array_append_entry(
-		     data_block->entries_array,
-		     &entry_index,
-		     (intptr_t *) data_block_entry,
-		     error ) != 1 )
+		if( key_name_entry != NULL )
 		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_APPEND_FAILED,
-			 "%s: unable to append data block entry: %d.",
-			 function,
-			 data_block_entry_index );
+			if( libcdata_array_append_entry(
+			     data_block->entries_array,
+			     &entry_index,
+			     (intptr_t *) key_name_entry,
+			     error ) != 1 )
+			{
+				libcerror_error_set(
+				 error,
+				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+				 LIBCERROR_RUNTIME_ERROR_APPEND_FAILED,
+				 "%s: unable to append key name entry: %d.",
+				 function,
+				 key_name_entry );
 
-			goto on_error;
+				goto on_error;
+			}
+			key_name_entry = NULL;
 		}
-		data_block_entry = NULL;
-
-		data_block_entry_index++;
 	}
 #if defined( HAVE_DEBUG_OUTPUT )
 	if( libcnotify_verbose != 0 )
 	{
-		if( data_block_entry_offset < data_block->data_size )
+		if( data_offset < data_block->data_size )
 		{
 			libcnotify_printf(
 			 "%s: trailing data:\n",
 			 function );
 			libcnotify_print_data(
-			 &( ( data_block->data )[ data_block_entry_offset ] ),
-			 data_block->data_size - data_block_entry_offset,
+			 &( ( data_block->data )[ data_offset ] ),
+			 data_block->data_size - data_offset,
 			 LIBCNOTIFY_PRINT_DATA_FLAG_GROUP_DATA );
 		}
 		else
@@ -577,17 +553,17 @@ int libcreg_data_block_read_entries(
 	return( 1 );
 
 on_error:
-	if( data_block_entry != NULL )
+	if( key_name_entry != NULL )
 	{
-		libcreg_data_block_entry_free(
-		 &data_block_entry,
+		libcreg_key_name_entry_free(
+		 &key_name_entry,
 		 NULL );
 	}
 	if( data_block->entries_array != NULL )
 	{
 		libcdata_array_clear(
 		 data_block->entries_array,
-		 (int (*)(intptr_t **, libcerror_error_t **)) &libcreg_data_block_entry_free,
+		 (int (*)(intptr_t **, libcerror_error_t **)) &libcreg_key_name_entry_free,
 		 NULL );
 	}
 	if( data_block->data != NULL )
@@ -650,15 +626,10 @@ int libcreg_data_block_get_entry_by_identifier(
      int ascii_codepage,
      libcerror_error_t **error )
 {
-	libcreg_data_block_entry_t *data_block_entry  = NULL;
 	libcreg_key_name_entry_t *safe_key_name_entry = NULL;
 	static char *function                         = "libcreg_data_block_get_entry_by_identifier";
 	int entry_index                               = 0;
 	int number_of_entries                         = 0;
-
-#if defined( HAVE_DEBUG_OUTPUT )
-	off64_t file_offset                           = 0;
-#endif
 
 	if( data_block == NULL )
 	{
@@ -714,74 +685,30 @@ int libcreg_data_block_get_entry_by_identifier(
 		if( libcdata_array_get_entry_by_index(
 		     data_block->entries_array,
 		     entry_index,
-		     (intptr_t **) &data_block_entry,
+		     (intptr_t **) &safe_key_name_entry,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 			 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-			 "%s: unable to retrieve data block entry: %d.",
+			 "%s: unable to retrieve key name entry: %d.",
 			 function,
 			 entry_index );
 
-			goto on_error;
+			return( -1 );
 		}
-		if( data_block_entry == NULL )
+		if( safe_key_name_entry == NULL )
 		{
 			libcerror_error_set(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 			 LIBCERROR_RUNTIME_ERROR_VALUE_MISSING,
-			 "%s: invalid data block - missing data block entry: %d.",
+			 "%s: invalid data block - missing key name entry: %d.",
 			 function,
 			 entry_index );
 
-			goto on_error;
-		}
-#if defined( HAVE_DEBUG_OUTPUT )
-		if( libcnotify_verbose != 0 )
-		{
-			file_offset = data_block->offset + sizeof( creg_data_block_header_t ) + data_block_entry->offset;
-
-			libcnotify_printf(
-			 "%s: reading key name entry at offset: %" PRIi64 " (0x%08" PRIx64 ")\n",
-			 function,
-			 file_offset,
-			 file_offset );
-		}
-#endif
-		if( libcreg_key_name_entry_initialize(
-		     &safe_key_name_entry,
-		     error ) != 1 )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
-			 "%s: unable to create key name entry.",
-			 function );
-
-			goto on_error;
-		}
-		safe_key_name_entry->offset = data_block->offset;
-
-		if( libcreg_key_name_entry_read_data(
-		     safe_key_name_entry,
-		     &( ( data_block->data )[ data_block_entry->offset ] ),
-		     data_block_entry->size,
-		     ascii_codepage,
-		     error ) != 1 )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_IO,
-			 LIBCERROR_IO_ERROR_READ_FAILED,
-			 "%s: unable to read key name entry: %d.",
-			 function,
-			 entry_index );
-
-			goto on_error;
+			return( -1 );
 		}
 		if( safe_key_name_entry->index == identifier )
 		{
@@ -789,29 +716,7 @@ int libcreg_data_block_get_entry_by_identifier(
 
 			return( 1 );
 		}
-		if( libcreg_key_name_entry_free(
-		     &safe_key_name_entry,
-		     error ) != 1 )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
-			 "%s: unable to free key name entry.",
-			 function );
-
-			goto on_error;
-		}
 	}
 	return( 0 );
-
-on_error:
-	if( safe_key_name_entry != NULL )
-	{
-		libcreg_key_name_entry_free(
-		 &safe_key_name_entry,
-		 NULL );
-	}
-	return( -1 );
 }
 

@@ -30,8 +30,8 @@
 #include "libcreg_key_navigation.h"
 #include "libcreg_libbfio.h"
 #include "libcreg_libcerror.h"
+#include "libcreg_libcthreads.h"
 #include "libcreg_libfcache.h"
-#include "libcreg_libfdata.h"
 #include "libcreg_types.h"
 
 #if defined( __cplusplus )
@@ -54,14 +54,6 @@ struct libcreg_internal_file
 	 */
 	libcreg_key_navigation_t *key_navigation;
 
-	/* The key tree
-	 */
-	libfdata_tree_t *key_tree;
-
-	/* The key cache
-	 */
-	libfcache_cache_t *key_cache;
-
 	/* Value to indicate if the file IO handle was created inside the library
 	 */
 	uint8_t file_io_handle_created_in_library;
@@ -73,6 +65,12 @@ struct libcreg_internal_file
 	/* Value to indicate if abort was signalled
 	 */
 	int abort;
+
+#if defined( HAVE_LIBCREG_MULTI_THREAD_SUPPORT )
+	/* The read/write lock
+	 */
+	libcthreads_read_write_lock_t *read_write_lock;
+#endif
 };
 
 LIBCREG_EXTERN \
@@ -120,7 +118,7 @@ int libcreg_file_close(
      libcreg_file_t *file,
      libcerror_error_t **error );
 
-int libcreg_file_open_read(
+int libcreg_internal_file_open_read(
      libcreg_internal_file_t *internal_file,
      libbfio_handle_t *file_io_handle,
      libcerror_error_t **error );

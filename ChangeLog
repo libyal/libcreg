@@ -1,5 +1,9 @@
 TODO
-* fix issues with win98 test files
+* remove dependency on libfdata_tree
+* implement thread lock
+** file
+** key
+** value
 * add support for name hashing (remove wctoupper?)
 
 Format support:

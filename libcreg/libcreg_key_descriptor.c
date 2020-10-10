@@ -1,5 +1,5 @@
 /*
- * Data block entry functions
+ * Key descriptor functions
  *
  * Copyright (C) 2013-2020, Joachim Metz <joachim.metz@gmail.com>
  *
@@ -23,65 +23,65 @@
 #include <memory.h>
 #include <types.h>
 
-#include "libcreg_data_block_entry.h"
+#include "libcreg_key_descriptor.h"
 #include "libcreg_libcerror.h"
 
-/* Creates a data block entry
- * Make sure the value data_block_entry is referencing, is set to NULL
+/* Creates a key descriptor
+ * Make sure the value key_descriptor is referencing, is set to NULL
  * Returns 1 if successful or -1 on error
  */
-int libcreg_data_block_entry_initialize(
-     libcreg_data_block_entry_t **data_block_entry,
+int libcreg_key_descriptor_initialize(
+     libcreg_key_descriptor_t **key_descriptor,
      libcerror_error_t **error )
 {
-	static char *function = "libcreg_data_block_entry_initialize";
+	static char *function = "libcreg_key_descriptor_initialize";
 
-	if( data_block_entry == NULL )
+	if( key_descriptor == NULL )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid data block entry.",
+		 "%s: invalid key descriptor.",
 		 function );
 
 		return( -1 );
 	}
-	if( *data_block_entry != NULL )
+	if( *key_descriptor != NULL )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 		 LIBCERROR_RUNTIME_ERROR_VALUE_ALREADY_SET,
-		 "%s: invalid data block entry value already set.",
+		 "%s: invalid key descriptor value already set.",
 		 function );
 
 		return( -1 );
 	}
-	*data_block_entry = memory_allocate_structure(
-	                     libcreg_data_block_entry_t );
+	*key_descriptor = memory_allocate_structure(
+	                   libcreg_key_descriptor_t );
 
-	if( *data_block_entry == NULL )
+	if( *key_descriptor == NULL )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_MEMORY,
 		 LIBCERROR_MEMORY_ERROR_INSUFFICIENT,
-		 "%s: unable to create data block entry.",
+		 "%s: unable to create key descriptor.",
 		 function );
 
 		goto on_error;
 	}
 	if( memory_set(
-	     *data_block_entry,
+	     *key_descriptor,
 	     0,
-	     sizeof( libcreg_data_block_entry_t ) ) == NULL )
+	     sizeof( libcreg_key_descriptor_t ) ) == NULL )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_MEMORY,
 		 LIBCERROR_MEMORY_ERROR_SET_FAILED,
-		 "%s: unable to clear data block entry.",
+		 "%s: unable to clear key descriptor.",
 		 function );
 
 		goto on_error;
@@ -89,42 +89,42 @@ int libcreg_data_block_entry_initialize(
 	return( 1 );
 
 on_error:
-	if( *data_block_entry != NULL )
+	if( *key_descriptor != NULL )
 	{
 		memory_free(
-		 *data_block_entry );
+		 *key_descriptor );
 
-		*data_block_entry = NULL;
+		*key_descriptor = NULL;
 	}
 	return( -1 );
 }
 
-/* Frees a data block entry
+/* Frees a key descriptor
  * Returns 1 if successful or -1 on error
  */
-int libcreg_data_block_entry_free(
-     libcreg_data_block_entry_t **data_block_entry,
+int libcreg_key_descriptor_free(
+     libcreg_key_descriptor_t **key_descriptor,
      libcerror_error_t **error )
 {
-	static char *function = "libcreg_data_block_entry_free";
+	static char *function = "libcreg_key_descriptor_free";
 
-	if( data_block_entry == NULL )
+	if( key_descriptor == NULL )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid data block entry.",
+		 "%s: invalid key descriptor.",
 		 function );
 
 		return( -1 );
 	}
-	if( *data_block_entry != NULL )
+	if( *key_descriptor != NULL )
 	{
 		memory_free(
-		 *data_block_entry );
+		 *key_descriptor );
 
-		*data_block_entry = NULL;
+		*key_descriptor = NULL;
 	}
 	return( 1 );
 }

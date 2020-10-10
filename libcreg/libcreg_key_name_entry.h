@@ -78,12 +78,6 @@ int libcreg_key_name_entry_free(
      libcreg_key_name_entry_t **key_name_entry,
      libcerror_error_t **error );
 
-int libcreg_key_name_entry_read_entry_size(
-     const uint8_t *data,
-     size_t data_size,
-     size_t *entry_size,
-     libcerror_error_t **error );
-
 int libcreg_key_name_entry_read_data(
      libcreg_key_name_entry_t *key_name_entry,
      const uint8_t *data,
@@ -96,6 +90,43 @@ int libcreg_key_name_entry_read_values(
      int number_of_values,
      const uint8_t *value_entries_data,
      size_t value_entries_data_size,
+     int ascii_codepage,
+     libcerror_error_t **error );
+
+int libcreg_key_name_entry_get_name_size(
+     libcreg_key_name_entry_t *key_name_entry,
+     size_t *name_size,
+     libcerror_error_t **error );
+
+int libcreg_key_name_entry_get_name(
+     libcreg_key_name_entry_t *key_name_entry,
+     uint8_t *name,
+     size_t name_size,
+     libcerror_error_t **error );
+
+int libcreg_key_name_entry_get_utf8_name_size(
+     libcreg_key_name_entry_t *key_name_entry,
+     size_t *utf8_string_size,
+     int ascii_codepage,
+     libcerror_error_t **error );
+
+int libcreg_key_name_entry_get_utf8_name(
+     libcreg_key_name_entry_t *key_name_entry,
+     uint8_t *utf8_string,
+     size_t utf8_string_size,
+     int ascii_codepage,
+     libcerror_error_t **error );
+
+int libcreg_key_name_entry_get_utf16_name_size(
+     libcreg_key_name_entry_t *key_name_entry,
+     size_t *utf16_string_size,
+     int ascii_codepage,
+     libcerror_error_t **error );
+
+int libcreg_key_name_entry_get_utf16_name(
+     libcreg_key_name_entry_t *key_name_entry,
+     uint16_t *utf16_string,
+     size_t utf16_string_size,
      int ascii_codepage,
      libcerror_error_t **error );
 

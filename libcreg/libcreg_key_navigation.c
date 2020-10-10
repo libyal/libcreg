@@ -651,28 +651,6 @@ int libcreg_key_navigation_read_data_blocks(
 
 				goto on_error;
 			}
-#if defined( HAVE_DEBUG_OUTPUT )
-			if( libcnotify_verbose != 0 )
-			{
-				if( libcreg_data_block_read_entries(
-				     data_block,
-				     file_io_handle,
-				     (int (*)(const uint8_t *, size_t, size_t *, libcerror_error_t **)) &libcreg_key_name_entry_read_entry_size,
-				     key_navigation->io_handle->ascii_codepage,
-				     error ) != 1 )
-				{
-					libcerror_error_set(
-					 error,
-					 LIBCERROR_ERROR_DOMAIN_IO,
-					 LIBCERROR_IO_ERROR_READ_FAILED,
-					 "%s: unable to read data block entries.",
-					 function );
-
-					goto on_error;
-				}
-			}
-#endif /* defined( HAVE_DEBUG_OUTPUT ) */
-
 			if( libfdata_list_append_element(
 			     key_navigation->data_blocks_list,
 			     &data_block_index,
@@ -981,7 +959,6 @@ int libcreg_key_navigation_read_data_block_element_data(
 	if( libcreg_data_block_read_entries(
 	     data_block,
 	     file_io_handle,
-	     (int (*)(const uint8_t *, size_t, size_t *, libcerror_error_t **)) &libcreg_key_name_entry_read_entry_size,
 	     io_handle->ascii_codepage,
 	     error ) != 1 )
 	{

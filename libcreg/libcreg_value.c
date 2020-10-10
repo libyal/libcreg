@@ -23,10 +23,6 @@
 #include <memory.h>
 #include <types.h>
 
-#if defined( HAVE_WCTYPE_H ) || defined( HAVE_WINAPI )
-#include <wctype.h>
-#endif
-
 #include "libcreg_definitions.h"
 #include "libcreg_io_handle.h"
 #include "libcreg_libcerror.h"

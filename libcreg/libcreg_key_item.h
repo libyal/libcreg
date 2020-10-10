@@ -25,37 +25,154 @@
 #include <common.h>
 #include <types.h>
 
+#include "libcreg_key_descriptor.h"
+#include "libcreg_key_name_entry.h"
 #include "libcreg_key_navigation.h"
 #include "libcreg_libbfio.h"
+#include "libcreg_libcdata.h"
 #include "libcreg_libcerror.h"
-#include "libcreg_libfdata.h"
+#include "libcreg_value_entry.h"
 
 #if defined( __cplusplus )
 extern "C" {
 #endif
 
-int libcreg_key_item_read_node_data(
-     libcreg_key_navigation_t *key_navigation,
-     libbfio_handle_t *file_io_handle,
-     libfdata_tree_node_t *node,
-     libfdata_cache_t *cache,
-     int node_data_file_index,
-     off64_t node_data_offset,
-     size64_t node_data_size,
-     uint32_t node_data_flags,
-     uint8_t read_flags,
+typedef struct libcreg_key_item libcreg_key_item_t;
+
+struct libcreg_key_item
+{
+	/* The key name entry
+	 */
+	libcreg_key_name_entry_t *key_name_entry;
+
+	/* The sub key descriptors
+	 */
+	libcdata_array_t *sub_key_descriptors;
+
+	/* Various item flags
+	 */
+	uint8_t item_flags;
+};
+
+int libcreg_key_item_initialize(
+     libcreg_key_item_t **key_item,
      libcerror_error_t **error );
 
-int libcreg_key_item_read_sub_nodes(
-     libcreg_key_navigation_t *key_navigation,
+int libcreg_key_item_free(
+     libcreg_key_item_t **key_item,
+     libcerror_error_t **error );
+
+int libcreg_key_item_read(
+     libcreg_key_item_t *key_item,
      libbfio_handle_t *file_io_handle,
-     libfdata_tree_node_t *node,
-     libfdata_cache_t *cache,
-     int sub_nodes_data_file_index,
-     off64_t sub_nodes_data_offset,
-     size64_t sub_nodes_data_size,
-     uint32_t sub_nodes_data_flags,
-     uint8_t read_flags,
+     libcreg_key_navigation_t *key_navigation,
+     off64_t key_offset,
+     libcerror_error_t **error );
+
+int libcreg_key_item_read_key_name_entry(
+     libcreg_key_name_entry_t *key_name_entry,
+     libbfio_handle_t *file_io_handle,
+     libcreg_key_navigation_t *key_navigation,
+     off64_t key_offset,
+     libcerror_error_t **error );
+
+int libcreg_key_item_is_corrupted(
+     libcreg_key_item_t *key_item,
+     libcerror_error_t **error );
+
+int libcreg_key_item_get_name_size(
+     libcreg_key_item_t *key_item,
+     size_t *name_size,
+     libcerror_error_t **error );
+
+int libcreg_key_item_get_name(
+     libcreg_key_item_t *key_item,
+     uint8_t *name,
+     size_t name_size,
+     libcerror_error_t **error );
+
+int libcreg_key_item_get_utf8_name_size(
+     libcreg_key_item_t *key_item,
+     size_t *utf8_string_size,
+     int ascii_codepage,
+     libcerror_error_t **error );
+
+int libcreg_key_item_get_utf8_name(
+     libcreg_key_item_t *key_item,
+     uint8_t *utf8_string,
+     size_t utf8_string_size,
+     int ascii_codepage,
+     libcerror_error_t **error );
+
+int libcreg_key_item_get_utf16_name_size(
+     libcreg_key_item_t *key_item,
+     size_t *utf16_string_size,
+     int ascii_codepage,
+     libcerror_error_t **error );
+
+int libcreg_key_item_get_utf16_name(
+     libcreg_key_item_t *key_item,
+     uint16_t *utf16_string,
+     size_t utf16_string_size,
+     int ascii_codepage,
+     libcerror_error_t **error );
+
+int libcreg_key_item_get_number_of_value_entries(
+     libcreg_key_item_t *key_item,
+     int *number_of_value_entries,
+     libcerror_error_t **error );
+
+int libcreg_key_item_get_value_entry_by_index(
+     libcreg_key_item_t *key_item,
+     int value_index,
+     libcreg_value_entry_t **value_entry,
+     libcerror_error_t **error );
+
+int libcreg_key_item_get_value_by_utf8_name(
+     libcreg_key_item_t *key_item,
+     const uint8_t *utf8_string,
+     size_t utf8_string_length,
+     int ascii_codepage,
+     libcreg_value_entry_t **value_entry,
+     libcerror_error_t **error );
+
+int libcreg_key_item_get_value_by_utf16_name(
+     libcreg_key_item_t *key_item,
+     const uint16_t *utf16_string,
+     size_t utf16_string_length,
+     int ascii_codepage,
+     libcreg_value_entry_t **value_entry,
+     libcerror_error_t **error );
+
+int libcreg_key_item_get_number_of_sub_key_descriptors(
+     libcreg_key_item_t *key_item,
+     int *number_of_sub_key_descriptors,
+     libcerror_error_t **error );
+
+int libcreg_key_item_get_sub_key_descriptor_by_index(
+     libcreg_key_item_t *key_item,
+     int sub_key_descriptor_index,
+     libcreg_key_descriptor_t **sub_key_descriptor,
+     libcerror_error_t **error );
+
+int libcreg_key_item_get_sub_key_descriptor_by_utf8_name(
+     libcreg_key_item_t *key_item,
+     libbfio_handle_t *file_io_handle,
+     libcreg_key_navigation_t *key_navigation,
+     const uint8_t *utf8_string,
+     size_t utf8_string_length,
+     int ascii_codepage,
+     libcreg_key_descriptor_t **sub_key_descriptor,
+     libcerror_error_t **error );
+
+int libcreg_key_item_get_sub_key_descriptor_by_utf16_name(
+     libcreg_key_item_t *key_item,
+     libbfio_handle_t *file_io_handle,
+     libcreg_key_navigation_t *key_navigation,
+     const uint16_t *utf16_string,
+     size_t utf16_string_length,
+     int ascii_codepage,
+     libcreg_key_descriptor_t **sub_key_descriptor,
      libcerror_error_t **error );
 
 #if defined( __cplusplus )

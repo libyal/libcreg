@@ -306,7 +306,7 @@ on_error:
 	return( NULL );
 }
 
-/* Intializes an value object
+/* Initializes an value object
  * Returns 0 if successful or -1 on error
  */
 int pycreg_value_init(

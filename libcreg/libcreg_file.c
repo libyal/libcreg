@@ -25,10 +25,6 @@
 #include <types.h>
 #include <wide_string.h>
 
-#if defined( HAVE_WCTYPE_H )
-#include <wctype.h>
-#endif
-
 #include "libcreg_codepage.h"
 #include "libcreg_data_block.h"
 #include "libcreg_debug.h"
@@ -42,8 +38,8 @@
 #include "libcreg_libbfio.h"
 #include "libcreg_libcerror.h"
 #include "libcreg_libcnotify.h"
+#include "libcreg_libcthreads.h"
 #include "libcreg_libfcache.h"
-#include "libcreg_libfdata.h"
 #include "libcreg_libuna.h"
 
 #include "creg_file_header.h"
@@ -123,6 +119,21 @@ int libcreg_file_initialize(
 
 		goto on_error;
 	}
+#if defined( HAVE_LIBCREG_MULTI_THREAD_SUPPORT )
+	if( libcthreads_read_write_lock_initialize(
+	     &( internal_file->read_write_lock ),
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
+		 "%s: unable to initialize read/write lock.",
+		 function );
+
+		goto on_error;
+	}
+#endif
 	*file = (libcreg_file_t *) internal_file;
 
 	return( 1 );
@@ -180,6 +191,21 @@ int libcreg_file_free(
 		}
 		*file = NULL;
 
+#if defined( HAVE_LIBCREG_MULTI_THREAD_SUPPORT )
+		if( libcthreads_read_write_lock_free(
+		     &( internal_file->read_write_lock ),
+		     error ) != 1 )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
+			 "%s: unable to free read/write lock.",
+			 function );
+
+			result = -1;
+		}
+#endif
 		if( libcreg_io_handle_free(
 		     &( internal_file->io_handle ),
 		     error ) != 1 )
@@ -348,8 +374,40 @@ int libcreg_file_open(
 
 		goto on_error;
 	}
+#if defined( HAVE_LIBCREG_MULTI_THREAD_SUPPORT )
+	if( libcthreads_read_write_lock_grab_for_write(
+	     internal_file->read_write_lock,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to grab read/write lock for writing.",
+		 function );
+
+		goto on_error;
+	}
+#endif
 	internal_file->file_io_handle_created_in_library = 1;
 
+#if defined( HAVE_LIBCREG_MULTI_THREAD_SUPPORT )
+	if( libcthreads_read_write_lock_release_for_write(
+	     internal_file->read_write_lock,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to release read/write lock for writing.",
+		 function );
+
+		internal_file->file_io_handle_created_in_library = 0;
+
+		goto on_error;
+	}
+#endif
 	return( 1 );
 
 on_error:
@@ -488,8 +546,40 @@ int libcreg_file_open_wide(
 
 		goto on_error;
 	}
+#if defined( HAVE_LIBCREG_MULTI_THREAD_SUPPORT )
+	if( libcthreads_read_write_lock_grab_for_write(
+	     internal_file->read_write_lock,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to grab read/write lock for writing.",
+		 function );
+
+		goto on_error;
+	}
+#endif
 	internal_file->file_io_handle_created_in_library = 1;
 
+#if defined( HAVE_LIBCREG_MULTI_THREAD_SUPPORT )
+	if( libcthreads_read_write_lock_release_for_write(
+	     internal_file->read_write_lock,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to release read/write lock for writing.",
+		 function );
+
+		internal_file->file_io_handle_created_in_library = 0;
+
+		goto on_error;
+	}
+#endif
 	return( 1 );
 
 on_error:
@@ -513,11 +603,11 @@ int libcreg_file_open_file_io_handle(
      int access_flags,
      libcerror_error_t **error )
 {
-	libcreg_internal_file_t *internal_file = NULL;
-	static char *function                  = "libcreg_file_open_file_io_handle";
-	int bfio_access_flags                  = 0;
-	int file_io_handle_is_open             = 0;
-	int file_io_handle_opened_in_library   = 0;
+	libcreg_internal_file_t *internal_file   = NULL;
+	static char *function                    = "libcreg_file_open_file_io_handle";
+	uint8_t file_io_handle_opened_in_library = 0;
+	int bfio_access_flags                    = 0;
+	int file_io_handle_is_open               = 0;
 
 	if( file == NULL )
 	{
@@ -526,6 +616,19 @@ int libcreg_file_open_file_io_handle(
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
 		 "%s: invalid file.",
+		 function );
+
+		return( -1 );
+	}
+	internal_file = (libcreg_internal_file_t *) file;
+
+	if( internal_file->file_io_handle != NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_VALUE_ALREADY_SET,
+		 "%s: invalid file - file IO handle already set.",
 		 function );
 
 		return( -1 );
@@ -564,8 +667,6 @@ int libcreg_file_open_file_io_handle(
 
 		return( -1 );
 	}
-	internal_file = (libcreg_internal_file_t *) file;
-
 	if( ( access_flags & LIBCREG_ACCESS_FLAG_READ ) != 0 )
 	{
 		bfio_access_flags = LIBBFIO_ACCESS_FLAG_READ;
@@ -603,7 +704,7 @@ int libcreg_file_open_file_io_handle(
 		}
 		file_io_handle_opened_in_library = 1;
 	}
-	if( libcreg_file_open_read(
+	if( libcreg_internal_file_open_read(
 	     internal_file,
 	     file_io_handle,
 	     error ) != 1 )
@@ -617,9 +718,42 @@ int libcreg_file_open_file_io_handle(
 
 		goto on_error;
 	}
+#if defined( HAVE_LIBCREG_MULTI_THREAD_SUPPORT )
+	if( libcthreads_read_write_lock_grab_for_write(
+	     internal_file->read_write_lock,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to grab read/write lock for writing.",
+		 function );
+
+		goto on_error;
+	}
+#endif
 	internal_file->file_io_handle                   = file_io_handle;
 	internal_file->file_io_handle_opened_in_library = file_io_handle_opened_in_library;
 
+#if defined( HAVE_LIBCREG_MULTI_THREAD_SUPPORT )
+	if( libcthreads_read_write_lock_release_for_write(
+	     internal_file->read_write_lock,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to release read/write lock for writing.",
+		 function );
+
+		internal_file->file_io_handle                   = NULL;
+		internal_file->file_io_handle_opened_in_library = 0;
+
+		goto on_error;
+	}
+#endif
 	return( 1 );
 
 on_error:
@@ -667,6 +801,21 @@ int libcreg_file_close(
 
 		return( -1 );
 	}
+#if defined( HAVE_LIBCREG_MULTI_THREAD_SUPPORT )
+	if( libcthreads_read_write_lock_grab_for_write(
+	     internal_file->read_write_lock,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to grab read/write lock for writing.",
+		 function );
+
+		return( -1 );
+	}
+#endif
 #if defined( HAVE_DEBUG_OUTPUT )
 	if( libcnotify_verbose != 0 )
 	{
@@ -682,8 +831,6 @@ int libcreg_file_close(
 				 LIBCERROR_RUNTIME_ERROR_PRINT_FAILED,
 				 "%s: unable to print the read offsets.",
 				 function );
-
-				result = -1;
 			}
 		}
 	}
@@ -753,50 +900,33 @@ int libcreg_file_close(
 			result = -1;
 		}
 	}
-	if( internal_file->key_tree != NULL )
+#if defined( HAVE_LIBCREG_MULTI_THREAD_SUPPORT )
+	if( libcthreads_read_write_lock_release_for_write(
+	     internal_file->read_write_lock,
+	     error ) != 1 )
 	{
-		if( libfdata_tree_free(
-		     &( internal_file->key_tree ),
-		     error ) != 1 )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
-			 "%s: unable to free key tree.",
-			 function );
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to release read/write lock for writing.",
+		 function );
 
-			result = -1;
-		}
+		return( -1 );
 	}
-	if( internal_file->key_cache != NULL )
-	{
-		if( libfcache_cache_free(
-		     &( internal_file->key_cache ),
-		     error ) != 1 )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
-			 "%s: unable to free key cache.",
-			 function );
-
-			result = -1;
-		}
-	}
+#endif
 	return( result );
 }
 
 /* Opens a file for reading
  * Returns 1 if successful or -1 on error
  */
-int libcreg_file_open_read(
+int libcreg_internal_file_open_read(
      libcreg_internal_file_t *internal_file,
      libbfio_handle_t *file_io_handle,
      libcerror_error_t **error )
 {
-	static char *function                 = "libcreg_file_open_read";
+	static char *function                 = "libcreg_internal_file_open_read";
 	size64_t file_size                    = 0;
 	uint16_t header_number_of_data_blocks = 0;
 	int number_of_data_blocks             = 0;
@@ -831,17 +961,6 @@ int libcreg_file_open_read(
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 		 LIBCERROR_RUNTIME_ERROR_VALUE_ALREADY_SET,
 		 "%s: invalid file - key navigation already set.",
-		 function );
-
-		return( -1 );
-	}
-	if( internal_file->key_tree != NULL )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_VALUE_ALREADY_SET,
-		 "%s: invalid file - key tree already set.",
 		 function );
 
 		return( -1 );
@@ -974,73 +1093,11 @@ int libcreg_file_open_read(
 				goto on_error;
 			}
 /* TODO free & clone function */
-			if( libfdata_tree_initialize(
-			     &( internal_file->key_tree ),
-			     (intptr_t *) internal_file->key_navigation,
-			     NULL,
-			     NULL,
-			     (int (*)(intptr_t *, intptr_t *, libfdata_tree_node_t *, libfdata_cache_t *, int, off64_t, size64_t, uint32_t, uint8_t, libcerror_error_t **)) &libcreg_key_item_read_node_data,
-			     (int (*)(intptr_t *, intptr_t *, libfdata_tree_node_t *, libfdata_cache_t *, int, off64_t, size64_t, uint32_t, uint8_t, libcerror_error_t **)) &libcreg_key_item_read_sub_nodes,
-			     LIBFDATA_DATA_HANDLE_FLAG_NON_MANAGED,
-			     error ) != 1 )
-			{
-				libcerror_error_set(
-				 error,
-				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-				 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
-				 "%s: unable to create key tree.",
-				 function );
-
-				goto on_error;
-			}
-			if( libfdata_tree_set_root_node(
-			     internal_file->key_tree,
-			     0,
-			     (off64_t) 0x20,
-			     0,
-			     0,
-			     error ) != 1 )
-			{
-				libcerror_error_set(
-				 error,
-				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-				 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
-				 "%s: unable to set key tree root node.",
-				 function );
-
-				goto on_error;
-			}
-			if( libfcache_cache_initialize(
-			     &( internal_file->key_cache ),
-			     LIBCREG_MAXIMUM_CACHE_ENTRIES_KEYS,
-			     error ) != 1 )
-			{
-				libcerror_error_set(
-				 error,
-				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-				 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
-				 "%s: unable to create key cache.",
-				 function );
-
-				goto on_error;
-			}
 		}
 	}
 	return( 1 );
 
 on_error:
-	if( internal_file->key_cache != NULL )
-	{
-		libfcache_cache_free(
-		 &( internal_file->key_cache ),
-		 NULL );
-	}
-	if( internal_file->key_tree != NULL )
-	{
-		libfdata_tree_free(
-		 &( internal_file->key_tree ),
-		 NULL );
-	}
 	if( internal_file->key_navigation != NULL )
 	{
 		libcreg_key_navigation_free(
@@ -1059,6 +1116,7 @@ int libcreg_file_is_corrupted(
 {
 	libcreg_internal_file_t *internal_file = NULL;
 	static char *function                  = "libcreg_file_is_corrupted";
+	int result                             = 0;
 
 	if( file == NULL )
 	{
@@ -1084,11 +1142,41 @@ int libcreg_file_is_corrupted(
 
 		return( -1 );
 	}
+#if defined( HAVE_LIBCREG_MULTI_THREAD_SUPPORT )
+	if( libcthreads_read_write_lock_grab_for_read(
+	     internal_file->read_write_lock,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to grab read/write lock for reading.",
+		 function );
+
+		return( -1 );
+	}
+#endif
 	if( ( internal_file->io_handle->flags & LIBCREG_IO_HANDLE_FLAG_IS_CORRUPTED ) != 0 )
 	{
-		return( 1 );
+		result = 1;
 	}
-	return( 0 );
+#if defined( HAVE_LIBCREG_MULTI_THREAD_SUPPORT )
+	if( libcthreads_read_write_lock_release_for_read(
+	     internal_file->read_write_lock,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to release read/write lock for reading.",
+		 function );
+
+		return( -1 );
+	}
+#endif
+	return( result );
 }
 
 /* Retrieves the file ASCII codepage
@@ -1137,8 +1225,38 @@ int libcreg_file_get_ascii_codepage(
 
 		return( -1 );
 	}
+#if defined( HAVE_LIBCREG_MULTI_THREAD_SUPPORT )
+	if( libcthreads_read_write_lock_grab_for_read(
+	     internal_file->read_write_lock,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to grab read/write lock for reading.",
+		 function );
+
+		return( -1 );
+	}
+#endif
 	*ascii_codepage = internal_file->io_handle->ascii_codepage;
 
+#if defined( HAVE_LIBCREG_MULTI_THREAD_SUPPORT )
+	if( libcthreads_read_write_lock_release_for_read(
+	     internal_file->read_write_lock,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to release read/write lock for reading.",
+		 function );
+
+		return( -1 );
+	}
+#endif
 	return( 1 );
 }
 
@@ -1202,8 +1320,38 @@ int libcreg_file_set_ascii_codepage(
 
 		return( -1 );
 	}
+#if defined( HAVE_LIBCREG_MULTI_THREAD_SUPPORT )
+	if( libcthreads_read_write_lock_grab_for_write(
+	     internal_file->read_write_lock,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to grab read/write lock for writing.",
+		 function );
+
+		return( -1 );
+	}
+#endif
 	internal_file->io_handle->ascii_codepage = ascii_codepage;
 
+#if defined( HAVE_LIBCREG_MULTI_THREAD_SUPPORT )
+	if( libcthreads_read_write_lock_release_for_write(
+	     internal_file->read_write_lock,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to release read/write lock for writing.",
+		 function );
+
+		return( -1 );
+	}
+#endif
 	return( 1 );
 }
 
@@ -1265,9 +1413,39 @@ int libcreg_file_get_format_version(
 
 		return( -1 );
 	}
+#if defined( HAVE_LIBCREG_MULTI_THREAD_SUPPORT )
+	if( libcthreads_read_write_lock_grab_for_read(
+	     internal_file->read_write_lock,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to grab read/write lock for reading.",
+		 function );
+
+		return( -1 );
+	}
+#endif
 	*major_version = internal_file->io_handle->major_version;
 	*minor_version = internal_file->io_handle->minor_version;
 
+#if defined( HAVE_LIBCREG_MULTI_THREAD_SUPPORT )
+	if( libcthreads_read_write_lock_release_for_read(
+	     internal_file->read_write_lock,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to release read/write lock for reading.",
+		 function );
+
+		return( -1 );
+	}
+#endif
 	return( 1 );
 }
 
@@ -1317,8 +1495,38 @@ int libcreg_file_get_type(
 
 		return( -1 );
 	}
+#if defined( HAVE_LIBCREG_MULTI_THREAD_SUPPORT )
+	if( libcthreads_read_write_lock_grab_for_read(
+	     internal_file->read_write_lock,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to grab read/write lock for reading.",
+		 function );
+
+		return( -1 );
+	}
+#endif
 	*file_type = internal_file->io_handle->file_type;
 
+#if defined( HAVE_LIBCREG_MULTI_THREAD_SUPPORT )
+	if( libcthreads_read_write_lock_release_for_read(
+	     internal_file->read_write_lock,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to release read/write lock for reading.",
+		 function );
+
+		return( -1 );
+	}
+#endif
 	return( 1 );
 }
 
@@ -1330,9 +1538,8 @@ int libcreg_file_get_root_key(
      libcreg_key_t **root_key,
      libcerror_error_t **error )
 {
-	libfdata_tree_node_t *key_tree_root_node = NULL;
-	libcreg_internal_file_t *internal_file   = NULL;
-	static char *function                    = "libcreg_file_get_root_key";
+	libcreg_internal_file_t *internal_file = NULL;
+	static char *function                  = "libcreg_file_get_root_key";
 
 	if( file == NULL )
 	{
@@ -1369,30 +1576,13 @@ int libcreg_file_get_root_key(
 
 		return( -1 );
 	}
-	if( internal_file->key_tree == NULL )
-	{
-		return( 0 );
-	}
-	if( libfdata_tree_get_root_node(
-	     internal_file->key_tree,
-	     &key_tree_root_node,
-	     error ) != 1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to retrieve key tree root node.",
-		 function );
-
-		return( -1 );
-	}
+/* TODO implement thread lock */
 	if( libcreg_key_initialize(
 	     root_key,
 	     internal_file->io_handle,
 	     internal_file->file_io_handle,
-	     key_tree_root_node,
-	     internal_file->key_cache,
+	     internal_file->key_navigation,
+	     LIBCREG_ROOT_KEY_OFFSET,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -1418,17 +1608,9 @@ int libcreg_file_get_key_by_utf8_path(
      libcreg_key_t **key,
      libcerror_error_t **error )
 {
-	libcreg_internal_file_t *internal_file       = NULL;
-	libcreg_key_name_entry_t *sub_key_name_entry = NULL;
-	libfdata_tree_node_t *key_tree_node          = NULL;
-	libfdata_tree_node_t *key_tree_sub_node      = NULL;
-	uint8_t *utf8_string_segment                 = NULL;
-	static char *function                        = "libcreg_file_get_key_by_utf8_path";
-	libuna_unicode_character_t unicode_character = 0;
-	size_t utf8_string_index                     = 0;
-	size_t utf8_string_segment_length            = 0;
-	uint32_t name_hash                           = 0;
-	int result                                   = 0;
+	libcreg_internal_file_t *internal_file = NULL;
+	static char *function                  = "libcreg_file_get_key_by_utf8_path";
+	int result                             = 0;
 
 	if( file == NULL )
 	{
@@ -1498,125 +1680,58 @@ int libcreg_file_get_key_by_utf8_path(
 
 		return( -1 );
 	}
-	if( utf8_string_length > 0 )
-	{
-		/* Ignore a leading separator
-		 */
-		if( utf8_string[ utf8_string_index ] == (uint8_t) LIBCREG_SEPARATOR )
-		{
-			utf8_string_index++;
-		}
-	}
-	if( libfdata_tree_get_root_node(
-	     internal_file->key_tree,
-	     &key_tree_node,
+#if defined( HAVE_LIBCREG_MULTI_THREAD_SUPPORT )
+	if( libcthreads_read_write_lock_grab_for_write(
+	     internal_file->read_write_lock,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to retrieve key tree root node.",
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to grab read/write lock for writing.",
 		 function );
 
 		return( -1 );
 	}
-	if( ( utf8_string_length == 0 )
-	 || ( utf8_string_length == 1 ) )
+#endif
+	result = libcreg_key_tree_get_sub_key_by_utf8_path(
+	          internal_file->io_handle,
+	          internal_file->file_io_handle,
+	          internal_file->key_navigation,
+	          (off64_t) LIBCREG_ROOT_KEY_OFFSET,
+	          utf8_string,
+	          utf8_string_length,
+	          internal_file->io_handle->ascii_codepage,
+	          key,
+		  error );
+
+	if( result == -1 )
 	{
-		result = 1;
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve key by UTF-8 path.",
+		 function );
+
+		result = -1;
 	}
-	else while( utf8_string_index < utf8_string_length )
+#if defined( HAVE_LIBCREG_MULTI_THREAD_SUPPORT )
+	if( libcthreads_read_write_lock_release_for_write(
+	     internal_file->read_write_lock,
+	     error ) != 1 )
 	{
-		utf8_string_segment        = (uint8_t *) &( utf8_string[ utf8_string_index ] );
-		utf8_string_segment_length = utf8_string_index;
-		name_hash                  = 0;
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to release read/write lock for writing.",
+		 function );
 
-		while( utf8_string_index < utf8_string_length )
-		{
-			if( libuna_unicode_character_copy_from_utf8(
-			     &unicode_character,
-			     utf8_string,
-			     utf8_string_length,
-			     &utf8_string_index,
-			     error ) != 1 )
-			{
-				libcerror_error_set(
-				 error,
-				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-				 LIBCERROR_RUNTIME_ERROR_COPY_FAILED,
-				 "%s: unable to copy UTF-8 string to Unicode character.",
-				 function );
-
-				return( -1 );
-			}
-			if( ( unicode_character == (libuna_unicode_character_t) LIBCREG_SEPARATOR )
-			 || ( unicode_character == 0 ) )
-			{
-				utf8_string_segment_length += 1;
-
-				break;
-			}
-			name_hash *= 37;
-			name_hash += (uint32_t) towupper( (wint_t) unicode_character );
-		}
-		utf8_string_segment_length = utf8_string_index - utf8_string_segment_length;
-
-		if( utf8_string_segment_length == 0 )
-		{
-			result = 0;
-		}
-		else
-		{
-			result = libcreg_key_tree_get_sub_key_values_by_utf8_name(
-				  key_tree_node,
-				  internal_file->file_io_handle,
-				  internal_file->key_cache,
-				  name_hash,
-				  utf8_string_segment,
-				  utf8_string_segment_length,
-				  internal_file->io_handle->ascii_codepage,
-				  &key_tree_sub_node,
-				  &sub_key_name_entry,
-				  error );
-		}
-		if( result == -1 )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-			 "%s: unable to retrieve sub key values by name.",
-			 function );
-
-			return( -1 );
-		}
-		else if( result == 0 )
-		{
-			break;
-		}
-		key_tree_node = key_tree_sub_node;
+		return( -1 );
 	}
-	if( result != 0 )
-	{
-		if( libcreg_key_initialize(
-		     key,
-		     internal_file->io_handle,
-		     internal_file->file_io_handle,
-		     key_tree_node,
-		     internal_file->key_cache,
-		     error ) != 1 )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
-			 "%s: unable to create key.",
-			 function );
-
-			return( -1 );
-		}
-	}
+#endif
 	return( result );
 }
 
@@ -1631,17 +1746,9 @@ int libcreg_file_get_key_by_utf16_path(
      libcreg_key_t **key,
      libcerror_error_t **error )
 {
-	libcreg_internal_file_t *internal_file       = NULL;
-	libcreg_key_name_entry_t *sub_key_name_entry = NULL;
-	libfdata_tree_node_t *key_tree_node          = NULL;
-	libfdata_tree_node_t *key_tree_sub_node      = NULL;
-	uint16_t *utf16_string_segment               = NULL;
-	static char *function                        = "libcreg_file_get_key_by_utf16_path";
-	libuna_unicode_character_t unicode_character = 0;
-	size_t utf16_string_index                    = 0;
-	size_t utf16_string_segment_length           = 0;
-	uint32_t name_hash                           = 0;
-	int result                                   = 0;
+	libcreg_internal_file_t *internal_file = NULL;
+	static char *function                  = "libcreg_file_get_key_by_utf16_path";
+	int result                             = 0;
 
 	if( file == NULL )
 	{
@@ -1711,125 +1818,58 @@ int libcreg_file_get_key_by_utf16_path(
 
 		return( -1 );
 	}
-	if( utf16_string_length > 0 )
-	{
-		/* Ignore a leading separator
-		 */
-		if( utf16_string[ utf16_string_index ] == (uint16_t) LIBCREG_SEPARATOR )
-		{
-			utf16_string_index++;
-		}
-	}
-	if( libfdata_tree_get_root_node(
-	     internal_file->key_tree,
-	     &key_tree_node,
+#if defined( HAVE_LIBCREG_MULTI_THREAD_SUPPORT )
+	if( libcthreads_read_write_lock_grab_for_write(
+	     internal_file->read_write_lock,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to retrieve key tree root node.",
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to grab read/write lock for writing.",
 		 function );
 
 		return( -1 );
 	}
-	if( ( utf16_string_length == 0 )
-	 || ( utf16_string_length == 1 ) )
+#endif
+	result = libcreg_key_tree_get_sub_key_by_utf16_path(
+	          internal_file->io_handle,
+	          internal_file->file_io_handle,
+	          internal_file->key_navigation,
+	          (off64_t) LIBCREG_ROOT_KEY_OFFSET,
+	          utf16_string,
+	          utf16_string_length,
+	          internal_file->io_handle->ascii_codepage,
+	          key,
+		  error );
+
+	if( result == -1 )
 	{
-		result = 1;
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve key by UTF-16 path.",
+		 function );
+
+		result = -1;
 	}
-	else while( utf16_string_index < utf16_string_length )
+#if defined( HAVE_LIBCREG_MULTI_THREAD_SUPPORT )
+	if( libcthreads_read_write_lock_release_for_write(
+	     internal_file->read_write_lock,
+	     error ) != 1 )
 	{
-		utf16_string_segment        = (uint16_t *) &( utf16_string[ utf16_string_index ] );
-		utf16_string_segment_length = utf16_string_index;
-		name_hash                   = 0;
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to release read/write lock for writing.",
+		 function );
 
-		while( utf16_string_index < utf16_string_length )
-		{
-			if( libuna_unicode_character_copy_from_utf16(
-			     &unicode_character,
-			     utf16_string,
-			     utf16_string_length,
-			     &utf16_string_index,
-			     error ) != 1 )
-			{
-				libcerror_error_set(
-				 error,
-				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-				 LIBCERROR_RUNTIME_ERROR_COPY_FAILED,
-				 "%s: unable to copy UTF-16 string to Unicode character.",
-				 function );
-
-				return( -1 );
-			}
-			if( ( unicode_character == (libuna_unicode_character_t) LIBCREG_SEPARATOR )
-			 || ( unicode_character == 0 ) )
-			{
-				utf16_string_segment_length += 1;
-
-				break;
-			}
-			name_hash *= 37;
-			name_hash += (uint32_t) towupper( (wint_t) unicode_character );
-		}
-		utf16_string_segment_length = utf16_string_index - utf16_string_segment_length;
-
-		if( utf16_string_segment_length == 0 )
-		{
-			result = 0;
-		}
-		else
-		{
-			result = libcreg_key_tree_get_sub_key_values_by_utf16_name(
-				  key_tree_node,
-				  internal_file->file_io_handle,
-				  internal_file->key_cache,
-				  name_hash,
-				  utf16_string_segment,
-				  utf16_string_segment_length,
-				  internal_file->io_handle->ascii_codepage,
-				  &key_tree_sub_node,
-				  &sub_key_name_entry,
-				  error );
-		}
-		if( result == -1 )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-			 "%s: unable to retrieve sub key values by name.",
-			 function );
-
-			return( -1 );
-		}
-		else if( result == 0 )
-		{
-			break;
-		}
-		key_tree_node = key_tree_sub_node;
+		return( -1 );
 	}
-	if( result != 0 )
-	{
-		if( libcreg_key_initialize(
-		     key,
-		     internal_file->io_handle,
-		     internal_file->file_io_handle,
-		     key_tree_node,
-		     internal_file->key_cache,
-		     error ) != 1 )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
-			 "%s: unable to create key.",
-			 function );
-
-			return( -1 );
-		}
-	}
+#endif
 	return( result );
 }
 

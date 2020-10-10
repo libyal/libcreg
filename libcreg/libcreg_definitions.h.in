@@ -85,7 +85,7 @@ enum LIBCREG_VALUE_TYPES
 	LIBCREG_VALUE_TYPE_INTEGER_64BIT_LITTLE_ENDIAN	= 11
 };
 
-#endif
+#endif /* !defined( HAVE_LOCAL_LIBCREG ) */
 
 /* The IO handle flags
  */
@@ -94,6 +94,15 @@ enum LIBCREG_IO_HANDLE_FLAGS
 	/* The file is corrupted
 	 */
 	LIBCREG_IO_HANDLE_FLAG_IS_CORRUPTED		= 0x01
+};
+
+/* The item flags
+ */
+enum LIBCREG_ITEM_FLAGS
+{
+	/* The item is corrupted
+	 */
+	LIBCREG_ITEM_FLAG_IS_CORRUPTED			= 0x01
 };
 
 /* The key name entry flags
@@ -114,9 +123,11 @@ enum LIBCREG_VALUE_ENTRY_FLAGS
 	LIBCREG_VALUE_ENTRY_FLAG_IS_CORRUPTED		= 0x01
 };
 
+#define LIBCREG_ROOT_KEY_OFFSET				0x20
+
 #define LIBCREG_MAXIMUM_CACHE_ENTRIES_DATA_BLOCKS	64 * 1024
 #define LIBCREG_MAXIMUM_CACHE_ENTRIES_KEYS		256 * 1024
 #define LIBCREG_MAXIMUM_CACHE_ENTRIES_VALUES		128
 
-#endif
+#endif /* !defined( _LIBCREG_INTERNAL_DEFINITIONS_H ) */
 

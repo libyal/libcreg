@@ -27,10 +27,11 @@
 
 #include "libcreg_extern.h"
 #include "libcreg_io_handle.h"
+#include "libcreg_key_item.h"
+#include "libcreg_key_navigation.h"
 #include "libcreg_libbfio.h"
 #include "libcreg_libcerror.h"
-#include "libcreg_libfcache.h"
-#include "libcreg_libfdata.h"
+#include "libcreg_libcthreads.h"
 #include "libcreg_types.h"
 
 #if defined( __cplusplus )
@@ -49,21 +50,31 @@ struct libcreg_internal_key
 	 */
 	libbfio_handle_t *file_io_handle;
 
-	/* The key tree node
+	/* The key offset
 	 */
-	libfdata_tree_node_t *key_tree_node;
+	off64_t key_offset;
 
-	/* The key cache
+	/* The key item
 	 */
-	libfcache_cache_t *key_cache;
+	libcreg_key_item_t *key_item;
+
+	/* The key navigation
+	 */
+	libcreg_key_navigation_t *key_navigation;
+
+#if defined( HAVE_LIBCREG_MULTI_THREAD_SUPPORT )
+	/* The read/write lock
+	 */
+	libcthreads_read_write_lock_t *read_write_lock;
+#endif
 };
 
 int libcreg_key_initialize(
      libcreg_key_t **key,
      libcreg_io_handle_t *io_handle,
      libbfio_handle_t *file_io_handle,
-     libfdata_tree_node_t *key_tree_node,
-     libfcache_cache_t *key_cache,
+     libcreg_key_navigation_t *key_navigation,
+     uint32_t key_offset,
      libcerror_error_t **error );
 
 LIBCREG_EXTERN \
@@ -128,13 +139,6 @@ int libcreg_key_get_number_of_values(
      libcerror_error_t **error );
 
 LIBCREG_EXTERN \
-int libcreg_key_get_value(
-     libcreg_key_t *key,
-     int value_index,
-     libcreg_value_t **value,
-     libcerror_error_t **error );
-
-LIBCREG_EXTERN \
 int libcreg_key_get_value_by_index(
      libcreg_key_t *key,
      int value_index,
@@ -161,13 +165,6 @@ LIBCREG_EXTERN \
 int libcreg_key_get_number_of_sub_keys(
      libcreg_key_t *key,
      int *number_of_sub_keys,
-     libcerror_error_t **error );
-
-LIBCREG_EXTERN \
-int libcreg_key_get_sub_key(
-     libcreg_key_t *key,
-     int sub_key_index,
-     libcreg_key_t **sub_key,
      libcerror_error_t **error );
 
 LIBCREG_EXTERN \

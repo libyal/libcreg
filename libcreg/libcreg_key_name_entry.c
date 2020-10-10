@@ -181,91 +181,8 @@ int libcreg_key_name_entry_free(
 	return( result );
 }
 
-/* Reads a key name entry size
- * Callback function for the data block
- * Returns 1 if successful or -1 on error
- */
-int libcreg_key_name_entry_read_entry_size(
-     const uint8_t *data,
-     size_t data_size,
-     size_t *entry_size,
-     libcerror_error_t **error )
-{
-	static char *function        = "libcreg_key_name_entry_read_entry_size";
-	uint32_t key_name_entry_size = 0;
-
-	if( data == NULL )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
-		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid data.",
-		 function );
-
-		return( -1 );
-	}
-	if( data_size < sizeof( creg_key_name_entry_t ) )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
-		 LIBCERROR_ARGUMENT_ERROR_VALUE_TOO_SMALL,
-		 "%s: invalid data size value too small.",
-		 function );
-
-		return( -1 );
-	}
-	if( data_size > (size_t) SSIZE_MAX )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
-		 LIBCERROR_ARGUMENT_ERROR_VALUE_EXCEEDS_MAXIMUM,
-		 "%s: invalid data size value exceeds maximum.",
-		 function );
-
-		return( -1 );
-	}
-	if( entry_size == NULL )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
-		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid entry size.",
-		 function );
-
-		return( -1 );
-	}
-	byte_stream_copy_to_uint32_little_endian(
-	 ( (creg_key_name_entry_t *) data )->size,
-	 key_name_entry_size );
-
-#if SIZEOF_SIZE_T <= 4
-	if( ( key_name_entry_size < sizeof( creg_key_name_entry_t ) )
-	 || ( key_name_entry_size > (size_t) SSIZE_MAX ) )
-#else
-	if( ( key_name_entry_size < sizeof( creg_key_name_entry_t ) )
-	 || ( key_name_entry_size > (uint32_t) SSIZE_MAX ) )
-#endif
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
-		 "%s: invalid key name entry data size value out of bounds.",
-		 function );
-
-		return( -1 );
-	}
-	*entry_size = (size_t) key_name_entry_size;
-
-	return( 1 );
-}
-
 /* Reads a key name entry
- * Returns 1 if successful or -1 on error
+ * Returns 1 if successful, 0 if the key name entry is invalid or -1 on error
  */
 int libcreg_key_name_entry_read_data(
      libcreg_key_name_entry_t *key_name_entry,
@@ -309,24 +226,14 @@ int libcreg_key_name_entry_read_data(
 
 		return( -1 );
 	}
-	if( data_size < sizeof( creg_key_name_entry_t ) )
+	if( ( data_size < sizeof( creg_key_name_entry_t ) )
+	 || ( data_size > (size_t) SSIZE_MAX ) )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
-		 LIBCERROR_ARGUMENT_ERROR_VALUE_TOO_SMALL,
-		 "%s: invalid data size value too small.",
-		 function );
-
-		return( -1 );
-	}
-	if( data_size > (size_t) SSIZE_MAX )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
-		 LIBCERROR_ARGUMENT_ERROR_VALUE_EXCEEDS_MAXIMUM,
-		 "%s: invalid data size value exceeds maximum.",
+		 LIBCERROR_ARGUMENT_ERROR_VALUE_OUT_OF_BOUNDS,
+		 "%s: invalid data size value out of bounds.",
 		 function );
 
 		return( -1 );
@@ -335,33 +242,25 @@ int libcreg_key_name_entry_read_data(
 	 ( (creg_key_name_entry_t *) data )->size,
 	 key_name_entry->size );
 
-#if SIZEOF_SIZE_T <= 4
-	if( ( key_name_entry->size < sizeof( creg_key_name_entry_t ) )
-	 || ( key_name_entry->size > (size_t) SSIZE_MAX ) )
-#else
-	if( ( key_name_entry->size < sizeof( creg_key_name_entry_t ) )
-	 || ( key_name_entry->size > (uint32_t) SSIZE_MAX ) )
-#endif
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
-		 "%s: invalid entry data size value out of bounds.",
-		 function );
+	byte_stream_copy_to_uint16_little_endian(
+	 ( (creg_key_name_entry_t *) data )->index,
+	 key_name_entry->index );
 
-		goto on_error;
+	if( key_name_entry->index == 0xffff )
+	{
+		return( 0 );
 	}
-	if( (size_t) key_name_entry->size > data_size )
+	if( ( key_name_entry->size < sizeof( creg_key_name_entry_t ) )
+	 || ( key_name_entry->size > data_size ) )
 	{
 		libcerror_error_set(
 		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
-		 "%s: invalid entry data size value out of bounds.",
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_VALUE_OUT_OF_BOUNDS,
+		 "%s: invalid data size value out of bounds.",
 		 function );
 
-		goto on_error;
+		return( -1 );
 	}
 #if defined( HAVE_DEBUG_OUTPUT )
 	if( libcnotify_verbose != 0 )
@@ -375,10 +274,6 @@ int libcreg_key_name_entry_read_data(
 		 LIBCNOTIFY_PRINT_DATA_FLAG_GROUP_DATA );
 	}
 #endif
-	byte_stream_copy_to_uint16_little_endian(
-	 ( (creg_key_name_entry_t *) data )->index,
-	 key_name_entry->index );
-
 	byte_stream_copy_to_uint32_little_endian(
 	 ( (creg_key_name_entry_t *) data )->used_size,
 	 used_size );
@@ -437,6 +332,7 @@ int libcreg_key_name_entry_read_data(
 	}
 #endif /* defined( HAVE_DEBUG_OUTPUT ) */
 
+/* TODO refactor */
 #if SIZEOF_SIZE_T <= 4
 	if( ( used_size < sizeof( creg_key_name_entry_t ) )
 	 || ( used_size > (size_t) SSIZE_MAX ) )
@@ -746,6 +642,313 @@ on_error:
 		 NULL );
 	}
 	return( -1 );
+}
+
+/* Retrieves the key name size
+ * Returns 1 if successful or -1 on error
+ */
+int libcreg_key_name_entry_get_name_size(
+     libcreg_key_name_entry_t *key_name_entry,
+     size_t *name_size,
+     libcerror_error_t **error )
+{
+	static char *function = "libcreg_key_name_entry_get_name_size";
+
+	if( key_name_entry == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid named key.",
+		 function );
+
+		return( -1 );
+	}
+	if( name_size == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid name size.",
+		 function );
+
+		return( -1 );
+	}
+	if( key_name_entry->name == NULL )
+	{
+		*name_size = 0;
+	}
+	else
+	{
+		*name_size = key_name_entry->name_size;
+	}
+	return( 1 );
+}
+
+/* Retrieves the key name
+ * Returns 1 if successful or -1 on error
+ */
+int libcreg_key_name_entry_get_name(
+     libcreg_key_name_entry_t *key_name_entry,
+     uint8_t *name,
+     size_t name_size,
+     libcerror_error_t **error )
+{
+	static char *function = "libcreg_key_name_entry_get_name";
+
+	if( key_name_entry == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid named key.",
+		 function );
+
+		return( -1 );
+	}
+	if( name == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid name.",
+		 function );
+
+		return( -1 );
+	}
+	if( name_size > (size_t) SSIZE_MAX )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_VALUE_EXCEEDS_MAXIMUM,
+		 "%s: invalid name size value exceeds maximum.",
+		 function );
+
+		return( -1 );
+	}
+	if( key_name_entry->name == NULL )
+	{
+		if( name_size < 1 )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+			 LIBCERROR_ARGUMENT_ERROR_VALUE_OUT_OF_BOUNDS,
+			 "%s: invalid name size value out of bounds.",
+			 function );
+
+			return( -1 );
+		}
+		name[ 0 ] = 0;
+	}
+	else
+	{
+		if( name_size < key_name_entry->name_size )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+			 LIBCERROR_ARGUMENT_ERROR_VALUE_OUT_OF_BOUNDS,
+			 "%s: invalid name size value out of bounds.",
+			 function );
+
+			return( -1 );
+		}
+		if( memory_copy(
+		     name,
+		     key_name_entry->name,
+		     key_name_entry->name_size ) == NULL )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_MEMORY,
+			 LIBCERROR_MEMORY_ERROR_COPY_FAILED,
+			 "%s: unable to copy name.",
+			 function );
+
+			return( -1 );
+		}
+	}
+	return( 1 );
+}
+
+/* Retrieves the UTF-8 string size of the key name
+ * The returned size includes the end of string character
+ * Returns 1 if successful or -1 on error
+ */
+int libcreg_key_name_entry_get_utf8_name_size(
+     libcreg_key_name_entry_t *key_name_entry,
+     size_t *utf8_string_size,
+     int ascii_codepage,
+     libcerror_error_t **error )
+{
+	static char *function = "libcreg_key_name_entry_get_utf8_name_size";
+
+	if( key_name_entry == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid named key.",
+		 function );
+
+		return( -1 );
+	}
+	if( libuna_utf8_string_size_from_byte_stream(
+	     key_name_entry->name,
+	     (size_t) key_name_entry->name_size,
+	     ascii_codepage,
+	     utf8_string_size,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve UTF-8 string size.",
+		 function );
+
+		return( -1 );
+	}
+	return( 1 );
+}
+
+/* Retrieves the UTF-8 string value of the key name
+ * The function uses a codepage if necessary, it uses the codepage set for the library
+ * The size should include the end of string character
+ * Returns 1 if successful or -1 on error
+ */
+int libcreg_key_name_entry_get_utf8_name(
+     libcreg_key_name_entry_t *key_name_entry,
+     uint8_t *utf8_string,
+     size_t utf8_string_size,
+     int ascii_codepage,
+     libcerror_error_t **error )
+{
+	static char *function = "libcreg_key_name_entry_get_utf8_name";
+
+	if( key_name_entry == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid named key.",
+		 function );
+
+		return( -1 );
+	}
+	if( libuna_utf8_string_copy_from_byte_stream(
+	     utf8_string,
+	     utf8_string_size,
+	     key_name_entry->name,
+	     (size_t) key_name_entry->name_size,
+	     ascii_codepage,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve UTF-8 string.",
+		 function );
+
+		return( -1 );
+	}
+	return( 1 );
+}
+
+/* Retrieves the UTF-16 string size of the key name
+ * The returned size includes the end of string character
+ * Returns 1 if successful or -1 on error
+ */
+int libcreg_key_name_entry_get_utf16_name_size(
+     libcreg_key_name_entry_t *key_name_entry,
+     size_t *utf16_string_size,
+     int ascii_codepage,
+     libcerror_error_t **error )
+{
+	static char *function = "libcreg_key_name_entry_get_utf16_name_size";
+
+	if( key_name_entry == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid named key.",
+		 function );
+
+		return( -1 );
+	}
+	if( libuna_utf16_string_size_from_byte_stream(
+	     key_name_entry->name,
+	     (size_t) key_name_entry->name_size,
+	     ascii_codepage,
+	     utf16_string_size,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve UTF-16 string size.",
+		 function );
+
+		return( -1 );
+	}
+	return( 1 );
+}
+
+/* Retrieves the UTF-16 string value of the key name
+ * The function uses a codepage if necessary, it uses the codepage set for the library
+ * The size should include the end of string character
+ * Returns 1 if successful or -1 on error
+ */
+int libcreg_key_name_entry_get_utf16_name(
+     libcreg_key_name_entry_t *key_name_entry,
+     uint16_t *utf16_string,
+     size_t utf16_string_size,
+     int ascii_codepage,
+     libcerror_error_t **error )
+{
+	static char *function = "libcreg_key_name_entry_get_utf16_name";
+
+	if( key_name_entry == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid named key.",
+		 function );
+
+		return( -1 );
+	}
+	if( libuna_utf16_string_copy_from_byte_stream(
+	     utf16_string,
+	     utf16_string_size,
+	     key_name_entry->name,
+	     (size_t) key_name_entry->name_size,
+	     ascii_codepage,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve UTF-16 string.",
+		 function );
+
+		return( -1 );
+	}
+	return( 1 );
 }
 
 /* Retrieves the number of value entries

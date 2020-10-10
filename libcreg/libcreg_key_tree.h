@@ -25,38 +25,34 @@
 #include <common.h>
 #include <types.h>
 
-#include "libcreg_key_name_entry.h"
+#include "libcreg_key_navigation.h"
 #include "libcreg_libbfio.h"
 #include "libcreg_libcerror.h"
-#include "libcreg_libfcache.h"
-#include "libcreg_libfdata.h"
 
 #if defined( __cplusplus )
 extern "C" {
 #endif
 
-int libcreg_key_tree_get_sub_key_values_by_utf8_name(
-     libfdata_tree_node_t *key_tree_node,
+int libcreg_key_tree_get_sub_key_by_utf8_path(
+     libcreg_io_handle_t *io_handle,
      libbfio_handle_t *file_io_handle,
-     libfcache_cache_t *key_cache,
-     uint32_t name_hash,
+     libcreg_key_navigation_t *key_navigation,
+     uint32_t key_offset,
      const uint8_t *utf8_string,
      size_t utf8_string_length,
      int ascii_codepage,
-     libfdata_tree_node_t **key_tree_sub_node,
-     libcreg_key_name_entry_t **sub_key_name_entry,
+     libcreg_key_t **sub_key,
      libcerror_error_t **error );
 
-int libcreg_key_tree_get_sub_key_values_by_utf16_name(
-     libfdata_tree_node_t *key_tree_node,
+int libcreg_key_tree_get_sub_key_by_utf16_path(
+     libcreg_io_handle_t *io_handle,
      libbfio_handle_t *file_io_handle,
-     libfcache_cache_t *key_cache,
-     uint32_t name_hash,
+     libcreg_key_navigation_t *key_navigation,
+     uint32_t key_offset,
      const uint16_t *utf16_string,
      size_t utf16_string_length,
      int ascii_codepage,
-     libfdata_tree_node_t **key_tree_sub_node,
-     libcreg_key_name_entry_t **sub_key_name_entry,
+     libcreg_key_t **sub_key,
      libcerror_error_t **error );
 
 #if defined( __cplusplus )

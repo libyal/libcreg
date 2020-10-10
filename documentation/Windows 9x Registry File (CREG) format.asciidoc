@@ -10,11 +10,10 @@ Analysis of the 9x Registry file format
 
 A Windows 9x/Me Registry File is used by Microsoft Windows 95, 98 and Me to
 store a part of the Windows Registry. This specification is based on earlier
-work on the format and was complimented by reverse engineering.
+work on the format and was complimented by analyzing test data.
 
-This document is intended as a working document for the Windows 9x/Me Registry
-File (CREG) format specification. Which should allow existing Open Source
-forensic tooling to be able to process this file type.
+This document is intended as a working document of the data format specification
+for the libcreg project.
 
 Special thanks to unknown author B.D. for his work on the format.
 
@@ -54,6 +53,7 @@ in the section entitled "GNU Free Documentation License".
 | 0.0.5 | J.B. Metz | January 2016 | Additional information about format.
 | 0.0.6 | J.B. Metz | January 2020 | Formatting changes.
 | 0.0.7 | J.B. Metz | July 2020 | Additional information about format.
+| 0.0.8 | J.B. Metz | October 2020 | Additional information about format.
 |===
 
 :numbered:
@@ -194,6 +194,7 @@ The number of the data block, starting with 0, the corresponding key name entry 
 === Hashing method
 
 If you have the key name:
+
 ....
 Software\Microsoft
 ....
@@ -201,11 +202,13 @@ Software\Microsoft
 A hash is determined per part of the key. The parts of the key are separated by
 the backslash character. A separate part of the key is first changed into
 uppercase. So the keys are case insensitive.
+
 ....
 SOFTWARE
 ....
 
 Every character value in the key part is added to each other:
+
 ....
 hash_value = 0;
 
@@ -272,6 +275,9 @@ Can contain remnant data
 
 [NOTE]
 Windows 95 seems to use the used size where Windows 98 seems to no longer use this value.
+
+[NOTE]
+An index value of 0xffff (-1) seems to indicate the key name entry is not used.
 
 === Value entry
 

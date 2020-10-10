@@ -22,270 +22,493 @@
 #include <common.h>
 #include <types.h>
 
+#if defined( HAVE_WCTYPE_H ) || defined( HAVE_WINAPI )
+#include <wctype.h>
+#endif
+
 #include "libcreg_definitions.h"
-#include "libcreg_key_name_entry.h"
+#include "libcreg_key.h"
+#include "libcreg_key_descriptor.h"
+#include "libcreg_key_item.h"
+#include "libcreg_key_navigation.h"
 #include "libcreg_key_tree.h"
 #include "libcreg_libcerror.h"
-#include "libcreg_libfcache.h"
-#include "libcreg_libfdata.h"
+#include "libcreg_libuna.h"
+#include "libcreg_types.h"
 
-/* Retrieves the sub key values (key tree node and key name entry) for the specific UTF-8 formatted name
- * Returns 1 if successful, 0 if no such sub key name entry or -1 on error
+/* Retrieves the key for the specific UTF-8 encoded path
+ * The path separator is the \ character
+ * Creates a new key
+ * Returns 1 if successful, 0 if no such key or -1 on error
  */
-int libcreg_key_tree_get_sub_key_values_by_utf8_name(
-     libfdata_tree_node_t *key_tree_node,
+int libcreg_key_tree_get_sub_key_by_utf8_path(
+     libcreg_io_handle_t *io_handle,
      libbfio_handle_t *file_io_handle,
-     libfcache_cache_t *key_cache,
-     uint32_t name_hash,
+     libcreg_key_navigation_t *key_navigation,
+     uint32_t key_offset,
      const uint8_t *utf8_string,
      size_t utf8_string_length,
      int ascii_codepage,
-     libfdata_tree_node_t **key_tree_sub_node,
-     libcreg_key_name_entry_t **sub_key_name_entry,
+     libcreg_key_t **sub_key,
      libcerror_error_t **error )
 {
-	static char *function  = "libcreg_key_tree_get_sub_key_values_by_utf8_name";
-	int number_of_sub_keys = 0;
-	int result             = 0;
-	int sub_key_index      = 0;
+	libcreg_key_descriptor_t *sub_key_descriptor = NULL;
+	libcreg_key_item_t *sub_key_item             = NULL;
+	uint8_t *utf8_string_segment                 = NULL;
+	static char *function                        = "libcreg_key_tree_get_sub_key_by_utf8_path";
+	libuna_unicode_character_t unicode_character = 0;
+	size_t utf8_string_index                     = 0;
+	size_t utf8_string_segment_length            = 0;
+	uint32_t name_hash                           = 0;
+	uint32_t sub_key_offset                      = 0;
+	int result                                   = 0;
 
-	if( key_tree_sub_node == NULL )
+	if( utf8_string == NULL )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid key tree sub node.",
+		 "%s: invalid UTF-8 string.",
 		 function );
 
 		return( -1 );
 	}
-	if( sub_key_name_entry == NULL )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
-		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid sub key name entry.",
-		 function );
-
-		return( -1 );
-	}
-	if( libfdata_tree_node_get_number_of_sub_nodes(
-	     key_tree_node,
-	     (intptr_t *) file_io_handle,
-	     (libfdata_cache_t *) key_cache,
-	     &number_of_sub_keys,
-	     0,
-	     error ) != 1 )
+	if( utf8_string_length > (size_t) SSIZE_MAX )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to retrieve number of sub keys.",
+		 LIBCERROR_RUNTIME_ERROR_VALUE_EXCEEDS_MAXIMUM,
+		 "%s: invalid UTF-8 string length value exceeds maximum.",
 		 function );
 
 		return( -1 );
 	}
-	for( sub_key_index = 0;
-	     sub_key_index < number_of_sub_keys;
-	     sub_key_index++ )
+	if( sub_key == NULL )
 	{
-		if( libfdata_tree_node_get_sub_node_by_index(
-		     key_tree_node,
-		     (intptr_t *) file_io_handle,
-		     (libfdata_cache_t *) key_cache,
-		     sub_key_index,
-		     key_tree_sub_node,
-		     0,
-		     error ) != 1 )
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid sub key.",
+		 function );
+
+		return( -1 );
+	}
+	if( *sub_key != NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_VALUE_ALREADY_SET,
+		 "%s: sub key already set.",
+		 function );
+
+		return( -1 );
+	}
+	sub_key_offset = key_offset;
+
+	if( utf8_string_length > 0 )
+	{
+		/* Ignore a leading separator
+		 */
+		if( utf8_string[ utf8_string_index ] == (uint8_t) LIBCREG_SEPARATOR )
 		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-			 "%s: unable to retrieve key tree sub node: %d.",
-			 function,
-			 sub_key_index );
-
-			return( -1 );
+			utf8_string_index++;
 		}
-		if( libfdata_tree_node_get_node_value(
-		     *key_tree_sub_node,
-		     (intptr_t *) file_io_handle,
-		     (libfdata_cache_t *) key_cache,
-		     (intptr_t **) sub_key_name_entry,
-		     0,
-		     error ) != 1 )
+	}
+	/* If the string is empty return the current key
+	 */
+	if( utf8_string_length == utf8_string_index )
+	{
+		result = 1;
+	}
+	else while( utf8_string_index < utf8_string_length )
+	{
+		utf8_string_segment        = (uint8_t *) &( utf8_string[ utf8_string_index ] );
+		utf8_string_segment_length = utf8_string_index;
+		name_hash                  = 0;
+
+		while( utf8_string_index < utf8_string_length )
 		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-			 "%s: unable to retrieve sub key name entry.",
-			 function );
+			if( libuna_unicode_character_copy_from_utf8(
+			     &unicode_character,
+			     utf8_string,
+			     utf8_string_length,
+			     &utf8_string_index,
+			     error ) != 1 )
+			{
+				libcerror_error_set(
+				 error,
+				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+				 LIBCERROR_RUNTIME_ERROR_COPY_FAILED,
+				 "%s: unable to copy UTF-8 string to Unicode character.",
+				 function );
 
-			return( -1 );
+				goto on_error;
+			}
+			if( ( unicode_character == (libuna_unicode_character_t) LIBCREG_SEPARATOR )
+			 || ( unicode_character == 0 ) )
+			{
+				utf8_string_segment_length += 1;
+
+				break;
+			}
+			name_hash *= 37;
+			name_hash += (uint32_t) towupper( (wint_t) unicode_character );
 		}
-		result = libcreg_key_name_entry_compare_name_with_utf8_string(
-		          *sub_key_name_entry,
-		          name_hash,
-		          utf8_string,
-		          utf8_string_length,
-		          ascii_codepage,
-		          error );
+		utf8_string_segment_length = utf8_string_index - utf8_string_segment_length;
 
+		if( utf8_string_segment_length == 0 )
+		{
+			result = 0;
+		}
+		else
+		{
+/* TODO: instead of key item directory read key descriptors ? */
+			if( libcreg_key_item_initialize(
+			     &sub_key_item,
+			     error ) != 1 )
+			{
+				libcerror_error_set(
+				 error,
+				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+				 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
+				 "%s: unable to create sub key item.",
+				 function );
+
+				goto on_error;
+			}
+			if( libcreg_key_item_read(
+			     sub_key_item,
+			     file_io_handle,
+			     key_navigation,
+			     sub_key_offset,
+			     error ) != 1 )
+			{
+				libcerror_error_set(
+				 error,
+				 LIBCERROR_ERROR_DOMAIN_IO,
+				 LIBCERROR_IO_ERROR_READ_FAILED,
+				 "%s: unable to read sub key item at offset: %" PRIu32 " (0x%08" PRIx32 ").",
+				 function,
+				 sub_key_offset,
+				 sub_key_offset );
+
+				goto on_error;
+			}
+			result = libcreg_key_item_get_sub_key_descriptor_by_utf8_name(
+			          sub_key_item,
+			          file_io_handle,
+			          key_navigation,
+				  utf8_string_segment,
+				  utf8_string_segment_length,
+				  ascii_codepage,
+			          &sub_key_descriptor,
+			          error );
+
+			if( result == 1 )
+			{
+				sub_key_offset = sub_key_descriptor->key_offset;
+			}
+			if( libcreg_key_item_free(
+			     &sub_key_item,
+			     error ) != 1 )
+			{
+				libcerror_error_set(
+				 error,
+				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+				 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
+				 "%s: unable to free sub key item.",
+				 function );
+
+				goto on_error;
+			}
+		}
 		if( result == -1 )
 		{
 			libcerror_error_set(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_GENERIC,
-			 "%s: unable to compare sub key name with UTF-8 string.",
+			 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+			 "%s: unable to retrieve sub key values by name.",
 			 function );
 
-			return( -1 );
+			goto on_error;
 		}
-		else if( result != 0 )
+		else if( result == 0 )
 		{
 			break;
 		}
 	}
-	if( sub_key_index >= number_of_sub_keys )
+	if( result != 0 )
 	{
-		return( 0 );
+		if( libcreg_key_initialize(
+		     sub_key,
+		     io_handle,
+		     file_io_handle,
+		     key_navigation,
+		     sub_key_offset,
+		     error ) != 1 )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
+			 "%s: unable to create sub key.",
+			 function );
+
+			goto on_error;
+		}
 	}
-	return( 1 );
+	return( result );
+
+on_error:
+	if( sub_key_item != NULL )
+	{
+		libcreg_key_item_free(
+		 &sub_key_item,
+		 NULL );
+	}
+	return( -1 );
 }
 
-/* Retrieves the sub key values (key tree node and key name entry) for the specific UTF-16 formatted name
- * Returns 1 if successful, 0 if no such sub key name entry or -1 on error
+/* Retrieves the key for the specific UTF-16 encoded path
+ * The path separator is the \ character
+ * Creates a new key
+ * Returns 1 if successful, 0 if no such key or -1 on error
  */
-int libcreg_key_tree_get_sub_key_values_by_utf16_name(
-     libfdata_tree_node_t *key_tree_node,
+int libcreg_key_tree_get_sub_key_by_utf16_path(
+     libcreg_io_handle_t *io_handle,
      libbfio_handle_t *file_io_handle,
-     libfcache_cache_t *key_cache,
-     uint32_t name_hash,
+     libcreg_key_navigation_t *key_navigation,
+     uint32_t key_offset,
      const uint16_t *utf16_string,
      size_t utf16_string_length,
      int ascii_codepage,
-     libfdata_tree_node_t **key_tree_sub_node,
-     libcreg_key_name_entry_t **sub_key_name_entry,
+     libcreg_key_t **sub_key,
      libcerror_error_t **error )
 {
-	static char *function  = "libcreg_key_tree_get_sub_key_values_by_utf16_name";
-	int number_of_sub_keys = 0;
-	int result             = 0;
-	int sub_key_index      = 0;
+	libcreg_key_descriptor_t *sub_key_descriptor = NULL;
+	libcreg_key_item_t *sub_key_item             = NULL;
+	uint16_t *utf16_string_segment               = NULL;
+	static char *function                        = "libcreg_key_tree_get_sub_key_by_utf16_path";
+	libuna_unicode_character_t unicode_character = 0;
+	size_t utf16_string_index                    = 0;
+	size_t utf16_string_segment_length           = 0;
+	uint32_t name_hash                           = 0;
+	uint32_t sub_key_offset                      = 0;
+	int result                                   = 0;
 
-	if( key_tree_sub_node == NULL )
+	if( utf16_string == NULL )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid key tree sub node.",
+		 "%s: invalid UTF-16 string.",
 		 function );
 
 		return( -1 );
 	}
-	if( sub_key_name_entry == NULL )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
-		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid sub key name entry.",
-		 function );
-
-		return( -1 );
-	}
-	if( libfdata_tree_node_get_number_of_sub_nodes(
-	     key_tree_node,
-	     (intptr_t *) file_io_handle,
-	     (libfdata_cache_t *) key_cache,
-	     &number_of_sub_keys,
-	     0,
-	     error ) != 1 )
+	if( utf16_string_length > (size_t) SSIZE_MAX )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to retrieve number of sub keys.",
+		 LIBCERROR_RUNTIME_ERROR_VALUE_EXCEEDS_MAXIMUM,
+		 "%s: invalid UTF-16 string length value exceeds maximum.",
 		 function );
 
 		return( -1 );
 	}
-	for( sub_key_index = 0;
-	     sub_key_index < number_of_sub_keys;
-	     sub_key_index++ )
+	if( sub_key == NULL )
 	{
-		if( libfdata_tree_node_get_sub_node_by_index(
-		     key_tree_node,
-		     (intptr_t *) file_io_handle,
-		     (libfdata_cache_t *) key_cache,
-		     sub_key_index,
-		     key_tree_sub_node,
-		     0,
-		     error ) != 1 )
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid sub key.",
+		 function );
+
+		return( -1 );
+	}
+	if( *sub_key != NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_VALUE_ALREADY_SET,
+		 "%s: sub key already set.",
+		 function );
+
+		return( -1 );
+	}
+	sub_key_offset = key_offset;
+
+	if( utf16_string_length > 0 )
+	{
+		/* Ignore a leading separator
+		 */
+		if( utf16_string[ utf16_string_index ] == (uint16_t) LIBCREG_SEPARATOR )
 		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-			 "%s: unable to retrieve key tree sub node: %d.",
-			 function,
-			 sub_key_index );
-
-			return( -1 );
+			utf16_string_index++;
 		}
-		if( libfdata_tree_node_get_node_value(
-		     *key_tree_sub_node,
-		     (intptr_t *) file_io_handle,
-		     (libfdata_cache_t *) key_cache,
-		     (intptr_t **) sub_key_name_entry,
-		     0,
-		     error ) != 1 )
+	}
+	/* If the string is empty return the current key
+	 */
+	if( utf16_string_length == utf16_string_index )
+	{
+		result = 1;
+	}
+	else while( utf16_string_index < utf16_string_length )
+	{
+		utf16_string_segment        = (uint16_t *) &( utf16_string[ utf16_string_index ] );
+		utf16_string_segment_length = utf16_string_index;
+		name_hash                   = 0;
+
+		while( utf16_string_index < utf16_string_length )
 		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-			 "%s: unable to retrieve sub key name entry.",
-			 function );
+			if( libuna_unicode_character_copy_from_utf16(
+			     &unicode_character,
+			     utf16_string,
+			     utf16_string_length,
+			     &utf16_string_index,
+			     error ) != 1 )
+			{
+				libcerror_error_set(
+				 error,
+				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+				 LIBCERROR_RUNTIME_ERROR_COPY_FAILED,
+				 "%s: unable to copy UTF-16 string to Unicode character.",
+				 function );
 
-			return( -1 );
+				goto on_error;
+			}
+			if( ( unicode_character == (libuna_unicode_character_t) LIBCREG_SEPARATOR )
+			 || ( unicode_character == 0 ) )
+			{
+				utf16_string_segment_length += 1;
+
+				break;
+			}
+			name_hash *= 37;
+			name_hash += (uint32_t) towupper( (wint_t) unicode_character );
 		}
-		result = libcreg_key_name_entry_compare_name_with_utf16_string(
-		          *sub_key_name_entry,
-		          name_hash,
-		          utf16_string,
-		          utf16_string_length,
-		          ascii_codepage,
-		          error );
+		utf16_string_segment_length = utf16_string_index - utf16_string_segment_length;
 
+		if( utf16_string_segment_length == 0 )
+		{
+			result = 0;
+		}
+		else
+		{
+/* TODO: instead of key item directory read key descriptors ? */
+			if( libcreg_key_item_initialize(
+			     &sub_key_item,
+			     error ) != 1 )
+			{
+				libcerror_error_set(
+				 error,
+				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+				 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
+				 "%s: unable to create sub key item.",
+				 function );
+
+				goto on_error;
+			}
+			if( libcreg_key_item_read(
+			     sub_key_item,
+			     file_io_handle,
+			     key_navigation,
+			     sub_key_offset,
+			     error ) != 1 )
+			{
+				libcerror_error_set(
+				 error,
+				 LIBCERROR_ERROR_DOMAIN_IO,
+				 LIBCERROR_IO_ERROR_READ_FAILED,
+				 "%s: unable to read sub key item at offset: %" PRIu32 " (0x%08" PRIx32 ").",
+				 function,
+				 sub_key_offset,
+				 sub_key_offset );
+
+				goto on_error;
+			}
+			result = libcreg_key_item_get_sub_key_descriptor_by_utf16_name(
+			          sub_key_item,
+			          file_io_handle,
+			          key_navigation,
+				  utf16_string_segment,
+				  utf16_string_segment_length,
+				  ascii_codepage,
+			          &sub_key_descriptor,
+			          error );
+
+			if( result == 1 )
+			{
+				sub_key_offset = sub_key_descriptor->key_offset;
+			}
+			if( libcreg_key_item_free(
+			     &sub_key_item,
+			     error ) != 1 )
+			{
+				libcerror_error_set(
+				 error,
+				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+				 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
+				 "%s: unable to free sub key item.",
+				 function );
+
+				goto on_error;
+			}
+		}
 		if( result == -1 )
 		{
 			libcerror_error_set(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_GENERIC,
-			 "%s: unable to compare sub key name with UTF-16 string.",
+			 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+			 "%s: unable to retrieve sub key values by name.",
 			 function );
 
-			return( -1 );
+			goto on_error;
 		}
-		else if( result != 0 )
+		else if( result == 0 )
 		{
 			break;
 		}
 	}
-	if( sub_key_index >= number_of_sub_keys )
+	if( result != 0 )
 	{
-		return( 0 );
+		if( libcreg_key_initialize(
+		     sub_key,
+		     io_handle,
+		     file_io_handle,
+		     key_navigation,
+		     sub_key_offset,
+		     error ) != 1 )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
+			 "%s: unable to create sub key.",
+			 function );
+
+			goto on_error;
+		}
 	}
-	return( 1 );
+	return( result );
+
+on_error:
+	if( sub_key_item != NULL )
+	{
+		libcreg_key_item_free(
+		 &sub_key_item,
+		 NULL );
+	}
+	return( -1 );
 }
 

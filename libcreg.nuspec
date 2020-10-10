@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>libcreg</id>
-    <version>20200814</version>
+    <version>20201009</version>
     <authors>Joachim Metz</authors>
     <owners>joachimmetz</owners>
     <licenseUrl>https://raw.githubusercontent.com/libyal/libcreg/master/COPYING.LESSER</licenseUrl>
@@ -10,7 +10,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <title>libcreg</title>
     <description>Library to access the Windows 9x/Me Registry File (CREG) format</description>
-    <releaseNotes>Release of libcreg 20200814</releaseNotes>
+    <releaseNotes>Release of libcreg 20201009</releaseNotes>
     <copyright>Copyright (C) 2013-2020</copyright>
     <tags>native</tags>
   </metadata>

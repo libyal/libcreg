@@ -1,5 +1,5 @@
 /*
- * Data block entry functions
+ * Key descriptor functions
  *
  * Copyright (C) 2013-2020, Joachim Metz <joachim.metz@gmail.com>
  *
@@ -19,8 +19,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#if !defined( _LIBCREG_DATA_BLOCK_ENTRY_H )
-#define _LIBCREG_DATA_BLOCK_ENTRY_H
+#if !defined( _LIBCREG_KEY_DESCRIPTOR_H )
+#define _LIBCREG_KEY_DESCRIPTOR_H
 
 #include <common.h>
 #include <types.h>
@@ -31,34 +31,26 @@
 extern "C" {
 #endif
 
-typedef struct libcreg_data_block_entry libcreg_data_block_entry_t;
+typedef struct libcreg_key_descriptor libcreg_key_descriptor_t;
 
-struct libcreg_data_block_entry
+struct libcreg_key_descriptor
 {
-	/* The data of the entry
+	/* The key offset
 	 */
-	uint8_t *data;
-
-	/* The offset of the entry
-	 */
-	size_t offset;
-
-	/* The size of the entry
-	 */
-	size_t size;
+	uint32_t key_offset;
 };
 
-int libcreg_data_block_entry_initialize(
-     libcreg_data_block_entry_t **data_block_entry,
+int libcreg_key_descriptor_initialize(
+     libcreg_key_descriptor_t **key_descriptor,
      libcerror_error_t **error );
 
-int libcreg_data_block_entry_free(
-     libcreg_data_block_entry_t **data_block_entry,
+int libcreg_key_descriptor_free(
+     libcreg_key_descriptor_t **key_descriptor,
      libcerror_error_t **error );
 
 #if defined( __cplusplus )
 }
 #endif
 
-#endif /* !defined( _LIBCREG_DATA_BLOCK_ENTRY_H ) */
+#endif /* !defined( _LIBCREG_KEY_DESCRIPTOR_H ) */
 
