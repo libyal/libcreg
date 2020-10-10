@@ -24,7 +24,6 @@
 #include <memory.h>
 #include <types.h>
 
-#include "libcreg_checksum.h"
 #include "libcreg_codepage.h"
 #include "libcreg_data_block.h"
 #include "libcreg_data_type.h"

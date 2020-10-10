@@ -174,10 +174,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\libcreg\libcreg_checksum.c"
-				>
-			</File>
-			<File
 				RelativePath="..\..\libcreg\libcreg_data_block.c"
 				>
 			</File>
@@ -265,10 +261,6 @@
 			</File>
 			<File
 				RelativePath="..\..\libcreg\creg_key_navigation.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\libcreg\libcreg_checksum.h"
 				>
 			</File>
 			<File

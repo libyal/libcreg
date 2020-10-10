@@ -23,7 +23,6 @@ libcreg_la_SOURCES = \
 	creg_file_header.h \
 	creg_key_navigation.h \
 	libcreg.c \
-	libcreg_checksum.c libcreg_checksum.h \
 	libcreg_codepage.h \
 	libcreg_data_block.c libcreg_data_block.h \
 	libcreg_data_type.c libcreg_data_type.h \
