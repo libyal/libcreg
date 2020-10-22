@@ -30,7 +30,11 @@
 
 #include <libcreg/extern.h>
 
+#if defined( __CYGWIN__ )
+#define LIBCREG_EXTERN_VARIABLE	extern
+#else
 #define LIBCREG_EXTERN_VARIABLE	LIBCREG_EXTERN
+#endif
 
 #else
 #define LIBCREG_EXTERN		/* extern */
