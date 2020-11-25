@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>libcreg</id>
-    <version>20201022</version>
+    <version>20201125</version>
     <authors>Joachim Metz</authors>
     <owners>joachimmetz</owners>
     <license type="expression">LGPL-3.0-or-later</license>
@@ -10,7 +10,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <title>libcreg</title>
     <description>Library to access the Windows 9x/Me Registry File (CREG) format</description>
-    <releaseNotes>Release of libcreg 20201022</releaseNotes>
+    <releaseNotes>Release of libcreg 20201125</releaseNotes>
     <copyright>Copyright (C) 2013-2020</copyright>
     <tags>native</tags>
   </metadata>
