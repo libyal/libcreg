@@ -78,6 +78,7 @@ int libcreg_data_block_free(
 int libcreg_data_block_read_header(
      libcreg_data_block_t *data_block,
      libbfio_handle_t *file_io_handle,
+     off64_t file_offset,
      libcerror_error_t **error );
 
 int libcreg_data_block_read_entries(

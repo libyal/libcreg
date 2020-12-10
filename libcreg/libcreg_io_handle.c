@@ -237,25 +237,11 @@ int libcreg_io_handle_read_file_header(
 		 function );
 	}
 #endif
-	if( libbfio_handle_seek_offset(
-	     file_io_handle,
-	     0,
-	     SEEK_SET,
-	     error ) == -1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_IO,
-		 LIBCERROR_IO_ERROR_SEEK_FAILED,
-		 "%s: unable to seek file header offset: 0.",
-		 function );
-
-		return( -1 );
-	}
-	read_count = libbfio_handle_read_buffer(
+	read_count = libbfio_handle_read_buffer_at_offset(
 	              file_io_handle,
 	              (uint8_t *) &file_header,
 	              sizeof( creg_file_header_t ),
+	              0,
 	              error );
 
 	if( read_count != (ssize_t) sizeof( creg_file_header_t ) )
@@ -264,7 +250,7 @@ int libcreg_io_handle_read_file_header(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_IO,
 		 LIBCERROR_IO_ERROR_READ_FAILED,
-		 "%s: unable to read file header data.",
+		 "%s: unable to read file header data at offset: 0 (0x00000000).",
 		 function );
 
 		return( -1 );
@@ -438,26 +424,11 @@ int libcreg_io_handle_read_key_hierarchy_entry(
 		 element_data_offset );
 	}
 #endif
-	if( libbfio_handle_seek_offset(
-	     file_io_handle,
-	     element_data_offset,
-	     SEEK_SET,
-	     error ) == -1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_IO,
-		 LIBCERROR_IO_ERROR_SEEK_FAILED,
-		 "%s: unable to seek key hierarchy entry offset: %" PRIi64 ".",
-		 function,
-		 element_data_offset );
-
-		goto on_error;
-	}
-	read_count = libbfio_handle_read_buffer(
+	read_count = libbfio_handle_read_buffer_at_offset(
 	              file_io_handle,
 	              (uint8_t *) &key_hierarchy_entry_data,
 	              sizeof( creg_key_hierarchy_entry_t ),
+	              element_data_offset,
 	              error );
 
 	if( read_count != (ssize_t) sizeof( creg_key_hierarchy_entry_t ) )
@@ -466,8 +437,10 @@ int libcreg_io_handle_read_key_hierarchy_entry(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_IO,
 		 LIBCERROR_IO_ERROR_READ_FAILED,
-		 "%s: unable to read key hierarchy entry data.",
-		 function );
+		 "%s: unable to read key hierarchy entry data at offset: %" PRIi64 " (0x%08" PRIx64 ").",
+		 function,
+		 element_data_offset,
+		 element_data_offset );
 
 		goto on_error;
 	}

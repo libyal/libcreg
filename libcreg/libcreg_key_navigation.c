@@ -578,22 +578,6 @@ int libcreg_key_navigation_read_data_blocks(
 
 			goto on_error;
 		}
-		if( libbfio_handle_seek_offset(
-		     file_io_handle,
-		     file_offset,
-		     SEEK_SET,
-		     error ) == -1 )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_IO,
-			 LIBCERROR_IO_ERROR_SEEK_FAILED,
-			 "%s: unable to seek file header offset: %" PRIi64 ".",
-			 function,
-			 file_offset );
-
-			goto on_error;
-		}
 #if defined( HAVE_DEBUG_OUTPUT )
 		if( libcnotify_verbose != 0 )
 		{
@@ -608,6 +592,7 @@ int libcreg_key_navigation_read_data_blocks(
 		result = libcreg_data_block_read_header(
 		          data_block,
 		          file_io_handle,
+		          file_offset,
 		          error );
 
 		if( result == -1 )
@@ -913,25 +898,10 @@ int libcreg_key_navigation_read_data_block_element_data(
 		 data_range_offset );
 	}
 #endif
-	if( libbfio_handle_seek_offset(
-	     file_io_handle,
-	     data_range_offset,
-	     SEEK_SET,
-	     error ) == -1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_IO,
-		 LIBCERROR_IO_ERROR_SEEK_FAILED,
-		 "%s: unable to seek file header offset: %" PRIi64 ".",
-		 function,
-		 data_range_offset );
-
-		goto on_error;
-	}
 	if( libcreg_data_block_read_header(
 	     data_block,
 	     file_io_handle,
+	     data_range_offset,
 	     error ) != 1 )
 	{
 		libcerror_error_set(

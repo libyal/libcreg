@@ -184,6 +184,7 @@ int libcreg_data_block_free(
 int libcreg_data_block_read_header(
      libcreg_data_block_t *data_block,
      libbfio_handle_t *file_io_handle,
+     off64_t file_offset,
      libcerror_error_t **error )
 {
 	creg_data_block_header_t data_block_header;
@@ -206,34 +207,23 @@ int libcreg_data_block_read_header(
 
 		return( -1 );
 	}
-	if( libbfio_handle_get_offset(
-	     file_io_handle,
-	     &( data_block->offset ),
-	     error ) != 1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to retrieve file offset.",
-		 function );
+	data_block->offset = file_offset;
 
-		return( -1 );
-	}
 #if defined( HAVE_DEBUG_OUTPUT )
 	if( libcnotify_verbose != 0 )
 	{
 		libcnotify_printf(
 		 "%s: reading data block header at offset: %" PRIi64 " (0x%08" PRIx64 ")\n",
 		 function,
-		 data_block->offset,
-		 data_block->offset );
+		 file_offset,
+		 file_offset );
 	}
 #endif
-	read_count = libbfio_handle_read_buffer(
+	read_count = libbfio_handle_read_buffer_at_offset(
 	              file_io_handle,
 	              (uint8_t *) &data_block_header,
 	              sizeof( creg_data_block_header_t ),
+	              file_offset,
 	              error );
 
 	if( read_count != (ssize_t) sizeof( creg_data_block_header_t ) )
@@ -242,8 +232,10 @@ int libcreg_data_block_read_header(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_IO,
 		 LIBCERROR_IO_ERROR_READ_FAILED,
-		 "%s: unable to read data block header data.",
-		 function );
+		 "%s: unable to read data block header data at offset: %" PRIi64 " (0x%08" PRIx64 ").",
+		 function,
+		 file_offset,
+		 file_offset );
 
 		return( -1 );
 	}
