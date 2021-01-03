@@ -1,7 +1,7 @@
 /*
  * Exports information from a Windows 9x/Me Registry File (CREG)
  *
- * Copyright (C) 2013-2020, Joachim Metz <joachim.metz@gmail.com>
+ * Copyright (C) 2013-2021, Joachim Metz <joachim.metz@gmail.com>
  *
  * Refer to AUTHORS for acknowledgements.
  *
