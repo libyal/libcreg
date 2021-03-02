@@ -23,6 +23,7 @@ endif
 
 TESTS = \
 	test_library.sh \
+	test_tools.sh \
 	test_creginfo.sh \
 	test_cregexport.sh \
 	$(TESTS_PYCREG)
@@ -35,7 +36,8 @@ check_SCRIPTS = \
 	test_library.sh \
 	test_manpage.sh \
 	test_python_module.sh \
-	test_runner.sh
+	test_runner.sh \
+	test_tools.sh
 
 EXTRA_DIST = \
 	$(check_SCRIPTS)
@@ -52,6 +54,9 @@ check_PROGRAMS = \
 	creg_test_key_navigation \
 	creg_test_notify \
 	creg_test_support \
+	creg_test_tools_info_handle \
+	creg_test_tools_output \
+	creg_test_tools_signal \
 	creg_test_value \
 	creg_test_value_entry
 
@@ -210,6 +215,41 @@ creg_test_support_LDADD = \
 	@LIBCNOTIFY_LIBADD@ \
 	@LIBCLOCALE_LIBADD@ \
 	@LIBCDATA_LIBADD@ \
+	../libcreg/libcreg.la \
+	@LIBCERROR_LIBADD@
+
+creg_test_tools_info_handle_SOURCES = \
+	../cregtools/info_handle.c ../cregtools/info_handle.h \
+	creg_test_libcerror.h \
+	creg_test_macros.h \
+	creg_test_memory.c creg_test_memory.h \
+	creg_test_tools_info_handle.c \
+	creg_test_unused.h
+
+creg_test_tools_info_handle_LDADD = \
+	@LIBCLOCALE_LIBADD@ \
+	../libcreg/libcreg.la \
+	@LIBCERROR_LIBADD@
+
+creg_test_tools_output_SOURCES = \
+	../cregtools/cregtools_output.c ../cregtools/cregtools_output.h \
+	creg_test_libcerror.h \
+	creg_test_macros.h \
+	creg_test_tools_output.c \
+	creg_test_unused.h
+
+creg_test_tools_output_LDADD = \
+	../libcreg/libcreg.la \
+	@LIBCERROR_LIBADD@
+
+creg_test_tools_signal_SOURCES = \
+	../cregtools/cregtools_signal.c ../cregtools/cregtools_signal.h \
+	creg_test_libcerror.h \
+	creg_test_macros.h \
+	creg_test_tools_signal.c \
+	creg_test_unused.h
+
+creg_test_tools_signal_LDADD = \
 	../libcreg/libcreg.la \
 	@LIBCERROR_LIBADD@
 
