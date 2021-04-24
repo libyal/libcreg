@@ -38,15 +38,16 @@ class FileTypeTests(unittest.TestCase):
 
   def test_open(self):
     """Tests the open function."""
-    if not unittest.source:
+    test_source = unittest.source
+    if not test_source:
       raise unittest.SkipTest("missing source")
 
     creg_file = pycreg.file()
 
-    creg_file.open(unittest.source)
+    creg_file.open(test_source)
 
     with self.assertRaises(IOError):
-      creg_file.open(unittest.source)
+      creg_file.open(test_source)
 
     creg_file.close()
 
@@ -54,19 +55,20 @@ class FileTypeTests(unittest.TestCase):
       creg_file.open(None)
 
     with self.assertRaises(ValueError):
-      creg_file.open(unittest.source, mode="w")
+      creg_file.open(test_source, mode="w")
 
   def test_open_file_object(self):
     """Tests the open_file_object function."""
-    if not unittest.source:
+    test_source = unittest.source
+    if not test_source:
       raise unittest.SkipTest("missing source")
 
-    if not os.path.isfile(unittest.source):
+    if not os.path.isfile(test_source):
       raise unittest.SkipTest("source not a regular file")
 
     creg_file = pycreg.file()
 
-    with open(unittest.source, "rb") as file_object:
+    with open(test_source, "rb") as file_object:
 
       creg_file.open_file_object(file_object)
 
@@ -83,7 +85,8 @@ class FileTypeTests(unittest.TestCase):
 
   def test_close(self):
     """Tests the close function."""
-    if not unittest.source:
+    test_source = unittest.source
+    if not test_source:
       raise unittest.SkipTest("missing source")
 
     creg_file = pycreg.file()
@@ -93,21 +96,22 @@ class FileTypeTests(unittest.TestCase):
 
   def test_open_close(self):
     """Tests the open and close functions."""
-    if not unittest.source:
+    test_source = unittest.source
+    if not test_source:
       return
 
     creg_file = pycreg.file()
 
     # Test open and close.
-    creg_file.open(unittest.source)
+    creg_file.open(test_source)
     creg_file.close()
 
     # Test open and close a second time to validate clean up on close.
-    creg_file.open(unittest.source)
+    creg_file.open(test_source)
     creg_file.close()
 
-    if os.path.isfile(unittest.source):
-      with open(unittest.source, "rb") as file_object:
+    if os.path.isfile(test_source):
+      with open(test_source, "rb") as file_object:
 
         # Test open_file_object and close.
         creg_file.open_file_object(file_object)
@@ -146,12 +150,13 @@ class FileTypeTests(unittest.TestCase):
 
   def test_get_ascii_codepage(self):
     """Tests the get_ascii_codepage function and ascii_codepage property."""
-    if not unittest.source:
+    test_source = unittest.source
+    if not test_source:
       raise unittest.SkipTest("missing source")
 
     creg_file = pycreg.file()
 
-    creg_file.open(unittest.source)
+    creg_file.open(test_source)
 
     ascii_codepage = creg_file.get_ascii_codepage()
     self.assertIsNotNone(ascii_codepage)
@@ -162,12 +167,13 @@ class FileTypeTests(unittest.TestCase):
 
   def test_get_type(self):
     """Tests the get_type function and type property."""
-    if not unittest.source:
+    test_source = unittest.source
+    if not test_source:
       raise unittest.SkipTest("missing source")
 
     creg_file = pycreg.file()
 
-    creg_file.open(unittest.source)
+    creg_file.open(test_source)
 
     type = creg_file.get_type()
     self.assertIsNotNone(type)
@@ -178,12 +184,13 @@ class FileTypeTests(unittest.TestCase):
 
   def test_get_root_key(self):
     """Tests the get_root_key function and root_key property."""
-    if not unittest.source:
+    test_source = unittest.source
+    if not test_source:
       raise unittest.SkipTest("missing source")
 
     creg_file = pycreg.file()
 
-    creg_file.open(unittest.source)
+    creg_file.open(test_source)
 
     root_key = creg_file.get_root_key()
     self.assertIsNotNone(root_key)
