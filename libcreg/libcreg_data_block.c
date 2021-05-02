@@ -541,7 +541,8 @@ int libcreg_data_block_read_entries(
 			 "\n" );
 		}
 	}
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
 	return( 1 );
 
 on_error:

@@ -88,6 +88,7 @@ int libcreg_key_name_entry_read_data(
 int libcreg_key_name_entry_read_values(
      libcreg_key_name_entry_t *key_name_entry,
      int number_of_values,
+     uint32_t file_offset,
      const uint8_t *value_entries_data,
      size_t value_entries_data_size,
      int ascii_codepage,

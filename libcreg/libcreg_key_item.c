@@ -310,8 +310,9 @@ int libcreg_key_item_read(
 		if( libcnotify_verbose != 0 )
 		{
 			libcnotify_printf(
-			 "%s: offset\t\t\t\t\t: 0x%08" PRIzx "\n",
+			 "%s: offset\t\t\t\t\t: %" PRIzd " (0x%08" PRIzx ")\n",
 			 function,
+			 key_hierarchy_entry->data_offset,
 			 key_hierarchy_entry->data_offset );
 
 			libcnotify_printf(
@@ -444,19 +445,6 @@ on_error:
 		 &( key_item->key_name_entry ),
 		 NULL );
 	}
-	return( -1 );
-}
-
-/* Reads a key name entry
- * Returns 1 if successful or -1 on error
- */
-int libcreg_key_item_read_key_name_entry(
-     libcreg_key_name_entry_t *key_name_entry,
-     libbfio_handle_t *file_io_handle,
-     libcreg_key_navigation_t *key_navigation,
-     off64_t key_offset,
-     libcerror_error_t **error )
-{
 	return( -1 );
 }
 
@@ -1436,7 +1424,7 @@ int libcreg_key_item_get_sub_key_descriptor_by_utf8_name(
      libcerror_error_t **error )
 {
 	libcreg_key_descriptor_t *safe_sub_key_descriptor = NULL;
-	libcreg_key_name_entry_t *key_name_entry          = NULL;
+	libcreg_key_item_t *sub_key_item                  = NULL;
 	static char *function                             = "libcreg_key_item_get_sub_key_descriptor_by_utf8_name";
 	int number_of_sub_key_descriptors                 = 0;
 	int result                                        = 0;
@@ -1504,21 +1492,21 @@ int libcreg_key_item_get_sub_key_descriptor_by_utf8_name(
 
 			goto on_error;
 		}
-		if( libcreg_key_name_entry_initialize(
-		     &key_name_entry,
+		if( libcreg_key_item_initialize(
+		     &sub_key_item,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 			 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
-			 "%s: unable to create key name entry.",
+			 "%s: unable to create sub key item.",
 			 function );
 
 			goto on_error;
 		}
-		if( libcreg_key_item_read_key_name_entry(
-		     key_name_entry,
+		if( libcreg_key_item_read(
+		     sub_key_item,
 		     file_io_handle,
 		     key_navigation,
 		     safe_sub_key_descriptor->key_offset,
@@ -1528,7 +1516,7 @@ int libcreg_key_item_get_sub_key_descriptor_by_utf8_name(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_IO,
 			 LIBCERROR_IO_ERROR_READ_FAILED,
-			 "%s: unable to read key name entry at offset: %" PRIu32 " (0x%08" PRIx32 ").",
+			 "%s: unable to read sub key item at offset: %" PRIu32 " (0x%08" PRIx32 ").",
 			 function,
 			 safe_sub_key_descriptor->key_offset,
 			 safe_sub_key_descriptor->key_offset );
@@ -1537,7 +1525,7 @@ int libcreg_key_item_get_sub_key_descriptor_by_utf8_name(
 		}
 /* TODO remove or pass name_hash */
 		result = libcreg_key_name_entry_compare_name_with_utf8_string(
-		          key_name_entry,
+		          sub_key_item->key_name_entry,
 		          0,
 		          utf8_string,
 		          utf8_string_length,
@@ -1555,15 +1543,15 @@ int libcreg_key_item_get_sub_key_descriptor_by_utf8_name(
 
 			goto on_error;
 		}
-		if( libcreg_key_name_entry_free(
-		     &key_name_entry,
+		if( libcreg_key_item_free(
+		     &sub_key_item,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 			 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
-			 "%s: unable to free key name entry.",
+			 "%s: unable to free sub key item.",
 			 function );
 
 			goto on_error;
@@ -1582,10 +1570,10 @@ int libcreg_key_item_get_sub_key_descriptor_by_utf8_name(
 	return( 1 );
 
 on_error:
-	if( key_name_entry != NULL )
+	if( sub_key_item != NULL )
 	{
-		libcreg_key_name_entry_free(
-		 &key_name_entry,
+		libcreg_key_item_free(
+		 &sub_key_item,
 		 NULL );
 	}
 	return( -1 );
@@ -1605,7 +1593,7 @@ int libcreg_key_item_get_sub_key_descriptor_by_utf16_name(
      libcerror_error_t **error )
 {
 	libcreg_key_descriptor_t *safe_sub_key_descriptor = NULL;
-	libcreg_key_name_entry_t *key_name_entry          = NULL;
+	libcreg_key_item_t *sub_key_item                  = NULL;
 	static char *function                             = "libcreg_key_item_get_sub_key_descriptor_by_utf16_name";
 	int number_of_sub_key_descriptors                 = 0;
 	int result                                        = 0;
@@ -1673,21 +1661,21 @@ int libcreg_key_item_get_sub_key_descriptor_by_utf16_name(
 
 			goto on_error;
 		}
-		if( libcreg_key_name_entry_initialize(
-		     &key_name_entry,
+		if( libcreg_key_item_initialize(
+		     &sub_key_item,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 			 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
-			 "%s: unable to create key name entry.",
+			 "%s: unable to create sub key item.",
 			 function );
 
 			goto on_error;
 		}
-		if( libcreg_key_item_read_key_name_entry(
-		     key_name_entry,
+		if( libcreg_key_item_read(
+		     sub_key_item,
 		     file_io_handle,
 		     key_navigation,
 		     safe_sub_key_descriptor->key_offset,
@@ -1697,7 +1685,7 @@ int libcreg_key_item_get_sub_key_descriptor_by_utf16_name(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_IO,
 			 LIBCERROR_IO_ERROR_READ_FAILED,
-			 "%s: unable to read key name entry at offset: %" PRIu32 " (0x%08" PRIx32 ").",
+			 "%s: unable to read sub key item at offset: %" PRIu32 " (0x%08" PRIx32 ").",
 			 function,
 			 safe_sub_key_descriptor->key_offset,
 			 safe_sub_key_descriptor->key_offset );
@@ -1706,7 +1694,7 @@ int libcreg_key_item_get_sub_key_descriptor_by_utf16_name(
 		}
 /* TODO remove or pass name_hash */
 		result = libcreg_key_name_entry_compare_name_with_utf16_string(
-		          key_name_entry,
+		          sub_key_item->key_name_entry,
 		          0,
 		          utf16_string,
 		          utf16_string_length,
@@ -1724,15 +1712,15 @@ int libcreg_key_item_get_sub_key_descriptor_by_utf16_name(
 
 			goto on_error;
 		}
-		if( libcreg_key_name_entry_free(
-		     &key_name_entry,
+		if( libcreg_key_item_free(
+		     &sub_key_item,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 			 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
-			 "%s: unable to free key name entry.",
+			 "%s: unable to free sub key item.",
 			 function );
 
 			goto on_error;
@@ -1751,10 +1739,10 @@ int libcreg_key_item_get_sub_key_descriptor_by_utf16_name(
 	return( 1 );
 
 on_error:
-	if( key_name_entry != NULL )
+	if( sub_key_item != NULL )
 	{
-		libcreg_key_name_entry_free(
-		 &key_name_entry,
+		libcreg_key_item_free(
+		 &sub_key_item,
 		 NULL );
 	}
 	return( -1 );

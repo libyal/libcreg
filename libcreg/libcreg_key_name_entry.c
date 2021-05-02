@@ -449,6 +449,7 @@ int libcreg_key_name_entry_read_data(
 	if( libcreg_key_name_entry_read_values(
 	     key_name_entry,
 	     number_of_values,
+	     key_name_entry->offset + data_offset,
 	     &( data[ data_offset ] ),
 	     value_entries_data_size,
 	     ascii_codepage,
@@ -499,6 +500,7 @@ on_error:
 int libcreg_key_name_entry_read_values(
      libcreg_key_name_entry_t *key_name_entry,
      int number_of_values,
+     uint32_t file_offset,
      const uint8_t *value_entries_data,
      size_t value_entries_data_size,
      int ascii_codepage,
@@ -586,7 +588,7 @@ int libcreg_key_name_entry_read_values(
 			 value_entries_offset );
 		}
 #endif
-		value_entry->offset = key_name_entry->offset + value_entries_offset;
+		value_entry->offset = file_offset + value_entries_offset;
 
 		if( libcreg_value_entry_read_data(
 		     value_entry,

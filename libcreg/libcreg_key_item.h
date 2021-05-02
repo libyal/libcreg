@@ -69,13 +69,6 @@ int libcreg_key_item_read(
      off64_t key_offset,
      libcerror_error_t **error );
 
-int libcreg_key_item_read_key_name_entry(
-     libcreg_key_name_entry_t *key_name_entry,
-     libbfio_handle_t *file_io_handle,
-     libcreg_key_navigation_t *key_navigation,
-     off64_t key_offset,
-     libcerror_error_t **error );
-
 int libcreg_key_item_is_corrupted(
      libcreg_key_item_t *key_item,
      libcerror_error_t **error );

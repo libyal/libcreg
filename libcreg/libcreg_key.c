@@ -1156,37 +1156,42 @@ int libcreg_key_get_value_by_utf8_name(
 		return( -1 );
 	}
 #endif
-	if( libcreg_key_item_get_value_by_utf8_name(
-	     internal_key->key_item,
-	     utf8_string,
-	     utf8_string_length,
-	     internal_key->io_handle->ascii_codepage,
-	     &value_entry,
-	     error ) != 1 )
+	result = libcreg_key_item_get_value_by_utf8_name(
+	          internal_key->key_item,
+	          utf8_string,
+	          utf8_string_length,
+	          internal_key->io_handle->ascii_codepage,
+	          &value_entry,
+	          error );
+
+	if( result == -1 )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to retrieve value entry byt UTF-8 name.",
+		 "%s: unable to retrieve value entry by UTF-8 name.",
 		 function );
 
 		result = -1;
 	}
-	else if( libcreg_value_initialize(
-	          value,
-	          internal_key->io_handle,
-	          value_entry,
-	          error ) != 1 )
+	else if( result != 0 )
 	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
-		 "%s: unable to initialize value.",
-		 function );
+		if( libcreg_value_initialize(
+		     value,
+		     internal_key->io_handle,
+		     value_entry,
+		     error ) != 1 )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
+			 "%s: unable to initialize value.",
+			 function );
 
-		result = -1;
+			result = -1;
+		}
 	}
 #if defined( HAVE_LIBCREG_MULTI_THREAD_SUPPORT )
 	if( libcthreads_read_write_lock_release_for_write(
@@ -1284,37 +1289,42 @@ int libcreg_key_get_value_by_utf16_name(
 		return( -1 );
 	}
 #endif
-	if( libcreg_key_item_get_value_by_utf16_name(
-	     internal_key->key_item,
-	     utf16_string,
-	     utf16_string_length,
-	     internal_key->io_handle->ascii_codepage,
-	     &value_entry,
-	     error ) != 1 )
+	result = libcreg_key_item_get_value_by_utf16_name(
+	          internal_key->key_item,
+	          utf16_string,
+	          utf16_string_length,
+	          internal_key->io_handle->ascii_codepage,
+	          &value_entry,
+	          error );
+
+	if( result == -1 )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to retrieve value entry byt UTF-16 name.",
+		 "%s: unable to retrieve value entry by UTF-16 name.",
 		 function );
 
 		result = -1;
 	}
-	else if( libcreg_value_initialize(
-	          value,
-	          internal_key->io_handle,
-	          value_entry,
-	          error ) != 1 )
+	else if( result != 0 )
 	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
-		 "%s: unable to initialize value.",
-		 function );
+		if( libcreg_value_initialize(
+		     value,
+		     internal_key->io_handle,
+		     value_entry,
+		     error ) != 1 )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
+			 "%s: unable to initialize value.",
+			 function );
 
-		result = -1;
+			result = -1;
+		}
 	}
 #if defined( HAVE_LIBCREG_MULTI_THREAD_SUPPORT )
 	if( libcthreads_read_write_lock_release_for_write(
