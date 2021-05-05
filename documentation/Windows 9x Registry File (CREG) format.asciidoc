@@ -120,7 +120,7 @@ The file header is 32 bytes of size and consists of:
 | 0 | 4 | "CREG" | The signature
 | 4 | 2 | 0 | Minor format version
 | 6 | 2 | 1 | Major format version
-| 8 | 4 | | Data blocks list offset* +
+| 8 | 4 | | Data blocks list offset +
 The offset is relative to the start of the file
 | 12 | 4 | | [yellow-background]*Unknown (checksum? Fat date time?)*
 | 16 | 2 | | [yellow-background]*Unknown*

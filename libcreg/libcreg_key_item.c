@@ -213,6 +213,7 @@ int libcreg_key_item_read(
 	static char *function                              = "libcreg_key_item_read";
 	off64_t sub_key_offset                             = 0;
 	int entry_index                                    = 0;
+	int recursion_depth                                = 0;
 
 	if( key_item == NULL )
 	{
@@ -365,6 +366,17 @@ int libcreg_key_item_read(
 	while( ( sub_key_offset != 0 )
 	    && ( sub_key_offset != 0xffffffffUL ) )
 	{
+		if( recursion_depth > LIBCREG_MAXIMUM_SUB_KEY_RECURSION_DEPTH )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
+			 "%s: invalid recursion depth value out of bounds.",
+			 function );
+
+			return( -1 );
+		}
 		if( libcreg_key_navigation_get_key_hierarchy_entry_at_offset(
 		     key_navigation,
 		     file_io_handle,
@@ -429,6 +441,8 @@ int libcreg_key_item_read(
 		sub_key_descriptor = NULL;
 
 		sub_key_offset = (off64_t) key_hierarchy_entry->next_key_offset;
+
+		recursion_depth++;
 	}
 	return( 1 );
 
