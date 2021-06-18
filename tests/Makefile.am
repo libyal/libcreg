@@ -1,4 +1,4 @@
-ACLOCAL_AMFLAGS = -I m4
+AUTOMAKE_OPTIONS = subdir-objects
 
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/include \
@@ -51,6 +51,7 @@ check_PROGRAMS = \
 	creg_test_file \
 	creg_test_io_handle \
 	creg_test_key \
+	creg_test_key_descriptor \
 	creg_test_key_hierarchy_entry \
 	creg_test_key_name_entry \
 	creg_test_key_navigation \
@@ -144,6 +145,18 @@ creg_test_key_SOURCES = \
 	creg_test_unused.h
 
 creg_test_key_LDADD = \
+	../libcreg/libcreg.la \
+	@LIBCERROR_LIBADD@
+
+creg_test_key_descriptor_SOURCES = \
+	creg_test_key_descriptor.c \
+	creg_test_libcerror.h \
+	creg_test_libcreg.h \
+	creg_test_macros.h \
+	creg_test_memory.c creg_test_memory.h \
+	creg_test_unused.h
+
+creg_test_key_descriptor_LDADD = \
 	../libcreg/libcreg.la \
 	@LIBCERROR_LIBADD@
 

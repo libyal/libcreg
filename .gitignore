@@ -135,6 +135,7 @@ stamp-h[1-9]
 /tests/creg_test_file
 /tests/creg_test_io_handle
 /tests/creg_test_key
+/tests/creg_test_key_descriptor
 /tests/creg_test_key_hierarchy_entry
 /tests/creg_test_key_name_entry
 /tests/creg_test_key_navigation

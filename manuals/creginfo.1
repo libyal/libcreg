@@ -1,4 +1,4 @@
-.Dd June 13, 2019
+.Dd June 17, 2021
 .Dt creginfo
 .Os libcreg
 .Sh NAME
@@ -7,7 +7,7 @@
 .Sh SYNOPSIS
 .Nm creginfo
 .Op Fl c Ar codepage
-.Op Fl hvV
+.Op Fl hHvV
 .Ar source
 .Sh DESCRIPTION
 .Nm creginfo
@@ -29,6 +29,8 @@ The options are as follows:
 specify the codepage of ASCII strings, options: ascii, windows-874, windows-932, windows-936, windows-949, windows-950, windows-1250, windows-1251, windows-1252 (default), windows-1253, windows-1254, windows-1255, windows-1256, windows-1257 or windows-1258
 .It Fl h
 shows this help
+.It Fl H
+shows the key and value hierarcy
 .It Fl v
 verbose output to stderr
 .It Fl V
@@ -41,7 +43,7 @@ None
 .Sh EXAMPLES
 .Bd -literal
 # creginfo SYSTEM.DAT
-creginfo 20130608
+creginfo -H 20210617
 
 Windows 9x/Me Registry File information:
         Version:        1.3
@@ -64,6 +66,6 @@ http://code.google.com/p/libcreg/
 .Sh AUTHOR
 These man pages were written by Joachim Metz.
 .Sh COPYRIGHT
-Copyright 2013-2014, Joachim Metz <joachim.metz@gmail.com>.
+Copyright 2013-2021, Joachim Metz <joachim.metz@gmail.com>.
 This is free software; see the source for copying conditions. There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 .Sh SEE ALSO

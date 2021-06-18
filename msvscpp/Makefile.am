@@ -5,6 +5,7 @@ MSVSCPP_FILES = \
 	creg_test_file/creg_test_file.vcproj \
 	creg_test_io_handle/creg_test_io_handle.vcproj \
 	creg_test_key/creg_test_key.vcproj \
+	creg_test_key_descriptor/creg_test_key_descriptor.vcproj \
 	creg_test_key_hierarchy_entry/creg_test_key_hierarchy_entry.vcproj \
 	creg_test_key_name_entry/creg_test_key_name_entry.vcproj \
 	creg_test_key_navigation/creg_test_key_navigation.vcproj \

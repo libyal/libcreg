@@ -325,7 +325,7 @@ int libcreg_key_navigation_read_file_io_handle(
 	if( libcnotify_verbose != 0 )
 	{
 		libcnotify_printf(
-		 "%s: signature\t\t\t\t\t: %c%c%c%c\n",
+		 "%s: signature\t\t\t\t: %c%c%c%c\n",
 		 function,
 		 key_navigation_header.signature[ 0 ],
 		 key_navigation_header.signature[ 1 ],
@@ -333,12 +333,12 @@ int libcreg_key_navigation_read_file_io_handle(
 		 key_navigation_header.signature[ 3 ] );
 
 		libcnotify_printf(
-		 "%s: size\t\t\t\t\t: %" PRIu32 "\n",
+		 "%s: size\t\t\t\t: %" PRIu32 "\n",
 		 function,
 		 data_size );
 
 		libcnotify_printf(
-		 "%s: key hierarchy entries data offset\t\t: 0x%08" PRIx32 "\n",
+		 "%s: key hierarchy entries data offset\t: 0x%08" PRIx32 "\n",
 		 function,
 		 key_hierarchy_entries_data_offset );
 
@@ -346,7 +346,7 @@ int libcreg_key_navigation_read_file_io_handle(
 		 key_navigation_header.unknown2,
 		 value_32bit );
 		libcnotify_printf(
-		 "%s: unknown2\t\t\t\t\t: 0x%08" PRIx32 "\n",
+		 "%s: unknown2\t\t\t\t: 0x%08" PRIx32 "\n",
 		 function,
 		 value_32bit );
 
@@ -354,7 +354,7 @@ int libcreg_key_navigation_read_file_io_handle(
 		 key_navigation_header.unknown3,
 		 value_32bit );
 		libcnotify_printf(
-		 "%s: unknown3\t\t\t\t\t: 0x%08" PRIx32 "\n",
+		 "%s: unknown3\t\t\t\t: 0x%08" PRIx32 "\n",
 		 function,
 		 value_32bit );
 
@@ -362,7 +362,7 @@ int libcreg_key_navigation_read_file_io_handle(
 		 key_navigation_header.unknown4,
 		 value_32bit );
 		libcnotify_printf(
-		 "%s: unknown4\t\t\t\t\t: 0x%08" PRIx32 "\n",
+		 "%s: unknown4\t\t\t\t: 0x%08" PRIx32 "\n",
 		 function,
 		 value_32bit );
 
@@ -374,7 +374,8 @@ int libcreg_key_navigation_read_file_io_handle(
 		 8,
 		 0 );
 	}
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
 	if( data_size < sizeof( creg_key_navigation_header_t ) )
 	{
 		libcerror_error_set(

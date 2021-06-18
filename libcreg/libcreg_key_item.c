@@ -42,6 +42,8 @@
 #include "libcreg_libuna.h"
 #include "libcreg_value_entry.h"
 
+#include "creg_key_navigation.h"
+
 /* Creates a key item
  * Make sure the value key_item is referencing, is set to NULL
  * Returns 1 if successful or -1 on error
@@ -108,7 +110,7 @@ int libcreg_key_item_initialize(
 		return( -1 );
 	}
 	if( libcdata_array_initialize(
-	     &( ( *key_item )->sub_key_descriptors ),
+	     &( ( *key_item )->sub_key_descriptors_array ),
 	     0,
 	     error ) != 1 )
 	{
@@ -116,7 +118,20 @@ int libcreg_key_item_initialize(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 		 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
-		 "%s: unable to create sub key descriptors.",
+		 "%s: unable to create sub key descriptors array.",
+		 function );
+
+		goto on_error;
+	}
+	if( libcdata_range_list_initialize(
+	     &( ( *key_item )->sub_key_range_list ),
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
+		 "%s: unable to create sub key sub key range list.",
 		 function );
 
 		goto on_error;
@@ -126,6 +141,13 @@ int libcreg_key_item_initialize(
 on_error:
 	if( *key_item != NULL )
 	{
+		if( ( *key_item )->sub_key_descriptors_array != NULL )
+		{
+			libcdata_array_free(
+			 &( ( *key_item )->sub_key_descriptors_array ),
+			 NULL,
+			 NULL );
+		}
 		memory_free(
 		 *key_item );
 
@@ -157,26 +179,10 @@ int libcreg_key_item_free(
 	}
 	if( *key_item != NULL )
 	{
-		/* The key_name_entry reference is freed elsewhere
-		if( ( *key_item )->key_name_entry != NULL )
-		{
-			if( libcreg_key_name_entry_free(
-			     &( ( *key_item )->key_name_entry ),
-			     error ) != 1 )
-			{
-				libcerror_error_set(
-				 error,
-				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-				 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
-				 "%s: unable to free key name entry.",
-				 function );
+		/* The key_name_entry reference is freed elsewhere */
 
-				result = -1;
-			}
-		}
-		 */
 		if( libcdata_array_free(
-		     &( ( *key_item )->sub_key_descriptors ),
+		     &( ( *key_item )->sub_key_descriptors_array ),
 		     (int (*)(intptr_t **, libcerror_error_t **)) &libcreg_key_descriptor_free,
 		     error ) != 1 )
 		{
@@ -184,7 +190,21 @@ int libcreg_key_item_free(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 			 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
-			 "%s: unable to free sub key descriptors.",
+			 "%s: unable to free sub key descriptors array.",
+			 function );
+
+			result = -1;
+		}
+		if( libcdata_range_list_free(
+		     &( ( *key_item )->sub_key_range_list ),
+		     NULL,
+		     error ) != 1 )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
+			 "%s: unable to free sub key range list.",
 			 function );
 
 			result = -1;
@@ -210,10 +230,14 @@ int libcreg_key_item_read(
 	libcreg_data_block_t *data_block                   = NULL;
 	libcreg_key_descriptor_t *sub_key_descriptor       = NULL;
 	libcreg_key_hierarchy_entry_t *key_hierarchy_entry = NULL;
+	intptr_t *range_value                              = NULL;
 	static char *function                              = "libcreg_key_item_read";
 	off64_t sub_key_offset                             = 0;
+	uint64_t range_size                                = 0;
+	uint64_t range_start                               = 0;
 	int entry_index                                    = 0;
 	int recursion_depth                                = 0;
+	int result                                         = 0;
 
 	if( key_item == NULL )
 	{
@@ -375,7 +399,7 @@ int libcreg_key_item_read(
 			 "%s: invalid recursion depth value out of bounds.",
 			 function );
 
-			return( -1 );
+			goto on_error;
 		}
 		if( libcreg_key_navigation_get_key_hierarchy_entry_at_offset(
 		     key_navigation,
@@ -393,7 +417,7 @@ int libcreg_key_item_read(
 			 sub_key_offset,
 			 sub_key_offset );
 
-			return( -1 );
+			goto on_error;
 		}
 		if( key_hierarchy_entry == NULL )
 		{
@@ -406,7 +430,7 @@ int libcreg_key_item_read(
 			 sub_key_offset,
 			 sub_key_offset );
 
-			return( -1 );
+			goto on_error;
 		}
 		if( libcreg_key_descriptor_initialize(
 		     &sub_key_descriptor,
@@ -424,7 +448,7 @@ int libcreg_key_item_read(
 		sub_key_descriptor->key_offset = (uint32_t) sub_key_offset;
 
 		if( libcdata_array_append_entry(
-		     key_item->sub_key_descriptors,
+		     key_item->sub_key_descriptors_array,
 		     &entry_index,
 		     (intptr_t *) sub_key_descriptor,
 		     error ) != 1 )
@@ -440,6 +464,61 @@ int libcreg_key_item_read(
 		}
 		sub_key_descriptor = NULL;
 
+		if( libcdata_range_list_insert_range(
+		     key_item->sub_key_range_list,
+		     (uint64_t) sub_key_offset,
+		     (uint64_t) sizeof( creg_key_hierarchy_entry_t ),
+		     NULL,
+		     NULL,
+		     NULL,
+		     error ) == -1 )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_APPEND_FAILED,
+			 "%s: unable to insert sub key navigation record range into range list.",
+			 function );
+
+			goto on_error;
+		}
+		if( ( key_hierarchy_entry->next_key_offset != 0 )
+		 && ( key_hierarchy_entry->next_key_offset != 0xffffffffUL ) )
+		{
+			result = libcdata_range_list_get_range_at_offset(
+			          key_item->sub_key_range_list,
+			          (uint64_t) key_hierarchy_entry->next_key_offset,
+			          &range_start,
+			          &range_size,
+			          &range_value,
+			          error );
+
+			if( result == -1 )
+			{
+				libcerror_error_set(
+				 error,
+				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+				 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+				 "%s: unable to retrieve next key navigation record range from range list.",
+				 function );
+
+				goto on_error;
+			}
+			else if( ( result != 0 )
+			      && ( (uint64_t) key_hierarchy_entry->next_key_offset != ( range_start + range_size ) ) )
+			{
+				libcerror_error_set(
+				 error,
+				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+				 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
+				 "%s: invalid next key navigation record offset: %" PRIu32 " (0x%08" PRIu32 ") value already read.",
+				 function,
+				 key_hierarchy_entry->next_key_offset,
+				 key_hierarchy_entry->next_key_offset );
+
+				goto on_error;
+			}
+		}
 		sub_key_offset = (off64_t) key_hierarchy_entry->next_key_offset;
 
 		recursion_depth++;
@@ -451,12 +530,6 @@ on_error:
 	{
 		libcreg_key_descriptor_free(
 		 &sub_key_descriptor,
-		 NULL );
-	}
-	if( key_item->key_name_entry != NULL )
-	{
-		libcreg_key_name_entry_free(
-		 &( key_item->key_name_entry ),
 		 NULL );
 	}
 	return( -1 );
@@ -1367,7 +1440,7 @@ int libcreg_key_item_get_number_of_sub_key_descriptors(
 		return( -1 );
 	}
 	if( libcdata_array_get_number_of_entries(
-	     key_item->sub_key_descriptors,
+	     key_item->sub_key_descriptors_array,
 	     number_of_sub_key_descriptors,
 	     error ) != 1 )
 	{
@@ -1375,7 +1448,7 @@ int libcreg_key_item_get_number_of_sub_key_descriptors(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to retrieve number of sub key descriptors.",
+		 "%s: unable to retrieve number of sub key descriptors from array.",
 		 function );
 
 		return( -1 );
@@ -1406,7 +1479,7 @@ int libcreg_key_item_get_sub_key_descriptor_by_index(
 		return( -1 );
 	}
 	if( libcdata_array_get_entry_by_index(
-	     key_item->sub_key_descriptors,
+	     key_item->sub_key_descriptors_array,
              sub_key_descriptor_index,
 	     (intptr_t **) sub_key_descriptor,
 	     error ) != 1 )
@@ -1415,7 +1488,7 @@ int libcreg_key_item_get_sub_key_descriptor_by_index(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to retrieve sub key descriptor: %d.",
+		 "%s: unable to retrieve sub key descriptor: %d from array.",
 		 function,
 		 sub_key_descriptor_index );
 
@@ -1461,7 +1534,7 @@ int libcreg_key_item_get_sub_key_descriptor_by_utf8_name(
  * e.g. mapping sub key descriptors to name search tree?
  */
 	if( libcdata_array_get_number_of_entries(
-	     key_item->sub_key_descriptors,
+	     key_item->sub_key_descriptors_array,
 	     &number_of_sub_key_descriptors,
 	     error ) != 1 )
 	{
@@ -1479,7 +1552,7 @@ int libcreg_key_item_get_sub_key_descriptor_by_utf8_name(
 	     sub_key_descriptor_index++ )
 	{
 		if( libcdata_array_get_entry_by_index(
-		     key_item->sub_key_descriptors,
+		     key_item->sub_key_descriptors_array,
 		     sub_key_descriptor_index,
 		     (intptr_t **) &safe_sub_key_descriptor,
 		     error ) != 1 )
@@ -1630,7 +1703,7 @@ int libcreg_key_item_get_sub_key_descriptor_by_utf16_name(
  * e.g. mapping sub key descriptors to name search tree?
  */
 	if( libcdata_array_get_number_of_entries(
-	     key_item->sub_key_descriptors,
+	     key_item->sub_key_descriptors_array,
 	     &number_of_sub_key_descriptors,
 	     error ) != 1 )
 	{
@@ -1648,7 +1721,7 @@ int libcreg_key_item_get_sub_key_descriptor_by_utf16_name(
 	     sub_key_descriptor_index++ )
 	{
 		if( libcdata_array_get_entry_by_index(
-		     key_item->sub_key_descriptors,
+		     key_item->sub_key_descriptors_array,
 		     sub_key_descriptor_index,
 		     (intptr_t **) &safe_sub_key_descriptor,
 		     error ) != 1 )

@@ -45,9 +45,13 @@ struct libcreg_key_item
 	 */
 	libcreg_key_name_entry_t *key_name_entry;
 
-	/* The sub key descriptors
+	/* The sub key descriptors array
 	 */
-	libcdata_array_t *sub_key_descriptors;
+	libcdata_array_t *sub_key_descriptors_array;
+
+	/* The sub key range list
+	 */
+	libcdata_range_list_t *sub_key_range_list;
 
 	/* Various item flags
 	 */

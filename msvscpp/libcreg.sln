@@ -52,6 +52,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "creg_test_key", "creg_test_
 		{2ACDC977-A2EC-4DDD-A7BA-D8F5CF62AE9F} = {2ACDC977-A2EC-4DDD-A7BA-D8F5CF62AE9F}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "creg_test_key_descriptor", "creg_test_key_descriptor\creg_test_key_descriptor.vcproj", "{CE2AC893-51E6-4664-98E2-00D4B84CF082}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7AAA6A8B-DE93-45DE-A6BC-26246EB56C8D} = {7AAA6A8B-DE93-45DE-A6BC-26246EB56C8D}
+		{2ACDC977-A2EC-4DDD-A7BA-D8F5CF62AE9F} = {2ACDC977-A2EC-4DDD-A7BA-D8F5CF62AE9F}
+	EndProjectSection
+EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "creg_test_key_hierarchy_entry", "creg_test_key_hierarchy_entry\creg_test_key_hierarchy_entry.vcproj", "{CD90E565-378A-40BE-828C-CEA2558321D5}"
 	ProjectSection(ProjectDependencies) = postProject
 		{7AAA6A8B-DE93-45DE-A6BC-26246EB56C8D} = {7AAA6A8B-DE93-45DE-A6BC-26246EB56C8D}
@@ -282,6 +288,10 @@ Global
 		{D5F74FAC-BE52-44AA-8A9C-A942504A204E}.Release|Win32.Build.0 = Release|Win32
 		{D5F74FAC-BE52-44AA-8A9C-A942504A204E}.VSDebug|Win32.ActiveCfg = VSDebug|Win32
 		{D5F74FAC-BE52-44AA-8A9C-A942504A204E}.VSDebug|Win32.Build.0 = VSDebug|Win32
+		{CE2AC893-51E6-4664-98E2-00D4B84CF082}.Release|Win32.ActiveCfg = Release|Win32
+		{CE2AC893-51E6-4664-98E2-00D4B84CF082}.Release|Win32.Build.0 = Release|Win32
+		{CE2AC893-51E6-4664-98E2-00D4B84CF082}.VSDebug|Win32.ActiveCfg = VSDebug|Win32
+		{CE2AC893-51E6-4664-98E2-00D4B84CF082}.VSDebug|Win32.Build.0 = VSDebug|Win32
 		{CD90E565-378A-40BE-828C-CEA2558321D5}.Release|Win32.ActiveCfg = Release|Win32
 		{CD90E565-378A-40BE-828C-CEA2558321D5}.Release|Win32.Build.0 = Release|Win32
 		{CD90E565-378A-40BE-828C-CEA2558321D5}.VSDebug|Win32.ActiveCfg = VSDebug|Win32

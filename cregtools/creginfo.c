@@ -43,6 +43,12 @@
 #include "cregtools_unused.h"
 #include "info_handle.h"
 
+enum CREGINFO_MODES
+{
+	CREGINFO_MODE_FILE,
+	CREGINFO_MODE_KEY_VALUE_HIERARCHY
+};
+
 info_handle_t *creginfo_info_handle = NULL;
 int creginfo_abort                  = 0;
 
@@ -58,7 +64,7 @@ void usage_fprint(
 	fprintf( stream, "Use creginfo to determine information about a Windows 9x/Me\n"
 	                 "Registry File (CREG).\n\n" );
 
-	fprintf( stream, "Usage: creginfo [ -c codepage ] [ -hvV ] source\n\n" );
+	fprintf( stream, "Usage: creginfo [ -c codepage ] [ -hHvV ] source\n\n" );
 
 	fprintf( stream, "\tsource: the source file\n\n" );
 
@@ -68,6 +74,7 @@ void usage_fprint(
 	                 "\t        windows-1253, windows-1254, windows-1255, windows-1256\n"
 	                 "\t        windows-1257 or windows-1258\n" );
 	fprintf( stream, "\t-h:     shows this help\n" );
+	fprintf( stream, "\t-H:     shows the key and value hierarchy\n" );
 	fprintf( stream, "\t-v:     verbose output to stderr\n" );
 	fprintf( stream, "\t-V:     print version\n" );
 }
@@ -129,6 +136,7 @@ int main( int argc, char * const argv[] )
 	system_character_t *source                = NULL;
 	char *program                             = "creginfo";
 	system_integer_t option                   = 0;
+	int option_mode                           = CREGINFO_MODE_FILE;
 	int result                                = 0;
 	int verbose                               = 0;
 
@@ -165,7 +173,7 @@ int main( int argc, char * const argv[] )
 	while( ( option = cregtools_getopt(
 	                   argc,
 	                   argv,
-	                   _SYSTEM_STRING( "c:hvV" ) ) ) != (system_integer_t) -1 )
+	                   _SYSTEM_STRING( "c:hHvV" ) ) ) != (system_integer_t) -1 )
 	{
 		switch( option )
 		{
@@ -191,6 +199,11 @@ int main( int argc, char * const argv[] )
 				 stdout );
 
 				return( EXIT_SUCCESS );
+
+			case (system_integer_t) 'H':
+				option_mode = CREGINFO_MODE_KEY_VALUE_HIERARCHY;
+
+				break;
 
 			case (system_integer_t) 'v':
 				verbose = 1;
@@ -269,15 +282,34 @@ int main( int argc, char * const argv[] )
 
 		goto on_error;
 	}
-	if( info_handle_file_fprint(
-	     creginfo_info_handle,
-	     &error ) != 1 )
+	switch( option_mode )
 	{
-		fprintf(
-		 stderr,
-		 "Unable to print file information.\n" );
+		case CREGINFO_MODE_KEY_VALUE_HIERARCHY:
+			if( info_handle_key_value_hierarchy_fprint(
+			     creginfo_info_handle,
+			     &error ) != 1 )
+			{
+				fprintf(
+				 stderr,
+				 "Unable to print key and value hierarchy.\n" );
 
-		goto on_error;
+				goto on_error;
+			}
+			break;
+
+		case CREGINFO_MODE_FILE:
+		default:
+			if( info_handle_file_fprint(
+			     creginfo_info_handle,
+			     &error ) != 1 )
+			{
+				fprintf(
+				 stderr,
+				 "Unable to print file information.\n" );
+
+				goto on_error;
+			}
+			break;
 	}
 	if( info_handle_close_input(
 	     creginfo_info_handle,

@@ -733,18 +733,15 @@ on_error:
 	return( -1 );
 }
 
-/* Prints the file information
+/* Prints the key and value hierarchy information
  * Returns 1 if successful or -1 on error
  */
-int info_handle_file_fprint(
+int info_handle_key_value_hierarchy_fprint(
      info_handle_t *info_handle,
      libcerror_error_t **error )
 {
 	libcreg_key_t *root_key = NULL;
 	static char *function   = "info_handle_file_fprint";
-	uint16_t major_version  = 0;
-	uint16_t minor_version  = 0;
-	int is_corrupted        = 0;
 	int result              = 0;
 
 	if( info_handle == NULL )
@@ -758,36 +755,13 @@ int info_handle_file_fprint(
 
 		return( -1 );
 	}
-	if( libcreg_file_get_format_version(
-	     info_handle->input_file,
-	     &major_version,
-	     &minor_version,
-	     error ) != 1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to retrieve format version.",
-		 function );
-
-		goto on_error;
-	}
 	fprintf(
 	 info_handle->notify_stream,
 	 "Windows 9x/Me Registry File information:\n" );
 
 	fprintf(
 	 info_handle->notify_stream,
-	 "\tVersion:\t%" PRIu16 ".%" PRIu16 "\n",
-	 major_version,
-	 minor_version );
-
-/* TODO calculate number of keys and values */
-
-	fprintf(
-	 info_handle->notify_stream,
-	 "\n" );
+	 "Key and value hierarchy:\n" );
 
 	result = libcreg_file_get_root_key(
 	          info_handle->input_file,
@@ -807,10 +781,6 @@ int info_handle_file_fprint(
 	}
 	else if( result != 0 )
 	{
-		fprintf(
-		 info_handle->notify_stream,
-		 "Key hierarchy\n" );
-
 		if( info_handle_key_fprint(
 		     info_handle,
 		     root_key,
@@ -839,10 +809,77 @@ int info_handle_file_fprint(
 
 			goto on_error;
 		}
-		fprintf(
-		 info_handle->notify_stream,
-		 "\n" );
 	}
+	fprintf(
+	 info_handle->notify_stream,
+	 "\n" );
+
+	return( 1 );
+
+on_error:
+	if( root_key != NULL )
+	{
+		libcreg_key_free(
+		 &root_key,
+		 NULL );
+	}
+	return( -1 );
+}
+
+/* Prints the file information
+ * Returns 1 if successful or -1 on error
+ */
+int info_handle_file_fprint(
+     info_handle_t *info_handle,
+     libcerror_error_t **error )
+{
+	static char *function  = "info_handle_file_fprint";
+	uint16_t major_version = 0;
+	uint16_t minor_version = 0;
+	int is_corrupted       = 0;
+
+	if( info_handle == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid info handle.",
+		 function );
+
+		return( -1 );
+	}
+	if( libcreg_file_get_format_version(
+	     info_handle->input_file,
+	     &major_version,
+	     &minor_version,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve format version.",
+		 function );
+
+		return( -1 );
+	}
+	fprintf(
+	 info_handle->notify_stream,
+	 "Windows 9x/Me Registry File information:\n" );
+
+	fprintf(
+	 info_handle->notify_stream,
+	 "\tVersion:\t%" PRIu16 ".%" PRIu16 "\n",
+	 major_version,
+	 minor_version );
+
+/* TODO calculate number of keys and values */
+
+	fprintf(
+	 info_handle->notify_stream,
+	 "\n" );
+
 	is_corrupted = libcreg_file_is_corrupted(
 	                info_handle->input_file,
 	                error );
@@ -865,14 +902,4 @@ int info_handle_file_fprint(
 		 "File is corrupted\n\n" );
 	}
 	return( 1 );
-
-on_error:
-	if( root_key != NULL )
-	{
-		libcreg_key_free(
-		 &root_key,
-		 NULL );
-	}
-	return( -1 );
 }
-

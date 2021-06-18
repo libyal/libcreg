@@ -86,6 +86,10 @@ int info_handle_key_fprint(
      int indentation_level,
      libcreg_error_t **error );
 
+int info_handle_key_value_hierarchy_fprint(
+     info_handle_t *info_handle,
+     libcerror_error_t **error );
+
 int info_handle_file_fprint(
      info_handle_t *info_handle,
      libcerror_error_t **error );
