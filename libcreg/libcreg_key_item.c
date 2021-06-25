@@ -131,7 +131,7 @@ int libcreg_key_item_initialize(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 		 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
-		 "%s: unable to create sub key sub key range list.",
+		 "%s: unable to create sub key range list.",
 		 function );
 
 		goto on_error;
@@ -504,8 +504,7 @@ int libcreg_key_item_read(
 
 				goto on_error;
 			}
-			else if( ( result != 0 )
-			      && ( (uint64_t) key_hierarchy_entry->next_key_offset != ( range_start + range_size ) ) )
+			else if( result != 0 )
 			{
 				libcerror_error_set(
 				 error,

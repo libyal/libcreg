@@ -246,10 +246,21 @@ int libcreg_key_name_entry_read_data(
 	 ( (creg_key_name_entry_t *) data )->index,
 	 key_name_entry->index );
 
-	if( key_name_entry->index == 0xffff )
+#if defined( HAVE_DEBUG_OUTPUT )
+	if( libcnotify_verbose != 0 )
 	{
-		return( 0 );
+		if( key_name_entry->index == 0xffff )
+		{
+			libcnotify_printf(
+			 "%s: data:\n",
+			 function );
+			libcnotify_print_data(
+			 data,
+			 sizeof( creg_key_name_entry_t ),
+			 LIBCNOTIFY_PRINT_DATA_FLAG_GROUP_DATA );
+		}
 	}
+#endif
 	if( ( key_name_entry->size < sizeof( creg_key_name_entry_t ) )
 	 || ( key_name_entry->size > data_size ) )
 	{
@@ -261,6 +272,10 @@ int libcreg_key_name_entry_read_data(
 		 function );
 
 		return( -1 );
+	}
+	if( key_name_entry->index == 0xffff )
+	{
+		return( 0 );
 	}
 #if defined( HAVE_DEBUG_OUTPUT )
 	if( libcnotify_verbose != 0 )
@@ -333,6 +348,7 @@ int libcreg_key_name_entry_read_data(
 #endif /* defined( HAVE_DEBUG_OUTPUT ) */
 
 /* TODO refactor */
+
 #if SIZEOF_SIZE_T <= 4
 	if( ( used_size < sizeof( creg_key_name_entry_t ) )
 	 || ( used_size > (size_t) SSIZE_MAX ) )
