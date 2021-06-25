@@ -230,11 +230,8 @@ int libcreg_key_item_read(
 	libcreg_data_block_t *data_block                   = NULL;
 	libcreg_key_descriptor_t *sub_key_descriptor       = NULL;
 	libcreg_key_hierarchy_entry_t *key_hierarchy_entry = NULL;
-	intptr_t *range_value                              = NULL;
 	static char *function                              = "libcreg_key_item_read";
 	off64_t sub_key_offset                             = 0;
-	uint64_t range_size                                = 0;
-	uint64_t range_start                               = 0;
 	int entry_index                                    = 0;
 	int recursion_depth                                = 0;
 	int result                                         = 0;
@@ -485,12 +482,10 @@ int libcreg_key_item_read(
 		if( ( key_hierarchy_entry->next_key_offset != 0 )
 		 && ( key_hierarchy_entry->next_key_offset != 0xffffffffUL ) )
 		{
-			result = libcdata_range_list_get_range_at_offset(
+			result = libcdata_range_list_range_has_overlapping_range(
 			          key_item->sub_key_range_list,
 			          (uint64_t) key_hierarchy_entry->next_key_offset,
-			          &range_start,
-			          &range_size,
-			          &range_value,
+			          (uint64_t) sizeof( creg_key_hierarchy_entry_t ),
 			          error );
 
 			if( result == -1 )
