@@ -494,7 +494,7 @@ int libcreg_key_item_read(
 				 error,
 				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 				 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-				 "%s: unable to retrieve next key navigation record range from range list.",
+				 "%s: unable to determine if there is an overlapping key navigation record range in the range list.",
 				 function );
 
 				goto on_error;
