@@ -346,6 +346,15 @@ void pycreg_file_free(
 
 		return;
 	}
+	if( pycreg_file->file_io_handle != NULL )
+	{
+		if( pycreg_file_close(
+		     pycreg_file,
+		     NULL ) == NULL )
+		{
+			return;
+		}
+	}
 	if( pycreg_file->file != NULL )
 	{
 		Py_BEGIN_ALLOW_THREADS
