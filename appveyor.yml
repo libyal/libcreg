@@ -1,6 +1,6 @@
 environment:
   nuget_token:
-    secure: s3Sl1ZiRw+J7YD+2wr1elu0unq6koZek+JmOcYKfDPfwrz2NigSu5SD8WvlwdIcH
+    secure: HYYxq3O5WWQ5cjS9AMu1OxtPtevYd1f8pglgXUCrb9uK8T6C+P8cUgfCpiX/Z2YJ
   pypi_token:
     secure: VHuZiUWgTqTciKE2nsv/Lm6aKQU/ci3QClu+/jWvxtmkaYoz1JQfc7MbYFTIwQpe6DmCh0rl/iG6HlNKwo9yOS2+l/V45Ger3WeV0S0C1ZrftR5BVd1MLXfMs+MM6wn808uKhhWIhZWhcl2PtO6TLreuBzZmLHmjXwBRStGnUpmkGhyhzlZJss4sna11EzW7hZUbn2JA2GsSO1qNDYrvIjaqQZ5v4tu1DfNUi6OBTwm5nQ1YRvnQ2NU4eBV4r/aRRP23s4HqtKGLrJUQq+lAVQ==
   matrix:
@@ -71,14 +71,14 @@ environment:
   - TARGET: python27-x64
     BUILD_ENVIRONMENT: python
     PYTHON: "C:\\Python27-x64\\python.exe"
-  - TARGET: python39
+  - TARGET: python310
     BUILD_ENVIRONMENT: python
     APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
-    PYTHON: "C:\\Python39\\python.exe"
-  - TARGET: python39-x64
+    PYTHON: "C:\\Python310\\python.exe"
+  - TARGET: python310-x64
     BUILD_ENVIRONMENT: python
     APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
-    PYTHON: "C:\\Python39-x64\\python.exe"
+    PYTHON: "C:\\Python310-x64\\python.exe"
   - TARGET: python39-x64
     BUILD_ENVIRONMENT: python
     APPVEYOR_BUILD_WORKER_IMAGE: macos
