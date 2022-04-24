@@ -35,7 +35,6 @@ DPKG_FILES = \
 	dpkg/rules \
 	dpkg/libcreg.install \
 	dpkg/libcreg-dev.install \
-	dpkg/libcreg-python.install \
 	dpkg/libcreg-python3.install \
 	dpkg/libcreg-tools.install \
 	dpkg/source/format
