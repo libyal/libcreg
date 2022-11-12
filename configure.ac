@@ -2,7 +2,7 @@ AC_PREREQ([2.71])
 
 AC_INIT(
  [libcreg],
- [20221022],
+ [20221112],
  [joachim.metz@gmail.com])
 
 AC_CONFIG_SRCDIR(
