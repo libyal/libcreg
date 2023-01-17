@@ -1,7 +1,7 @@
 /*
  * Library to access the Windows 9x/Me Registry File (CREG) format
  *
- * Copyright (C) 2013-2022, Joachim Metz <joachim.metz@gmail.com>
+ * Copyright (C) 2013-2023, Joachim Metz <joachim.metz@gmail.com>
  *
  * Refer to AUTHORS for acknowledgements.
  *

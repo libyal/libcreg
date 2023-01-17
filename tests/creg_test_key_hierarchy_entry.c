@@ -1,7 +1,7 @@
 /*
  * Library key_hierarchy_entry type test program
  *
- * Copyright (C) 2013-2022, Joachim Metz <joachim.metz@gmail.com>
+ * Copyright (C) 2013-2023, Joachim Metz <joachim.metz@gmail.com>
  *
  * Refer to AUTHORS for acknowledgements.
  *
