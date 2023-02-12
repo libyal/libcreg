@@ -1,6 +1,6 @@
 dnl Checks for required headers and functions
 dnl
-dnl Version: 20200713
+dnl Version: 20230211
 
 dnl Function to detect if libcreg dependencies are available
 AC_DEFUN([AX_LIBCREG_CHECK_LOCAL],
@@ -47,9 +47,7 @@ AC_DEFUN([AX_CREGTOOLS_CHECK_LOCAL],
   ])
 
   dnl Headers included in cregtools/cregmount.c
-  AC_CHECK_HEADERS([errno.h])
-
-  AC_HEADER_TIME
+  AC_CHECK_HEADERS([errno.h sys/time.h])
 
   dnl Functions included in cregtools/mount_file_system.c and cregtools/mount_file_entry.c
   AS_IF(
