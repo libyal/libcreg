@@ -517,7 +517,6 @@ PyObject *pycreg_value_get_name(
 {
 	libcerror_error_t *error = NULL;
 	PyObject *string_object  = NULL;
-	const char *errors       = NULL;
 	uint8_t *name            = NULL;
 	static char *function    = "pycreg_value_get_name";
 	size_t name_size         = 0;
@@ -570,7 +569,7 @@ PyObject *pycreg_value_get_name(
 	if( name == NULL )
 	{
 		PyErr_Format(
-		 PyExc_IOError,
+		 PyExc_MemoryError,
 		 "%s: unable to create name.",
 		 function );
 
@@ -606,7 +605,7 @@ PyObject *pycreg_value_get_name(
 	string_object = PyUnicode_DecodeUTF8(
 			 (char *) name,
 			 (Py_ssize_t) name_size - 1,
-			 errors );
+			 NULL );
 
 	PyMem_Free(
 	 name );
@@ -787,7 +786,7 @@ PyObject *pycreg_value_get_data(
 	if( value_data == NULL )
 	{
 		PyErr_Format(
-		 PyExc_IOError,
+		 PyExc_MemoryError,
 		 "%s: unable to create value data.",
 		 function );
 
@@ -959,7 +958,6 @@ PyObject *pycreg_value_get_data_as_string(
 {
 	libcerror_error_t *error = NULL;
 	PyObject *string_object  = NULL;
-	const char *errors       = NULL;
 	uint8_t *value_string    = NULL;
 	static char *function    = "pycreg_value_get_data_as_string";
 	size_t value_string_size = 0;
@@ -1046,7 +1044,7 @@ PyObject *pycreg_value_get_data_as_string(
 	if( value_string == NULL )
 	{
 		PyErr_Format(
-		 PyExc_IOError,
+		 PyExc_MemoryError,
 		 "%s: unable to create value string.",
 		 function );
 
@@ -1082,7 +1080,7 @@ PyObject *pycreg_value_get_data_as_string(
 	string_object = PyUnicode_DecodeUTF8(
 			 (char *) value_string,
 			 (Py_ssize_t) value_string_size - 1,
-			 errors );
+			 NULL );
 
 	PyMem_Free(
 	 value_string );
