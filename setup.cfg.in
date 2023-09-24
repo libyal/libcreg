@@ -1,6 +1,6 @@
 [metadata]
 name = libcreg-python
-version = 20230923
+version = @VERSION@
 description = Python bindings module for libcreg
 author = Joachim Metz
 author_email = joachim.metz@gmail.com

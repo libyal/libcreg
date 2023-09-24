@@ -2,7 +2,7 @@ AC_PREREQ([2.71])
 
 AC_INIT(
  [libcreg],
- [20230823],
+ [20230923],
  [joachim.metz@gmail.com])
 
 AC_CONFIG_SRCDIR(
@@ -201,6 +201,7 @@ AC_CONFIG_FILES([dpkg/changelog])
 AC_CONFIG_FILES([libcreg/libcreg.rc])
 AC_CONFIG_FILES([libcreg.pc])
 AC_CONFIG_FILES([libcreg.spec])
+AC_CONFIG_FILES([setup.cfg])
 dnl Generate a source configuration file
 AC_CONFIG_HEADERS([common/config.h])
 
