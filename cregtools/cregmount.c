@@ -139,8 +139,8 @@ int main( int argc, char * const argv[] )
 	system_character_t *mount_point             = NULL;
 	system_character_t *option_codepage         = NULL;
 	system_character_t *option_extended_options = NULL;
+	system_character_t *program                 = _SYSTEM_STRING( "cregmount" );
 	system_character_t *source                  = NULL;
-	char *program                               = "cregmount";
 	system_integer_t option                     = 0;
 	int result                                  = 0;
 	int verbose                                 = 0;
@@ -448,10 +448,14 @@ int main( int argc, char * const argv[] )
 
 		goto on_error;
 	}
-	cregmount_dokan_options.Version     = DOKAN_VERSION;
-	cregmount_dokan_options.ThreadCount = 0;
-	cregmount_dokan_options.MountPoint  = mount_point;
+	cregmount_dokan_options.Version    = DOKAN_VERSION;
+	cregmount_dokan_options.MountPoint = mount_point;
 
+#if DOKAN_MINIMUM_COMPATIBLE_VERSION >= 200
+	cregmount_dokan_options.SingleThread = TRUE;
+#else
+	cregmount_dokan_options.ThreadCount  = 0;
+#endif
 	if( verbose != 0 )
 	{
 		cregmount_dokan_options.Options |= DOKAN_OPTION_STDERR;
@@ -521,10 +525,16 @@ int main( int argc, char * const argv[] )
 
 #endif /* ( DOKAN_VERSION >= 600 ) && ( DOKAN_VERSION < 800 ) */
 
+#if DOKAN_MINIMUM_COMPATIBLE_VERSION >= 200
+	DokanInit()
+#endif
 	result = DokanMain(
 	          &cregmount_dokan_options,
 	          &cregmount_dokan_operations );
 
+#if DOKAN_MINIMUM_COMPATIBLE_VERSION >= 200
+	DokanShutdown();
+#endif
 	switch( result )
 	{
 		case DOKAN_SUCCESS:
