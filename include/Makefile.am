@@ -19,9 +19,9 @@ MAINTAINERCLEANFILES = \
 	Makefile.in
 
 distclean: clean
-	/bin/rm -f libcreg.h
-	/bin/rm -f libcreg/definitions.h
-	/bin/rm -f libcreg/features.h
-	/bin/rm -f libcreg/types.h
-	/bin/rm -f Makefile
+	-rm -f libcreg.h
+	-rm -f libcreg/definitions.h
+	-rm -f libcreg/features.h
+	-rm -f libcreg/types.h
+	-rm -f Makefile
 

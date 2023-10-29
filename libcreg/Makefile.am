@@ -82,11 +82,13 @@ MAINTAINERCLEANFILES = \
 	Makefile.in
 
 distclean: clean
-	/bin/rm -f libcreg_definitions.h
-	/bin/rm -f libcreg.rc
-	/bin/rm -f Makefile
+	-rm -f libcreg_definitions.h
+	-rm -f libcreg.rc
+	-rm -f Makefile
 
-splint:
+sources-local: $(BUILT_SOURCES)
+
+splint-local:
 	@echo "Running splint on libcreg ..."
 	-splint -preproc -redef $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(libcreg_la_SOURCES)
 
