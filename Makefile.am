@@ -18,8 +18,6 @@ SUBDIRS = \
 	libcreg \
 	cregtools \
 	pycreg \
-	pycreg-python2 \
-	pycreg-python3 \
 	po \
 	manuals \
 	tests \

@@ -40,7 +40,7 @@ void (*cregtools_signal_signal_handler)( cregtools_signal_t ) = NULL;
 /* Signal handler for Ctrl+C or Ctrl+Break signals
  */
 BOOL WINAPI cregtools_signal_handler(
-             unsigned long signal )
+             cregtools_signal_t signal )
 {
 	static char *function = "cregtools_signal_handler";
 
@@ -112,7 +112,7 @@ int cregtools_signal_attach(
 	cregtools_signal_signal_handler = signal_handler;
 
 	if( SetConsoleCtrlHandler(
-	     cregtools_signal_handler,
+	     (PHANDLER_ROUTINE) cregtools_signal_handler,
 	     TRUE ) == 0 )
 	{
 		libcerror_error_set(
@@ -179,7 +179,7 @@ int cregtools_signal_detach(
 	static char *function = "cregtools_signal_detach";
 
 	if( SetConsoleCtrlHandler(
-	     cregtools_signal_handler,
+	     (PHANDLER_ROUTINE) cregtools_signal_handler,
 	     FALSE ) == 0 )
 	{
 		libcerror_error_set(
