@@ -24,7 +24,7 @@ BEGIN
       VALUE "FileDescription",		"Library to access the Windows 9x/Me Registry File (CREG) format\0"
       VALUE "FileVersion",		"@VERSION@" "\0"
       VALUE "InternalName",		"libcreg.dll\0"
-      VALUE "LegalCopyright",		"(C) 2013-2023, Joachim Metz <joachim.metz@gmail.com>\0"
+      VALUE "LegalCopyright",		"(C) 2013-2024, Joachim Metz <joachim.metz@gmail.com>\0"
       VALUE "OriginalFilename",		"libcreg.dll\0"
       VALUE "ProductName",		"libcreg\0"
       VALUE "ProductVersion",		"@VERSION@" "\0"
