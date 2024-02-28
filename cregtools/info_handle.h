@@ -80,10 +80,17 @@ int info_handle_close_input(
      info_handle_t *info_handle,
      libcerror_error_t **error );
 
+int info_handle_name_value_fprint(
+     info_handle_t *info_handle,
+     const system_character_t *value_string,
+     size_t value_string_length,
+     libcerror_error_t **error );
+
 int info_handle_key_fprint(
      info_handle_t *info_handle,
      libcreg_key_t *key,
-     int indentation_level,
+     const system_character_t *key_path,
+     size_t key_path_length,
      libcreg_error_t **error );
 
 int info_handle_key_value_hierarchy_fprint(

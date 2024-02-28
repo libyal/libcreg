@@ -1,5 +1,5 @@
 TODO
-* creginfo: change info_handle_key_fprint to print full key path
+* creginfo print root \ when not present
 * remove dependency on libfdata_tree
 * implement thread lock
 ** file

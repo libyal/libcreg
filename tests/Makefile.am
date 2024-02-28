@@ -242,6 +242,7 @@ creg_test_tools_info_handle_SOURCES = \
 	creg_test_unused.h
 
 creg_test_tools_info_handle_LDADD = \
+	@LIBUNA_LIBADD@ \
 	@LIBCLOCALE_LIBADD@ \
 	../libcreg/libcreg.la \
 	@LIBCERROR_LIBADD@

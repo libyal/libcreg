@@ -64,6 +64,7 @@ creginfo_SOURCES = \
 	info_handle.c info_handle.h
 
 creginfo_LDADD = \
+	@LIBUNA_LIBADD@ \
 	@LIBCNOTIFY_LIBADD@ \
 	@LIBCLOCALE_LIBADD@ \
 	../libcreg/libcreg.la \
