@@ -683,7 +683,7 @@ PyObject *pycreg_value_get_data_size(
 	libcerror_error_t *error = NULL;
 	PyObject *integer_object = NULL;
 	static char *function    = "pycreg_value_get_data_size";
-	size64_t data_size       = 0;
+	size_t value_data_size   = 0;
 	int result               = 0;
 
 	PYCREG_UNREFERENCED_PARAMETER( arguments )
@@ -701,7 +701,7 @@ PyObject *pycreg_value_get_data_size(
 
 	result = libcreg_value_get_value_data_size(
 	          pycreg_value->value,
-	          &data_size,
+	          &value_data_size,
 	          &error );
 
 	Py_END_ALLOW_THREADS
@@ -711,7 +711,7 @@ PyObject *pycreg_value_get_data_size(
 		pycreg_error_raise(
 		 error,
 		 PyExc_IOError,
-		 "%s: unable to retrieve data size.",
+		 "%s: unable to retrieve value data size.",
 		 function );
 
 		libcerror_error_free(
@@ -720,7 +720,7 @@ PyObject *pycreg_value_get_data_size(
 		return( NULL );
 	}
 	integer_object = pycreg_integer_unsigned_new_from_64bit(
-	                  (uint64_t) data_size );
+	                  (uint64_t) value_data_size );
 
 	return( integer_object );
 }
