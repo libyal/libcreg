@@ -15,13 +15,11 @@ EXTRA_DIST = \
 	libcreg/features.h.in \
 	libcreg/types.h.in
 
-MAINTAINERCLEANFILES = \
+DISTCLEANFILES = \
+	libcreg.h \
+	libcreg/definitions.h \
+	libcreg/features.h \
+	libcreg/types.h \
+	Makefile \
 	Makefile.in
-
-distclean: clean
-	-rm -f libcreg.h
-	-rm -f libcreg/definitions.h
-	-rm -f libcreg/features.h
-	-rm -f libcreg/types.h
-	-rm -f Makefile
 

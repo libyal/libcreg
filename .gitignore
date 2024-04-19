@@ -151,6 +151,7 @@ stamp-h[1-9]
 /tests/creg_test_value
 /tests/creg_test_value_entry
 /tests/input
+/tests/notify_stream.log
 /tests/tmp*
 
 # Local library dependencies specific files

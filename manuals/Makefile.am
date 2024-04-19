@@ -6,9 +6,7 @@ EXTRA_DIST = \
 	creginfo.1 \
 	libcreg.3
 
-MAINTAINERCLEANFILES = \
+DISTCLEANFILES = \
+	Makefile \
 	Makefile.in
-
-distclean: clean
-	-rm -f Makefile
 

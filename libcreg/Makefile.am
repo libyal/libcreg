@@ -1,6 +1,6 @@
 AM_CPPFLAGS = \
-	-I$(top_srcdir)/include \
-	-I$(top_srcdir)/common \
+	-I../include -I$(top_srcdir)/include \
+	-I../common -I$(top_srcdir)/common \
 	@LIBCERROR_CPPFLAGS@ \
 	@LIBCTHREADS_CPPFLAGS@ \
 	@LIBCDATA_CPPFLAGS@ \
@@ -78,13 +78,11 @@ EXTRA_DIST = \
 	libcreg.rc \
 	libcreg.rc.in
 
-MAINTAINERCLEANFILES = \
+DISTCLEANFILES = \
+	libcreg_definitions.h \
+	libcreg.rc \
+	Makefile \
 	Makefile.in
-
-distclean: clean
-	-rm -f libcreg_definitions.h
-	-rm -f libcreg.rc
-	-rm -f Makefile
 
 sources-local: $(BUILT_SOURCES)
 
