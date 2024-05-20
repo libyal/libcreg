@@ -1,7 +1,7 @@
 /*
  * Mount handle
  *
- * Copyright (C) 2009-2024, Joachim Metz <joachim.metz@gmail.com>
+ * Copyright (C) 2013-2024, Joachim Metz <joachim.metz@gmail.com>
  *
  * Refer to AUTHORS for acknowledgements.
  *
@@ -26,13 +26,13 @@
 #include <types.h>
 #include <wide_string.h>
 
-#include "mount_file_entry.h"
-#include "mount_file_system.h"
-#include "mount_handle.h"
 #include "cregtools_libcerror.h"
 #include "cregtools_libclocale.h"
 #include "cregtools_libcpath.h"
 #include "cregtools_libcreg.h"
+#include "mount_file_entry.h"
+#include "mount_file_system.h"
+#include "mount_handle.h"
 
 /* Creates a mount handle
  * Make sure the value mount_handle is referencing, is set to NULL

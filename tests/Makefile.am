@@ -58,6 +58,7 @@ check_PROGRAMS = \
 	creg_test_notify \
 	creg_test_support \
 	creg_test_tools_info_handle \
+	creg_test_tools_mount_path_string \
 	creg_test_tools_output \
 	creg_test_tools_signal \
 	creg_test_value \
@@ -244,6 +245,19 @@ creg_test_tools_info_handle_SOURCES = \
 creg_test_tools_info_handle_LDADD = \
 	@LIBUNA_LIBADD@ \
 	@LIBCLOCALE_LIBADD@ \
+	../libcreg/libcreg.la \
+	@LIBCERROR_LIBADD@
+
+creg_test_tools_mount_path_string_SOURCES = \
+	../cregtools/mount_path_string.c ../cregtools/mount_path_string.h \
+	creg_test_libcerror.h \
+	creg_test_libcpath.h \
+	creg_test_macros.h \
+	creg_test_tools_mount_path_string.c \
+	creg_test_unused.h
+
+creg_test_tools_mount_path_string_LDADD = \
+	@LIBUNA_LIBADD@ \
 	../libcreg/libcreg.la \
 	@LIBCERROR_LIBADD@
 

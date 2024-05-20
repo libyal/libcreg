@@ -12,6 +12,7 @@ MSVSCPP_FILES = \
 	creg_test_notify/creg_test_notify.vcproj \
 	creg_test_support/creg_test_support.vcproj \
 	creg_test_tools_info_handle/creg_test_tools_info_handle.vcproj \
+	creg_test_tools_mount_path_string/creg_test_tools_mount_path_string.vcproj \
 	creg_test_tools_output/creg_test_tools_output.vcproj \
 	creg_test_tools_signal/creg_test_tools_signal.vcproj \
 	creg_test_value/creg_test_value.vcproj \

@@ -1,7 +1,7 @@
 /*
  * Mount handle
  *
- * Copyright (C) 2009-2024, Joachim Metz <joachim.metz@gmail.com>
+ * Copyright (C) 2013-2024, Joachim Metz <joachim.metz@gmail.com>
  *
  * Refer to AUTHORS for acknowledgements.
  *
@@ -26,10 +26,10 @@
 #include <file_stream.h>
 #include <types.h>
 
-#include "mount_file_entry.h"
-#include "mount_file_system.h"
 #include "cregtools_libcerror.h"
 #include "cregtools_libcreg.h"
+#include "mount_file_entry.h"
+#include "mount_file_system.h"
 
 #if defined( __cplusplus )
 extern "C" {

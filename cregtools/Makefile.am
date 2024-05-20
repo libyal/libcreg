@@ -91,7 +91,8 @@ cregmount_SOURCES = \
 	mount_file_entry.c mount_file_entry.h \
 	mount_file_system.c mount_file_system.h \
 	mount_fuse.c mount_fuse.h \
-	mount_handle.c mount_handle.h
+	mount_handle.c mount_handle.h \
+	mount_path_string.c mount_path_string.h
 
 cregmount_LDADD = \
 	@LIBFUSE_LIBADD@ \
