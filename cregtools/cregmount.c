@@ -139,8 +139,8 @@ int main( int argc, char * const argv[] )
 	system_character_t *mount_point             = NULL;
 	system_character_t *option_codepage         = NULL;
 	system_character_t *option_extended_options = NULL;
-	system_character_t *program                 = _SYSTEM_STRING( "cregmount" );
 	system_character_t *source                  = NULL;
+	char *program                               = "cregmount";
 	system_integer_t option                     = 0;
 	int result                                  = 0;
 	int verbose                                 = 0;
@@ -626,7 +626,7 @@ int main( int argc, char * const argv[] )
 #else
 	fprintf(
 	 stderr,
-	 "No sub system to mount CREG format.\n" );
+	 "No sub system to mount Windows 9x/Me Registry File (CREG) format.\n" );
 
 	return( EXIT_FAILURE );
 

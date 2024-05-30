@@ -25,12 +25,18 @@
 #include <system_string.h>
 #include <types.h>
 
-#if defined( HAVE_UNISTD_H )
-#include <unistd.h>
+#include <stdio.h>
+
+#if defined( HAVE_IO_H ) || defined( WINAPI )
+#include <io.h>
 #endif
 
 #if defined( HAVE_STDLIB_H ) || defined( WINAPI )
 #include <stdlib.h>
+#endif
+
+#if defined( HAVE_UNISTD_H )
+#include <unistd.h>
 #endif
 
 #include "cregtools_getopt.h"
@@ -52,7 +58,7 @@ enum CREGINFO_MODES
 info_handle_t *creginfo_info_handle = NULL;
 int creginfo_abort                  = 0;
 
-/* Prints the executable usage information
+/* Prints usage information
  */
 void usage_fprint(
       FILE *stream )
@@ -85,7 +91,7 @@ void creginfo_signal_handler(
       cregtools_signal_t signal CREGTOOLS_ATTRIBUTE_UNUSED )
 {
 	libcerror_error_t *error = NULL;
-	static char *function   = "creginfo_signal_handler";
+	static char *function    = "creginfo_signal_handler";
 
 	CREGTOOLS_UNREFERENCED_PARAMETER( signal )
 
