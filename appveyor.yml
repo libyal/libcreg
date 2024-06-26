@@ -265,6 +265,9 @@ matrix:
 install:
 - cmd: if [%BUILD_ENVIRONMENT%]==[msbuild] (
     git clone https://github.com/libyal/vstools.git ..\vstools )
+- ps: If (($env:BUILD_ENVIRONMENT -eq "msbuild") -And (Test-Path ".\synctestdata.ps1")) {
+    .\synctestdata.ps1 }
+- sh: if ( test ${BUILD_ENVIRONMENT} = "python-tox" || test ${BUILD_ENVIRONMENT} = "xcode" ) && test -f "./synctestdata.sh"; then ./synctestdata.sh; fi
 - ps: If ($env:BUILD_ENVIRONMENT -eq "msbuild") {
     If ( ( "vs2008", "vs2010", "vs2012", "vs2013", "vs2015" ).Contains( $env:TARGET ) ) {
       .\syncdokan.ps1 -UseLegacyVersion }
