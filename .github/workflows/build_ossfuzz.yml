@@ -30,6 +30,6 @@ jobs:
         head -n 20 projects/libyal/Dockerfile > projects/libcreg/Dockerfile
         echo "RUN git clone --depth 1 https://github.com/libyal/libcreg.git libcreg" >> projects/libcreg/Dockerfile
         tail -n 3 projects/libyal/Dockerfile >> projects/libcreg/Dockerfile
-        python3 infra/helper.py build_image --pull libcreg 
+        python3 infra/helper.py build_image --pull libcreg
         python3 infra/helper.py build_fuzzers --sanitizer address libcreg
         python3 infra/helper.py check_build libcreg

@@ -1,7 +1,7 @@
 /*
  * Mounts a Windows 9x/Me Registry File (CREG).
  *
- * Copyright (C) 2013-2024, Joachim Metz <joachim.metz@gmail.com>
+ * Copyright (C) 2013-2025, Joachim Metz <joachim.metz@gmail.com>
  *
  * Refer to AUTHORS for acknowledgements.
  *
@@ -39,9 +39,6 @@
 #include <unistd.h>
 #endif
 
-#include "mount_dokan.h"
-#include "mount_fuse.h"
-#include "mount_handle.h"
 #include "cregtools_getopt.h"
 #include "cregtools_i18n.h"
 #include "cregtools_libcerror.h"
@@ -51,6 +48,9 @@
 #include "cregtools_output.h"
 #include "cregtools_signal.h"
 #include "cregtools_unused.h"
+#include "mount_dokan.h"
+#include "mount_fuse.h"
+#include "mount_handle.h"
 
 mount_handle_t *cregmount_mount_handle = NULL;
 int cregmount_abort                    = 0;
@@ -322,6 +322,11 @@ int main( int argc, char * const argv[] )
 #if defined( HAVE_LIBFUSE ) || defined( HAVE_LIBFUSE3 ) || defined( HAVE_LIBOSXFUSE )
 	if( option_extended_options != NULL )
 	{
+#if defined( HAVE_LIBFUSE3 )
+		// fuse_opt_add_arg: Assertion `!args->argv || args->allocated' failed.
+		cregmount_fuse_arguments.argc = 0;
+		cregmount_fuse_arguments.argv = NULL;
+#endif
 		/* This argument is required but ignored
 		 */
 		if( fuse_opt_add_arg(
