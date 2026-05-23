@@ -123,8 +123,8 @@ The file header is 32 bytes of size and consists of:
 | 8 | 4 | | Data blocks list offset +
 The offset is relative to the start of the file
 | 12 | 4 | | [yellow-background]*Unknown (checksum? Fat date time?)*
-| 16 | 2 | | [yellow-background]*Unknown*
-| 18 | 2 | | Number of Registry data blocks
+| 16 | 2 | | Number of Registry data blocks
+| 18 | 2 | | [yellow-background]*Unknown*
 | 20 | 2 | | [yellow-background]*Unknown (Copy of minor version?)*
 | 22 | 2 | | [yellow-background]*Unknown (Copy of major version?)*
 | 24 | 8 | | [yellow-background]*Unknown (empty values)*

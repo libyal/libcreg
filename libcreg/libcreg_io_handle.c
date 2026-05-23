@@ -344,23 +344,32 @@ int libcreg_io_handle_read_file_header(
 		 function,
 		 value_16bit );
 
-		byte_stream_copy_to_uint32_little_endian(
+		byte_stream_copy_to_uint16_little_endian(
 		 file_header.unknown3,
-		 value_32bit );
+		 value_16bit );
 		libcnotify_printf(
-		 "%s: unknown3\t\t\t\t: 0x%08" PRIx32 "\n",
+		 "%s: unknown3\t\t\t\t: 0x%04" PRIx16 "\n",
 		 function,
-		 value_32bit );
+		 value_16bit );
+
+		byte_stream_copy_to_uint16_little_endian(
+		 file_header.unknown4,
+		 value_16bit );
+		libcnotify_printf(
+		 "%s: unknown4\t\t\t\t: 0x%04" PRIx16 "\n",
+		 function,
+		 value_16bit );
 
 		libcnotify_printf(
-		 "%s: unknown4:\n",
+		 "%s: unknown5:\n",
 		 function );
 		libcnotify_print_data(
-		 file_header.unknown4,
+		 file_header.unknown5,
 		 8,
 		 0 );
 	}
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
 	return( 1 );
 }
 

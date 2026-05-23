@@ -70,14 +70,19 @@ struct creg_file_header
 	uint8_t unknown2[ 2 ];
 
 	/* Unknown
-	 * Consists of 4 bytes
+	 * Consists of 2 bytes
 	 */
-	uint8_t unknown3[ 4 ];
+	uint8_t unknown3[ 2 ];
+
+	/* Unknown
+	 * Consists of 2 bytes
+	 */
+	uint8_t unknown4[ 2 ];
 
 	/* Unknown
 	 * Consists of 8 bytes
 	 */
-	uint8_t unknown4[ 8 ];
+	uint8_t unknown5[ 8 ];
 };
 
 #if defined( __cplusplus )
