@@ -24,6 +24,19 @@
 
 #include <common.h>
 
+#if !defined( __CYGWIN__ ) && !defined( _WIN32 ) && defined( __has_attribute )
+#if __has_attribute( visibility )
+#define LIBCREG_INTERNAL	__attribute__((visibility("hidden"))) extern
+
+#else
+#define LIBCREG_INTERNAL	extern
+
+#endif /* __has_attribute( visibility ) */
+#else
+#define LIBCREG_INTERNAL	extern
+
+#endif /* !defined( __CYGWIN__ ) && !defined( _WIN32 ) && defined( __has_attribute ) */
+
 /* Define HAVE_LOCAL_LIBCREG for local use of libcreg
  */
 #if !defined( HAVE_LOCAL_LIBCREG )
@@ -32,7 +45,7 @@
 
 #else
 #define LIBCREG_EXTERN		/* extern */
-#define LIBCREG_EXTERN_VARIABLE	extern
+#define LIBCREG_EXTERN_VARIABLE	LIBCREG_INTERNAL
 
 #endif /* !defined( HAVE_LOCAL_LIBCREG ) */
 

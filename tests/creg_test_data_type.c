@@ -62,8 +62,10 @@ int main(
 
 #if defined( __GNUC__ ) && !defined( LIBCREG_DLL_IMPORT )
 
+/* TODO
 on_error:
 	return( EXIT_FAILURE );
+*/
 
 #endif /* defined( __GNUC__ ) && !defined( LIBCREG_DLL_IMPORT ) */
 }

@@ -616,13 +616,15 @@ int libcreg_data_block_get_entry_by_identifier(
      libcreg_data_block_t *data_block,
      uint16_t identifier,
      libcreg_key_name_entry_t **key_name_entry,
-     int ascii_codepage,
+     int ascii_codepage LIBCREG_ATTRIBUTE_UNUSED,
      libcerror_error_t **error )
 {
 	libcreg_key_name_entry_t *safe_key_name_entry = NULL;
 	static char *function                         = "libcreg_data_block_get_entry_by_identifier";
 	int entry_index                               = 0;
 	int number_of_entries                         = 0;
+
+	LIBCREG_UNREFERENCED_PARAMETER( ascii_codepage )
 
 	if( data_block == NULL )
 	{

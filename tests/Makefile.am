@@ -18,6 +18,9 @@ AM_CPPFLAGS = \
 	@PTHREAD_CPPFLAGS@ \
 	@LIBCREG_DLL_IMPORT@
 
+AM_TESTS_ENVIRONMENT = \
+	export TESTS_USE_WINAPI="@TESTS_USE_WINAPI@";
+
 if HAVE_PYTHON_TESTS
 TESTS_PYCREG = \
 	test_python_module.sh
@@ -270,7 +273,8 @@ creg_test_tools_output_SOURCES = \
 
 creg_test_tools_output_LDADD = \
 	../libcreg/libcreg.la \
-	@LIBCERROR_LIBADD@
+	@LIBCERROR_LIBADD@ \
+	@LIBINTL@
 
 creg_test_tools_signal_SOURCES = \
 	../cregtools/cregtools_signal.c ../cregtools/cregtools_signal.h \

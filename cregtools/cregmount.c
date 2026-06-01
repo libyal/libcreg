@@ -27,6 +27,10 @@
 
 #include <stdio.h>
 
+#if defined( HAVE_FCNTL_H ) || defined( WINAPI )
+#include <fcntl.h>
+#endif
+
 #if defined( HAVE_IO_H ) || defined( WINAPI )
 #include <io.h>
 #endif
@@ -136,17 +140,21 @@ int main( int argc, char * const argv[] )
 #endif
 {
 	libcreg_error_t *error                      = NULL;
-	system_character_t *mount_point             = NULL;
 	system_character_t *option_codepage         = NULL;
-	system_character_t *option_extended_options = NULL;
 	system_character_t *source                  = NULL;
 	char *program                               = "cregmount";
 	system_integer_t option                     = 0;
 	int result                                  = 0;
 	int verbose                                 = 0;
 
+#if defined( HAVE_LIBFUSE ) || defined( HAVE_LIBFUSE3 ) || defined( HAVE_LIBOSXFUSE ) || defined( HAVE_LIBDOKAN )
+	system_character_t *mount_point             = NULL;
+#endif
+
 #if defined( HAVE_LIBFUSE ) || defined( HAVE_LIBFUSE3 ) || defined( HAVE_LIBOSXFUSE )
 	struct fuse_operations cregmount_fuse_operations;
+
+	system_character_t *option_extended_options = NULL;
 
 #if defined( HAVE_LIBFUSE3 )
 	/* Need to set this to 1 even if there no arguments, otherwise this causes
@@ -163,6 +171,11 @@ int main( int argc, char * const argv[] )
 #elif defined( HAVE_LIBDOKAN )
 	DOKAN_OPERATIONS cregmount_dokan_operations;
 	DOKAN_OPTIONS cregmount_dokan_options;
+#endif
+
+#if defined( __MINGW32__ ) && defined( HAVE_MINGW_BINMODE )
+	_setmode( _fileno( stdout ), _O_BINARY );
+	_setmode( _fileno( stderr ), _O_BINARY );
 #endif
 
 	libcnotify_stream_set(
@@ -236,10 +249,12 @@ int main( int argc, char * const argv[] )
 
 				return( EXIT_SUCCESS );
 
+#if defined( HAVE_LIBFUSE ) || defined( HAVE_LIBFUSE3 ) || defined( HAVE_LIBOSXFUSE )
 			case (system_integer_t) 'X':
 				option_extended_options = optarg;
 
 				break;
+#endif
 		}
 	}
 	if( optind == argc )
@@ -266,7 +281,9 @@ int main( int argc, char * const argv[] )
 
 		return( EXIT_FAILURE );
 	}
+#if defined( HAVE_LIBFUSE ) || defined( HAVE_LIBFUSE3 ) || defined( HAVE_LIBOSXFUSE ) || defined( HAVE_LIBDOKAN )
 	mount_point = argv[ optind ];
+#endif
 
 	libcnotify_verbose_set(
 	 verbose );

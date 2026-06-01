@@ -59,9 +59,12 @@ int libcreg_key_tree_get_sub_key_by_utf8_path(
 	libuna_unicode_character_t unicode_character = 0;
 	size_t utf8_string_index                     = 0;
 	size_t utf8_string_segment_length            = 0;
-	uint32_t name_hash                           = 0;
 	uint32_t sub_key_offset                      = 0;
 	int result                                   = 0;
+
+#if defined( HAVE_DEBUG_OUTPUT )
+	uint32_t name_hash                           = 0;
+#endif
 
 	if( utf8_string == NULL )
 	{
@@ -128,7 +131,10 @@ int libcreg_key_tree_get_sub_key_by_utf8_path(
 	{
 		utf8_string_segment        = (uint8_t *) &( utf8_string[ utf8_string_index ] );
 		utf8_string_segment_length = utf8_string_index;
-		name_hash                  = 0;
+
+#if defined( HAVE_DEBUG_OUTPUT )
+		name_hash = 0;
+#endif
 
 		while( utf8_string_index < utf8_string_length )
 		{
@@ -155,8 +161,10 @@ int libcreg_key_tree_get_sub_key_by_utf8_path(
 
 				break;
 			}
+#if defined( HAVE_DEBUG_OUTPUT )
 			name_hash *= 37;
 			name_hash += (uint32_t) towupper( (wint_t) unicode_character );
+#endif
 		}
 		utf8_string_segment_length = utf8_string_index - utf8_string_segment_length;
 
@@ -297,9 +305,12 @@ int libcreg_key_tree_get_sub_key_by_utf16_path(
 	libuna_unicode_character_t unicode_character = 0;
 	size_t utf16_string_index                    = 0;
 	size_t utf16_string_segment_length           = 0;
-	uint32_t name_hash                           = 0;
 	uint32_t sub_key_offset                      = 0;
 	int result                                   = 0;
+
+#if defined( HAVE_DEBUG_OUTPUT )
+	uint32_t name_hash                           = 0;
+#endif
 
 	if( utf16_string == NULL )
 	{
@@ -366,7 +377,10 @@ int libcreg_key_tree_get_sub_key_by_utf16_path(
 	{
 		utf16_string_segment        = (uint16_t *) &( utf16_string[ utf16_string_index ] );
 		utf16_string_segment_length = utf16_string_index;
-		name_hash                   = 0;
+
+#if defined( HAVE_DEBUG_OUTPUT )
+		name_hash = 0;
+#endif
 
 		while( utf16_string_index < utf16_string_length )
 		{
@@ -393,8 +407,10 @@ int libcreg_key_tree_get_sub_key_by_utf16_path(
 
 				break;
 			}
+#if defined( HAVE_DEBUG_OUTPUT )
 			name_hash *= 37;
 			name_hash += (uint32_t) towupper( (wint_t) unicode_character );
+#endif
 		}
 		utf16_string_segment_length = utf16_string_index - utf16_string_segment_length;
 
