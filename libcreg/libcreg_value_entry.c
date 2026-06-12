@@ -162,10 +162,10 @@ int libcreg_value_entry_read_data(
      libcerror_error_t **error )
 {
 	static char *function    = "libcreg_value_entry_read_data";
-	size_t value_data_offset = 0; 
+	size_t value_data_offset = 0;
 
 #if defined( HAVE_DEBUG_OUTPUT )
-	uint32_t value_32bit     = 0; 
+	uint32_t value_32bit     = 0;
 #endif
 
 	LIBCREG_UNREFERENCED_PARAMETER( ascii_codepage )

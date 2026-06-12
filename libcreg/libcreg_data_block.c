@@ -397,7 +397,7 @@ int libcreg_data_block_read_entries(
 
 	data_block->data = (uint8_t *) memory_allocate(
 	                                sizeof( uint8_t ) * data_block->data_size );
-	
+
 	if( data_block->data == NULL )
 	{
 		libcerror_error_set(
