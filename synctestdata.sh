@@ -9,6 +9,9 @@ TEST_SET="public";
 TEST_INPUT_DIRECTORY="tests/input";
 TEST_FILES="SYSTEM.DAT USER.DAT";
 
+mkdir -p "${TEST_INPUT_DIRECTORY}/.creginfo_hierarchy";
+echo "-H" > "${TEST_INPUT_DIRECTORY}/.creginfo_hierarchy/options";
+
 mkdir -p "${TEST_INPUT_DIRECTORY}/${TEST_SET}";
 
 for TEST_FILE in ${TEST_FILES};

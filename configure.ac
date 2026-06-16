@@ -2,7 +2,7 @@ AC_PREREQ([2.71])
 
 AC_INIT(
   [libcreg],
-  [20260612],
+  [20260616],
   [https://github.com/libyal/libcreg/issues])
 
 AC_CONFIG_SRCDIR(

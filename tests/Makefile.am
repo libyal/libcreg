@@ -346,16 +346,34 @@ test_inputs_pycreg.at: generate_test_inputs.sh
 test_inputs_creginfo.at: generate_test_inputs.sh
 	$(SHELL) $(srcdir)/generate_test_inputs.sh $(PACKAGE_NAME) creginfo
 
+test_inputs_creginfo_hierarchy.at: generate_test_inputs.sh
+	$(SHELL) $(srcdir)/generate_test_inputs.sh $(PACKAGE_NAME) creginfo_hierarchy
+
 test_inputs_cregexport.at: generate_test_inputs.sh
 	$(SHELL) $(srcdir)/generate_test_inputs.sh $(PACKAGE_NAME) cregexport
 
-test_library: package.m4 test_inputs_libcreg.at test_library.at test_macros.at
+test_library: \
+	package.m4 \
+	test_inputs_libcreg.at \
+	test_library.at \
+	test_macros.at
 
-test_manpages: package.m4 test_manpages.at
+test_manpages: \
+	package.m4 \
+	test_manpages.at
 
-test_python_module: package.m4 test_inputs_pycreg.at test_python_module.at
+test_python_module: \
+	package.m4 \
+	test_inputs_pycreg.at \
+	test_python_module.at
 
-test_tools: package.m4 test_inputs_cregexport.at test_inputs_creginfo.at test_macros.at test_tools.at
+test_tools: \
+	package.m4 \
+	test_inputs_cregexport.at \
+	test_inputs_creginfo.at \
+	test_inputs_creginfo_hierarchy.at \
+	test_macros.at \
+	test_tools.at
 
 EXTRA_DIST = \
 	$(check_AUTOTESTS:=.at) \
