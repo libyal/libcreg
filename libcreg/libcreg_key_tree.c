@@ -33,6 +33,7 @@
 #include "libcreg_key_navigation.h"
 #include "libcreg_key_tree.h"
 #include "libcreg_libcerror.h"
+#include "libcreg_libcnotify.h"
 #include "libcreg_libuna.h"
 #include "libcreg_types.h"
 
@@ -135,7 +136,6 @@ int libcreg_key_tree_get_sub_key_by_utf8_path(
 #if defined( HAVE_DEBUG_OUTPUT )
 		name_hash = 0;
 #endif
-
 		while( utf8_string_index < utf8_string_length )
 		{
 			if( libuna_unicode_character_copy_from_utf8(
@@ -166,6 +166,15 @@ int libcreg_key_tree_get_sub_key_by_utf8_path(
 			name_hash += (uint32_t) towupper( (wint_t) unicode_character );
 #endif
 		}
+#if defined( HAVE_DEBUG_OUTPUT )
+		if( libcnotify_verbose != 0 )
+		{
+			libcnotify_printf(
+			 "%s: name hash\t\t: 0x%08" PRIx32 "\n",
+			 function,
+			 name_hash );
+		}
+#endif
 		utf8_string_segment_length = utf8_string_index - utf8_string_segment_length;
 
 		if( utf8_string_segment_length == 0 )
@@ -381,7 +390,6 @@ int libcreg_key_tree_get_sub_key_by_utf16_path(
 #if defined( HAVE_DEBUG_OUTPUT )
 		name_hash = 0;
 #endif
-
 		while( utf16_string_index < utf16_string_length )
 		{
 			if( libuna_unicode_character_copy_from_utf16(
@@ -412,6 +420,15 @@ int libcreg_key_tree_get_sub_key_by_utf16_path(
 			name_hash += (uint32_t) towupper( (wint_t) unicode_character );
 #endif
 		}
+#if defined( HAVE_DEBUG_OUTPUT )
+		if( libcnotify_verbose != 0 )
+		{
+			libcnotify_printf(
+			 "%s: name hash\t\t: 0x%08" PRIx32 "\n",
+			 function,
+			 name_hash );
+		}
+#endif
 		utf16_string_segment_length = utf16_string_index - utf16_string_segment_length;
 
 		if( utf16_string_segment_length == 0 )
