@@ -1,19 +1,21 @@
 .Dd June 24, 2026
-.Dt CREGINFO 1
+.Dt CREGMOUNT 1
 .Os
 .Sh NAME
-.Nm creginfo
-.Nd determines information about a Windows 9x/Me Registry File (CREG)
+.Nm cregmount
+.Nd mounts a Windows 9x/Me Registry File (CREG)
 .Sh SYNOPSIS
-.Nm creginfo
+.Nm cregmount
 .Op Fl c Ar codepage
-.Op Fl hHvV
+.Op Fl X Ar extended_options
+.Op Fl hvV
 .Ar source
+.Ar mount_point
 .Sh DESCRIPTION
-.Nm creginfo
-is a utility to determine information about a Windows 9x/Me Registry File (CREG)
+.Nm cregmount
+is a utility to mount a Windows 9x/Me Registry File (CREG)
 .Pp
-.Nm creginfo
+.Nm cregmount
 is part of the
 .Nm libcreg
 package.
@@ -21,7 +23,9 @@ package.
 is a library to access the Windows 9x/Me Registry File (CREG) format
 .Pp
 .Ar source
-is the source file.
+a Windows 9x/Me Registry File (CREG)
+.Ar mount_point
+the directory to serve as mount point
 .Pp
 The options are as follows:
 .Bl -tag -width Ds
@@ -32,12 +36,12 @@ windows-936, windows-949, windows-950, windows-1250, windows-1251, windows-1252 
 or windows-1258
 .It Fl h
 shows this help
-.It Fl H
-shows the key and value hierarchy
 .It Fl v
-verbose output to stderr
+verbose output to stderr, while cregmount will remain running in the foreground
 .It Fl V
 print version
+.It Fl X Ar extended_options
+extended options to pass to sub system
 .El
 .Sh ENVIRONMENT
 None
@@ -45,11 +49,8 @@ None
 None
 .Sh EXAMPLES
 .Bd -literal
-# creginfo SYSTEM.DAT
-creginfo 20260623
-.sp
-Windows 9x/Me Registry File information:
-        Version:        1.0
+# cregmount SYSTEM.DAT /mnt/creg
+cregmount 20260623
 .sp
 .Ed
 .Sh DIAGNOSTICS
@@ -58,7 +59,7 @@ Errors, verbose and debug output are printed to stderr when verbose output \
 Verbose and debug output are only printed when enabled at compilation.
 .Sh SEE ALSO
 .Xr cregexport 1 ,
-.Xr cregmount 1
+.Xr creginfo 1
 .Sh AUTHORS
 .An Joachim Metz <joachim.metz@gmail.com>
 .Sh BUGS

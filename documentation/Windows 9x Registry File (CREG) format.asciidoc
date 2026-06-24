@@ -153,7 +153,7 @@ The Registry Key Navigation record including the 4 bytes of the signature and 4 
 | 8 | 4 | | Key hierarchy entries data offset +
 The offset is relative from the start of the Registry Key Navigation record
 | 12 | 4 | | [yellow-background]*Unknown (Key hierarchy entries data size?)* +
-The size does not contain the size of the root (first) key hierarcy entry
+The size does not contain the size of the root (first) key hierarchy entry
 | 16 | 4 | | [yellow-background]*Unknown*
 | 20 | 4 | | [yellow-background]*Unknown (Checksum?)*
 | 24 | 8 | | [yellow-background]*Unknown (empty values)*
