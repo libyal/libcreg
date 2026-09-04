@@ -493,6 +493,14 @@ int main( int argc, char * const argv[] )
 
 		goto on_error;
 	}
+#if defined( HAVE_LIBFUSE3 )
+	fuse_unmount(
+	 cregmount_fuse_handle );
+#else
+	fuse_unmount(
+	 mount_point,
+	 cregmount_fuse_channel );
+#endif
 	fuse_destroy(
 	 cregmount_fuse_handle );
 

@@ -3,9 +3,10 @@
 $TestsInputDirectory = "tests\input"
 $TestSet = "public"
 $TestFiles = "SYSTEM.DAT USER.DAT"
+
 If (-Not (Test-Path "${TestsInputDirectory}\.creginfo_hierarchy"))
 {
-        New-Item -Name "${TestsInputDirectory}\.creginfo_hierarchy" -ItemType "directory" | Out-Null
+	New-Item -Name "${TestsInputDirectory}\.creginfo_hierarchy" -ItemType "directory" | Out-Null
 	Write-Output "-H" | Out-File -Encoding ascii -FilePath "${TestsInputDirectory}\.creginfo_hierarchy\options"
 }
 
