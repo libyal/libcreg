@@ -28,188 +28,220 @@ import pycreg
 
 
 class FileTypeTests(unittest.TestCase):
-  """Tests the file type."""
+    """Tests the file type."""
 
-  def test_signal_abort(self):
-    """Tests the signal_abort function."""
-    creg_file = pycreg.file()
+    def test_signal_abort(self):
+        """Tests the signal_abort function."""
+        creg_file = pycreg.file()
 
-    creg_file.signal_abort()
+        creg_file.signal_abort()
 
-  def test_open(self):
-    """Tests the open function."""
-    test_source = getattr(unittest, "source", None)
-    if not test_source:
-      raise unittest.SkipTest("missing source")
+    def test_open(self):
+        """Tests the open function."""
+        test_source = getattr(unittest, "source", None)
+        if not test_source:
+            raise unittest.SkipTest("missing source")
 
-    creg_file = pycreg.file()
+        creg_file = pycreg.file()
 
-    creg_file.open(test_source)
+        creg_file.open(test_source)
 
-    with self.assertRaises(IOError):
-      creg_file.open(test_source)
+        with self.assertRaises(IOError):
+            creg_file.open(test_source)
 
-    creg_file.close()
-
-    with self.assertRaises(TypeError):
-      creg_file.open(None)
-
-    with self.assertRaises(ValueError):
-      creg_file.open(test_source, mode="w")
-
-  def test_open_file_object(self):
-    """Tests the open_file_object function."""
-    test_source = getattr(unittest, "source", None)
-    if not test_source:
-      raise unittest.SkipTest("missing source")
-
-    if not os.path.isfile(test_source):
-      raise unittest.SkipTest("source not a regular file")
-
-    creg_file = pycreg.file()
-
-    with open(test_source, "rb") as file_object:
-
-      creg_file.open_file_object(file_object)
-
-      with self.assertRaises(IOError):
-        creg_file.open_file_object(file_object)
-
-      creg_file.close()
-
-      with self.assertRaises(TypeError):
-        creg_file.open_file_object(None)
-
-      with self.assertRaises(ValueError):
-        creg_file.open_file_object(file_object, mode="w")
-
-  def test_close(self):
-    """Tests the close function."""
-    test_source = getattr(unittest, "source", None)
-    if not test_source:
-      raise unittest.SkipTest("missing source")
-
-    creg_file = pycreg.file()
-
-    with self.assertRaises(IOError):
-      creg_file.close()
-
-  def test_open_close(self):
-    """Tests the open and close functions."""
-    test_source = getattr(unittest, "source", None)
-    if not test_source:
-      return
-
-    creg_file = pycreg.file()
-
-    # Test open and close.
-    creg_file.open(test_source)
-    creg_file.close()
-
-    # Test open and close a second time to validate clean up on close.
-    creg_file.open(test_source)
-    creg_file.close()
-
-    if os.path.isfile(test_source):
-      with open(test_source, "rb") as file_object:
-
-        # Test open_file_object and close.
-        creg_file.open_file_object(file_object)
         creg_file.close()
 
-        # Test open_file_object and close a second time to validate clean up on close.
-        creg_file.open_file_object(file_object)
+        with self.assertRaises(TypeError):
+            creg_file.open(None)
+
+        with self.assertRaises(ValueError):
+            creg_file.open(test_source, mode="w")
+
+    def test_open_file_object(self):
+        """Tests the open_file_object function."""
+        test_source = getattr(unittest, "source", None)
+        if not test_source:
+            raise unittest.SkipTest("missing source")
+
+        if not os.path.isfile(test_source):
+            raise unittest.SkipTest("source not a regular file")
+
+        creg_file = pycreg.file()
+
+        with open(test_source, "rb") as file_object:
+
+            creg_file.open_file_object(file_object)
+
+            with self.assertRaises(IOError):
+                creg_file.open_file_object(file_object)
+
+            creg_file.close()
+
+            with self.assertRaises(TypeError):
+                creg_file.open_file_object(None)
+
+            with self.assertRaises(ValueError):
+                creg_file.open_file_object(file_object, mode="w")
+
+    def test_close(self):
+        """Tests the close function."""
+        test_source = getattr(unittest, "source", None)
+        if not test_source:
+            raise unittest.SkipTest("missing source")
+
+        creg_file = pycreg.file()
+
+        with self.assertRaises(IOError):
+            creg_file.close()
+
+    def test_open_close(self):
+        """Tests the open and close functions."""
+        test_source = getattr(unittest, "source", None)
+        if not test_source:
+            return
+
+        creg_file = pycreg.file()
+
+        # Test open and close.
+        creg_file.open(test_source)
         creg_file.close()
 
-        # Test open_file_object and close and dereferencing file_object.
-        creg_file.open_file_object(file_object)
-        del file_object
+        # Test open and close a second time to validate clean up on close.
+        creg_file.open(test_source)
         creg_file.close()
 
-  def test_set_ascii_codepage(self):
-    """Tests the set_ascii_codepage function."""
-    supported_codepages = (
-        "ascii", "cp874", "cp932", "cp936", "cp949", "cp950", "cp1250",
-        "cp1251", "cp1252", "cp1253", "cp1254", "cp1255", "cp1256", "cp1257",
-        "cp1258")
+        if os.path.isfile(test_source):
+            with open(test_source, "rb") as file_object:
 
-    creg_file = pycreg.file()
+                # Test open_file_object and close.
+                creg_file.open_file_object(file_object)
+                creg_file.close()
 
-    for codepage in supported_codepages:
-      creg_file.set_ascii_codepage(codepage)
+                # Test open_file_object and close a second time to validate clean up on close.
+                creg_file.open_file_object(file_object)
+                creg_file.close()
 
-    unsupported_codepages = (
-        "iso-8859-1", "iso-8859-2", "iso-8859-3", "iso-8859-4", "iso-8859-5",
-        "iso-8859-6", "iso-8859-7", "iso-8859-8", "iso-8859-9", "iso-8859-10",
-        "iso-8859-11", "iso-8859-13", "iso-8859-14", "iso-8859-15",
-        "iso-8859-16", "koi8_r", "koi8_u")
+                # Test open_file_object and close and dereferencing file_object.
+                creg_file.open_file_object(file_object)
+                del file_object
+                creg_file.close()
 
-    for codepage in unsupported_codepages:
-      with self.assertRaises(RuntimeError):
-        creg_file.set_ascii_codepage(codepage)
+    def test_set_ascii_codepage(self):
+        """Tests the set_ascii_codepage function."""
+        supported_codepages = (
+            "ascii",
+            "cp874",
+            "cp932",
+            "cp936",
+            "cp949",
+            "cp950",
+            "cp1250",
+            "cp1251",
+            "cp1252",
+            "cp1253",
+            "cp1254",
+            "cp1255",
+            "cp1256",
+            "cp1257",
+            "cp1258",
+        )
 
-  def test_get_ascii_codepage(self):
-    """Tests the get_ascii_codepage function and ascii_codepage property."""
-    test_source = getattr(unittest, "source", None)
-    if not test_source:
-      raise unittest.SkipTest("missing source")
+        creg_file = pycreg.file()
 
-    creg_file = pycreg.file()
+        for codepage in supported_codepages:
+            creg_file.set_ascii_codepage(codepage)
 
-    creg_file.open(test_source)
+        unsupported_codepages = (
+            "iso-8859-1",
+            "iso-8859-2",
+            "iso-8859-3",
+            "iso-8859-4",
+            "iso-8859-5",
+            "iso-8859-6",
+            "iso-8859-7",
+            "iso-8859-8",
+            "iso-8859-9",
+            "iso-8859-10",
+            "iso-8859-11",
+            "iso-8859-13",
+            "iso-8859-14",
+            "iso-8859-15",
+            "iso-8859-16",
+            "koi8_r",
+            "koi8_u",
+        )
 
-    ascii_codepage = creg_file.get_ascii_codepage()
-    self.assertIsNotNone(ascii_codepage)
+        for codepage in unsupported_codepages:
+            with self.assertRaises(RuntimeError):
+                creg_file.set_ascii_codepage(codepage)
 
-    self.assertIsNotNone(creg_file.ascii_codepage)
+    def test_get_ascii_codepage(self):
+        """Tests the get_ascii_codepage function and ascii_codepage property."""
+        test_source = getattr(unittest, "source", None)
+        if not test_source:
+            raise unittest.SkipTest("missing source")
 
-    creg_file.close()
+        creg_file = pycreg.file()
 
-  def test_get_type(self):
-    """Tests the get_type function and type property."""
-    test_source = getattr(unittest, "source", None)
-    if not test_source:
-      raise unittest.SkipTest("missing source")
+        creg_file.open(test_source)
 
-    creg_file = pycreg.file()
+        ascii_codepage = creg_file.get_ascii_codepage()
+        self.assertIsNotNone(ascii_codepage)
 
-    creg_file.open(test_source)
+        self.assertIsNotNone(creg_file.ascii_codepage)
 
-    type = creg_file.get_type()
-    self.assertIsNotNone(type)
+        creg_file.close()
 
-    self.assertIsNotNone(creg_file.type)
+    def test_get_type(self):
+        """Tests the get_type function and type property."""
+        test_source = getattr(unittest, "source", None)
+        if not test_source:
+            raise unittest.SkipTest("missing source")
 
-    creg_file.close()
+        creg_file = pycreg.file()
 
-  def test_get_root_key(self):
-    """Tests the get_root_key function and root_key property."""
-    test_source = getattr(unittest, "source", None)
-    if not test_source:
-      raise unittest.SkipTest("missing source")
+        creg_file.open(test_source)
 
-    creg_file = pycreg.file()
+        type = creg_file.get_type()
+        self.assertIsNotNone(type)
 
-    creg_file.open(test_source)
+        self.assertIsNotNone(creg_file.type)
 
-    root_key = creg_file.get_root_key()
-    self.assertIsNotNone(root_key)
+        creg_file.close()
 
-    self.assertIsNotNone(creg_file.root_key)
+    def test_get_root_key(self):
+        """Tests the get_root_key function and root_key property."""
+        test_source = getattr(unittest, "source", None)
+        if not test_source:
+            raise unittest.SkipTest("missing source")
 
-    creg_file.close()
+        creg_file = pycreg.file()
+
+        creg_file.open(test_source)
+
+        root_key = creg_file.get_root_key()
+        self.assertIsNotNone(root_key)
+
+        self.assertIsNotNone(creg_file.root_key)
+
+        creg_file.close()
 
 
 if __name__ == "__main__":
-  argument_parser = argparse.ArgumentParser()
+    argument_parser = argparse.ArgumentParser()
 
-  argument_parser.add_argument(
-      "source", nargs="?", action="store", metavar="PATH",
-      default=None, help="path of the source file.")
+    argument_parser.add_argument(
+        "source",
+        nargs="?",
+        action="store",
+        metavar="PATH",
+        default=None,
+        help="path of the source file.",
+    )
 
-  options, unknown_options = argument_parser.parse_known_args()
-  unknown_options.insert(0, sys.argv[0])
+    options, unknown_options = argument_parser.parse_known_args()
+    unknown_options.insert(0, sys.argv[0])
 
-  setattr(unittest, "source", options.source)
+    setattr(unittest, "source", options.source)
 
-  unittest.main(argv=unknown_options, verbosity=2)
+    unittest.main(argv=unknown_options, verbosity=2)
