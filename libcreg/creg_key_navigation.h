@@ -50,10 +50,10 @@ struct creg_key_navigation_header
 	 */
 	uint8_t key_hierarchy_entries_data_offset[ 4 ];
 
-	/* Unknown
+	/* The free key hierarchy entry offset
 	 * Consists of 4 bytes
 	 */
-	uint8_t unknown2[ 4 ];
+	uint8_t free_key_hierarchy_entry_offset[ 4 ];
 
 	/* Unknown
 	 * Consists of 4 bytes
@@ -85,10 +85,10 @@ struct creg_key_hierarchy_entry
 	 */
 	uint8_t name_hash[ 4 ];
 
-	/* Unknown
+	/* The next free key hierarchy entry offset
 	 * Consists of 4 bytes
 	 */
-	uint8_t unknown2[ 4 ];
+	uint8_t next_free_key_hierarchy_entry_offset[ 4 ];
 
 	/* The parent key offset
 	 * Consists of 4 bytes

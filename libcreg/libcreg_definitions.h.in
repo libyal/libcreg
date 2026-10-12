@@ -123,6 +123,19 @@ enum LIBCREG_VALUE_ENTRY_FLAGS
 	LIBCREG_VALUE_ENTRY_FLAG_IS_CORRUPTED		= 0x01
 };
 
+/* The file header flags
+ */
+enum LIBCREG_FILE_HEADER_FLAGS
+{
+	/* The file header contains a checksum
+	 */
+	LIBCREG_FILE_HEADER_FLAG_HAS_CHECKSUM		= 0x0004,
+
+	/* The file is being written
+	 */
+	LIBCREG_FILE_HEADER_FLAG_WRITE_IN_PROGRESS	= 0x0008
+};
+
 #define LIBCREG_ROOT_KEY_OFFSET				0x20
 
 #define LIBCREG_MAXIMUM_CACHE_ENTRIES_DATA_BLOCKS	64 * 1024

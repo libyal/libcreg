@@ -337,10 +337,10 @@ int libcreg_io_handle_read_file_header(
 		 *number_of_data_blocks );
 
 		byte_stream_copy_to_uint16_little_endian(
-		 file_header.unknown2,
+		 file_header.flags,
 		 value_16bit );
 		libcnotify_printf(
-		 "%s: unknown2\t\t\t\t: 0x%04" PRIx16 "\n",
+		 "%s: flags\t\t\t\t: 0x%04" PRIx16 "\n",
 		 function,
 		 value_16bit );
 
