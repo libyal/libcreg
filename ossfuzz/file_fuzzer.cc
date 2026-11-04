@@ -36,12 +36,35 @@ extern "C" {
  */
 LIBCREG_EXTERN \
 int libcreg_file_open_file_io_handle(
-     libcreg_file_t *file,
-     libbfio_handle_t *file_io_handle,
-     int access_flags,
-     libcreg_error_t **error );
+      libcreg_file_t *file,
+      libbfio_handle_t *file_io_handle,
+      int access_flags,
+      libcreg_error_t **error );
 
 #endif /* !defined( LIBCREG_HAVE_BFIO ) */
+
+/* The ASCII codepages supported by libcreg_file_set_ascii_codepage
+ */
+static const int value_codepages[] = {
+	LIBCREG_CODEPAGE_ASCII,
+	LIBCREG_CODEPAGE_WINDOWS_874,
+	LIBCREG_CODEPAGE_WINDOWS_932,
+	LIBCREG_CODEPAGE_WINDOWS_936,
+	LIBCREG_CODEPAGE_WINDOWS_949,
+	LIBCREG_CODEPAGE_WINDOWS_950,
+	LIBCREG_CODEPAGE_WINDOWS_1250,
+	LIBCREG_CODEPAGE_WINDOWS_1251,
+	LIBCREG_CODEPAGE_WINDOWS_1252,
+	LIBCREG_CODEPAGE_WINDOWS_1253,
+	LIBCREG_CODEPAGE_WINDOWS_1254,
+	LIBCREG_CODEPAGE_WINDOWS_1255,
+	LIBCREG_CODEPAGE_WINDOWS_1256,
+	LIBCREG_CODEPAGE_WINDOWS_1257,
+	LIBCREG_CODEPAGE_WINDOWS_1258,
+};
+
+static const size_t value_number_of_codepages =
+	  sizeof( value_codepages ) / sizeof( value_codepages[ 0 ] );
 
 int LLVMFuzzerTestOneInput(
      const uint8_t *data,
@@ -49,6 +72,11 @@ int LLVMFuzzerTestOneInput(
 {
 	libbfio_handle_t *file_io_handle = NULL;
 	libcreg_file_t *file             = NULL;
+	size_t codepage_index            = 0;
+	uint32_t file_type               = 0;
+	uint16_t major_version           = 0;
+	uint16_t minor_version           = 0;
+	int ascii_codepage               = 0;
 
 	if( libbfio_memory_range_initialize(
 	     &file_io_handle,
@@ -76,13 +104,62 @@ int LLVMFuzzerTestOneInput(
 	     LIBCREG_OPEN_READ,
 	     NULL ) != 1 )
 	{
-		goto on_error_libcreg;
+		goto on_error_libcreg_file;
 	}
+	libcreg_file_get_type(
+	 file,
+	 &file_type,
+	 NULL );
+
+	libcreg_file_get_ascii_codepage(
+	 file,
+	 &ascii_codepage,
+	 NULL );
+
+	libcreg_file_get_format_version(
+	 file,
+	 &major_version,
+	 &minor_version,
+	 NULL );
+
+	libcreg_file_is_corrupted(
+	 file,
+	 NULL );
+
+	/* Cycles through the supported ASCII codepages to exercise the
+	 * codepage handling in the library
+	 */
+	for( codepage_index = 0;
+	     codepage_index < value_number_of_codepages;
+	     codepage_index++ )
+	{
+		libcreg_file_set_ascii_codepage(
+		 file,
+		 value_codepages[ codepage_index ],
+		 NULL );
+
+		libcreg_file_get_ascii_codepage(
+		 file,
+		 &ascii_codepage,
+		 NULL );
+	}
+	/* Sets an unsupported codepage to exercise the error path
+	 */
+	libcreg_file_set_ascii_codepage(
+	 file,
+	 65001,
+	 NULL );
+
+#if defined( LIBCREG_HAVE_BFIO )
+	libcreg_check_file_signature_file_io_handle(
+	 file_io_handle,
+	 NULL );
+#endif
 	libcreg_file_close(
 	 file,
 	 NULL );
 
-on_error_libcreg:
+on_error_libcreg_file:
 	libcreg_file_free(
 	 &file,
 	 NULL );
@@ -96,4 +173,3 @@ on_error_libbfio:
 }
 
 } /* extern "C" */
-
