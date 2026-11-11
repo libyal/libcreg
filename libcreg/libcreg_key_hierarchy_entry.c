@@ -244,10 +244,10 @@ int libcreg_key_hierarchy_entry_read_data(
 		 key_hierarchy_entry->name_hash );
 
 		byte_stream_copy_to_uint32_little_endian(
-		 ( (creg_key_hierarchy_entry_t *) data )->unknown2,
+		 ( (creg_key_hierarchy_entry_t *) data )->next_free_key_hierarchy_entry_offset,
 		 value_32bit );
 		libcnotify_printf(
-		 "%s: unknown2\t\t\t\t: 0x%08" PRIx32 "\n",
+		 "%s: next free key hierarchy entry offset\t: 0x%08" PRIx32 "\n",
 		 function,
 		 value_32bit );
 

@@ -343,10 +343,10 @@ int libcreg_key_navigation_read_file_io_handle(
 		 key_hierarchy_entries_data_offset );
 
 		byte_stream_copy_to_uint32_little_endian(
-		 key_navigation_header.unknown2,
+		 key_navigation_header.free_key_hierarchy_entry_offset,
 		 value_32bit );
 		libcnotify_printf(
-		 "%s: unknown2\t\t\t\t: 0x%08" PRIx32 "\n",
+		 "%s: free key hierarchy entry offset\t\t: 0x%08" PRIx32 "\n",
 		 function,
 		 value_32bit );
 

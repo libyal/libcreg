@@ -64,10 +64,10 @@ struct creg_file_header
 	 */
 	uint8_t number_of_data_blocks[ 2 ];
 
-	/* Unknown
+	/* The flags
 	 * Consists of 2 bytes
 	 */
-	uint8_t unknown2[ 2 ];
+	uint8_t flags[ 2 ];
 
 	/* Unknown
 	 * Consists of 2 bytes
